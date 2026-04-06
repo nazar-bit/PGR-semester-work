@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "ShaderManager.hpp"
 #include "Light.hpp"
+#include "InputHandler.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -15,8 +16,8 @@ namespace vasylnaz {
     long Mesh::global_mesh_id = 0;
     long LightSource::global_light_id = 0;
 
-    const int WIN_WIDTH = 512;
-    const int WIN_HEIGHT = 512;
+    const int WIN_WIDTH = 1024;
+    const int WIN_HEIGHT = 768;
     const char* WIN_TITLE = "Hello World";
 
 
@@ -27,20 +28,22 @@ namespace vasylnaz {
     ShaderManager shader_manager;
 
 
-    struct Camera {
-        glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f);
-        glm::vec3 target = glm::vec3(0.0f, 0.0f, 1.0f);
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::vec3 camera_target_distance = glm::vec3(0.0f, 0.0f, 5.0f);
-        float movement_speed = 0.2f;
-        float rotation_angle = 10.0f;
-    } camera;
-
+    Camera camera = Camera(
+        glm::vec3(0.0f, 0.0f, 3.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f),   // normalized vector
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 5.0f),
+        0.1f,
+        0.2f
+    );
+    
 
     glm::mat4 View;
     glm::mat4 Projection;
 
     LightBlock light_block;
+
+    InputHandler input_handler;
 
 
 
@@ -193,64 +196,42 @@ namespace vasylnaz {
 
     void timerCallback(int value) {
 
+        input_handler.update_camera(camera);
+
         glutPostRedisplay();
         glutTimerFunc(16, timerCallback, 0);
     }
 
 
-    void handleKeyboard(unsigned char key, int x, int y) {
-        glm::vec3 forward = -camera.target;
-        glm::vec3 right = glm::normalize(glm::cross(forward, camera.up));
-
-        switch (key) {
-        case 'w':
-            camera.position += forward * camera.movement_speed;
-            break;
-        case 's':
-            camera.position -= forward * camera.movement_speed;
-            break;
-        case 'a':
-            camera.position -= right * camera.movement_speed;
-            break;
-        case 'd':
-            camera.position += right * camera.movement_speed;
-            break;
-        }
+    void handleKeyboardDown(unsigned char key, int x, int y) {
+        input_handler.set_key_true(key);
     }
 
 
-    void handleSpecialKeys(int key, int x, int y) {
-        glm::vec3 forward = -camera.target;
-        glm::vec3 right = glm::normalize(glm::cross(forward, camera.up));
-
-        switch (key) {
-        case GLUT_KEY_LEFT:
-            camera.target = glm::rotate(camera.target, glm::radians(camera.rotation_angle), camera.up);
-            camera.target = glm::normalize(camera.target);
-            break;
-
-        case GLUT_KEY_RIGHT:
-            camera.target = glm::rotate(camera.target, glm::radians(-camera.rotation_angle), camera.up);
-            camera.target = glm::normalize(camera.target);
-            break;
-
-        case GLUT_KEY_UP:
-            camera.target = glm::rotate(camera.target, glm::radians(camera.rotation_angle), right);
-            camera.up = glm::rotate(camera.up, glm::radians(camera.rotation_angle), right);
-
-            camera.target = glm::normalize(camera.target);
-            camera.up = glm::normalize(camera.up);
-            break;
-
-        case GLUT_KEY_DOWN:
-            camera.target = glm::rotate(camera.target, glm::radians(-camera.rotation_angle), right);
-            camera.up = glm::rotate(camera.up, glm::radians(-camera.rotation_angle), right);
-
-            camera.target = glm::normalize(camera.target);
-            camera.up = glm::normalize(camera.up);
-            break;
-        }
+    void handleKeyboardUp(unsigned char key, int x, int y) {
+        input_handler.set_key_false(key);
     }
+
+
+    void handleMouseClick(int button, int state, int x, int y) {
+        input_handler.handle_mouse_click(button, state, x, y);
+    }
+
+
+    void handleMouseDrag(int x, int y) {
+        input_handler.handle_mouse_drag(x, y);
+    }
+
+
+    void handleSpecialKeysDown(int key, int x, int y) {
+        input_handler.set_special_key_true(key);
+    }
+
+
+    void handleSpecialKeysUp(int key, int x, int y) {
+        input_handler.set_special_key_false(key);
+    }
+
 }
 
 
@@ -275,8 +256,12 @@ int main(int argc, char** argv) {
 
     std::cout << "Hello triangle!" << std::endl;
 
-    glutKeyboardFunc(handleKeyboard);
-    glutSpecialFunc(handleSpecialKeys);
+    glutKeyboardFunc(handleKeyboardDown);
+    glutKeyboardUpFunc(handleKeyboardUp);
+    glutSpecialFunc(handleSpecialKeysDown);
+    glutSpecialUpFunc(handleSpecialKeysUp);
+    glutMouseFunc(handleMouseClick);
+    glutMotionFunc(handleMouseDrag);
 
     glutTimerFunc(16, timerCallback, 0);
     glutMainLoop();
