@@ -126,7 +126,7 @@ namespace vasylnaz {
             for (int i = 0; i < LBD.numLights; ++i) {
                 Light currentLight = scene_light[i].getLight();
                 currentLight.position = viewMatrix * currentLight.position;
-                currentLight.spotlight = viewMatrix * currentLight.spotlight;
+                currentLight.spotlight = glm::normalize(viewMatrix * currentLight.spotlight);
                 LBD.lights[i] = currentLight;
             }
         }

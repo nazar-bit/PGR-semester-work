@@ -44,7 +44,7 @@ void main() {
         float spotlightEffect = 1.0;
         if(cur_light.spotlight != vec4(0.0))
         {
-            float cosA = dot(light_dir, normalize(-cur_light.spotlight.xyz));
+            float cosA = dot(light_dir, -cur_light.spotlight.xyz);
             if(cosA >= cur_light.specular.w){
                 spotlightEffect = pow(max(cosA, 0.0), cur_light.attenuation.w);
             } else{
