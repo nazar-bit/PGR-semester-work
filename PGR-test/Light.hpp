@@ -7,7 +7,7 @@ namespace vasylnaz {
 
     #define MAX_LIGHTS 10
 
-    glm::vec3 GLOBAL_AMBIENT = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 GLOBAL_AMBIENT = glm::vec3(0.11f);
 
 
     enum LightType {
@@ -126,7 +126,10 @@ namespace vasylnaz {
             for (int i = 0; i < LBD.numLights; ++i) {
                 Light currentLight = scene_light[i].getLight();
                 currentLight.position = viewMatrix * currentLight.position;
-                currentLight.spotlight = glm::normalize(viewMatrix * currentLight.spotlight);
+                if (currentLight.spotlight != glm::vec4(0.0f))
+                {
+                    currentLight.spotlight = glm::normalize(viewMatrix * currentLight.spotlight);
+                }
                 LBD.lights[i] = currentLight;
             }
         }

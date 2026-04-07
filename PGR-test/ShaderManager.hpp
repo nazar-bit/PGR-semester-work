@@ -18,12 +18,14 @@ namespace vasylnaz {
 		GLuint shaderProgram = 0;
 		GLuint positionLoc = 0;
 		GLuint positionNormal = 0;
+		GLuint positionTex = 0;
 
 		GLuint positionVM = 0;
 		GLuint positionVN = 0;
 		GLuint positionP = 0;
 
 		GLuint positionGlobalAmb = 0;
+		GLuint positionDiffuseMap = 0;
 
 
 		void compile_shaders() {
@@ -38,12 +40,14 @@ namespace vasylnaz {
 			shaderProgram = pgr::createProgram(shaders);
 			positionLoc = glGetAttribLocation(shaderProgram, "position");
 			positionNormal = glGetAttribLocation(shaderProgram, "normal");
+			positionTex = glGetAttribLocation(shaderProgram, "tex_coords");
 
 			positionVM = glGetUniformLocation(shaderProgram, "VM");
 			positionVN = glGetUniformLocation(shaderProgram, "VN");
 			positionP = glGetUniformLocation(shaderProgram, "P");
 
 			positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
+			positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
 		}
 
 

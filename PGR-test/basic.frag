@@ -24,7 +24,9 @@ layout (std140) uniform LightBlock {
 
 
 uniform vec3 global_ambient;
+uniform sampler2D texSampler;
 
+in vec2 fg_tex_coords;
 
 in vec4 fg_normal;
 in vec4 fg_position;
@@ -36,6 +38,9 @@ void main() {
     
     vec3 norm = normalize(fg_normal.xyz);
     vec3 view_pos = fg_position.xyz;
+
+    // TextureColor
+    vec3 tex_color = texture(texSampler, fg_tex_coords).xyz;
     
     for(int i = 0; i < numLights; ++i) {
         Light cur_light = lights[i];
@@ -61,9 +66,11 @@ void main() {
         }
         // Ambient
         vec3 ambient_ref = ambient.xyz * cur_light.ambient.xyz;
+        ambient_ref = ambient_ref * tex_color;
         // Diffuse
         float diffuse_impact = max(dot(norm, light_dir), 0.0);
         vec3 diffuse_ref = diffuse_impact * diffuse.xyz * cur_light.diffuse.xyz;
+        diffuse_ref = diffuse_ref * tex_color; 
         // Specular
         float specular_impact = max(dot(2.0 * dot(light_dir, norm) * norm - light_dir, normalize(-view_pos)), 0.0);
         vec3 specular_ref = pow(specular_impact, specular.w) * specular.xyz * cur_light.specular.xyz; 
@@ -71,7 +78,8 @@ void main() {
         sum_light += (spotlightEffect * attenuationFactor) * (ambient_ref + diffuse_ref + specular_ref);
     }
 
-    vec3 res = emission.xyz + global_ambient + sum_light;
+    vec3 res = emission.xyz + (global_ambient * tex_color) + sum_light;
     color = vec4(res, 1.0);
+    //color = texture(texSampler, fg_tex_coords);
 }
 

@@ -7,6 +7,7 @@
 #include "ShaderManager.hpp"
 #include "Light.hpp"
 #include "InputHandler.hpp"
+#include "TextureManager.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -26,6 +27,7 @@ namespace vasylnaz {
     std::vector<std::unique_ptr<Mesh>> scene_meshes;
 
     ShaderManager shader_manager;
+    TextureManager texture_manager;
 
 
     Camera camera = Camera(
@@ -56,6 +58,9 @@ namespace vasylnaz {
 
         shader_manager.compile_shaders();
         shader_manager.generateUBOs();
+
+        texture_manager.diffuse_map_location = shader_manager.positionDiffuseMap;
+        texture_manager.addTetxure("thermos", "Textures/plastic_thermos.png");
 
        
         const float vertices[] = {
@@ -113,7 +118,7 @@ namespace vasylnaz {
         };
 
         // 36 indices defining the 12 triangles
-        const unsigned short indices[] = {
+        const unsigned int indices[] = {
              0,  1,  2,   2,  3,  0,  // Front
              4,  5,  6,   6,  7,  4,  // Back
              8,  9, 10,  10, 11,  8,  // Left
@@ -124,11 +129,11 @@ namespace vasylnaz {
 
 
         const LightSource testLight(
-            SPOTLIGHT,
-            glm::vec3(0.2f),     //amb
-            glm::vec3(0.8f),     //diff
+            POINT,
+            glm::vec3(0.1f),     //amb
+            glm::vec3(2.0f),     //diff
             glm::vec3(1.0f),    //spec
-            glm::vec3(0.0f, 0.0f, 1.0f),    //pos
+            glm::vec3(2.0f, 2.0f, 5.0f),    //pos
             Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
             Attenuation(1.0f, 0.09f, 0.032f)
         );
@@ -148,8 +153,12 @@ namespace vasylnaz {
         //light_block.addLight(testLight2);
 
 
-        scene_meshes.emplace_back(std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), normals,
-            indices, sizeof(indices) / sizeof(unsigned short), shader_manager));
+        /*scene_meshes.emplace_back(std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), normals,
+            indices, sizeof(indices) / sizeof(unsigned short), shader_manager));*/
+
+        //scene_meshes.emplace_back(std::make_unique<Mesh>("Models/cube.obj", shader_manager));
+        scene_meshes.emplace_back(std::make_unique<Mesh>("Models/plastic_thermos_1k.obj", shader_manager));
+
 
         Material redPlastic;
         redPlastic.ambient = glm::vec4(0.5f, 0.0f, 0.0f, 0.0f);
@@ -157,15 +166,30 @@ namespace vasylnaz {
         redPlastic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
         redPlastic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-        auto test_object = Object(scene_meshes[0].get(), glm::mat4(1.0f), redPlastic);
-        auto model_mat1 = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
+        Material basic;
+        basic.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
+        basic.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        basic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
+        basic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+        auto test_object = Object(scene_meshes[0].get(), glm::mat4(1.0f), basic, "thermos");
+        auto model_mat2 = glm::mat4(
+            10.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 10.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 10.0f, 0.0f,
             5.0f, 0.0f, 0.0f, 1.0f);
-        auto test_object2 = Object(scene_meshes[0].get(), model_mat1, redPlastic);
+        //auto test_object2 = Object(scene_meshes[1].get(), model_mat2, redPlastic);
+
+        auto model_mat3 = glm::mat4(
+            100.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.1f, 0.0f, 0.0f,
+            0.0f, 0.0f, 100.0f, 0.0f,
+            0.0f, -3.0f, 0.0f, 1.0f);
+        //auto test_object3 = Object(scene_meshes[0].get(), model_mat3, redPlastic);
 
         scene_objects[test_object.get_mesh()->mesh_id].emplace_back(std::move(test_object));
-        scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
+        //scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
+        //scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
     }
 
 
@@ -186,7 +210,7 @@ namespace vasylnaz {
 
         for (const auto& array : scene_objects) {
             for (const auto& obj : array.second) {
-                obj.draw(shader_manager, View);
+                obj.draw(shader_manager, texture_manager, View);
             }
         }
 

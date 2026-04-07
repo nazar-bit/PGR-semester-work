@@ -101,7 +101,7 @@ namespace vasylnaz {
 
 			camera.target = glm::rotate(camera.target, glm::radians(rotation_angle), rotation_dir);
 			right = glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
-			camera.up = glm::cross(forward, right);
+			camera.up = glm::cross(-forward, right);
 
 			camera.target = glm::normalize(camera.target);
 			camera.up = glm::normalize(camera.up);
