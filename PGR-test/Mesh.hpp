@@ -11,6 +11,10 @@
 #include <assimp/scene.h>           
 #include <assimp/postprocess.h>    
 
+#include <string>
+
+using std::string;
+
 
 namespace vasylnaz {
 	class Mesh
@@ -57,7 +61,7 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param filePath 
 		/// @param shader_manager 
-		Mesh(const char* filePath, ShaderManager shader_manager)
+		Mesh(const string& filePath, ShaderManager shader_manager)
 
 			: mesh_id(global_mesh_id++), indices_count(0) {
 
@@ -102,11 +106,15 @@ namespace vasylnaz {
 			glEnableVertexAttribArray(shader_manager.positionNormal);
 			glVertexAttribPointer(shader_manager.positionNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-			glGenBuffers(1, &texels_vbo);
-			glBindBuffer(GL_ARRAY_BUFFER, texels_vbo);
-			glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mTextureCoords[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(shader_manager.positionTex);
-			glVertexAttribPointer(shader_manager.positionTex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			if (mesh->HasTextureCoords(0)) {
+				glBindBuffer(GL_ARRAY_BUFFER, texels_vbo);
+				glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mTextureCoords[0], GL_STATIC_DRAW);
+				glEnableVertexAttribArray(shader_manager.positionTex);
+				glVertexAttribPointer(shader_manager.positionTex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			}
+			else {
+				glDisableVertexAttribArray(shader_manager.positionTex);
+			}
 
 			glGenBuffers(1, &ebo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

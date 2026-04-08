@@ -7,7 +7,7 @@
 #include "ShaderManager.hpp"
 #include "Light.hpp"
 #include "InputHandler.hpp"
-#include "TextureManager.hpp"
+#include "AssetManager.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -24,10 +24,9 @@ namespace vasylnaz {
 
     // Mesh Id lets you access objects sharing this mesh
     std::unordered_map<long, std::vector<Object>> scene_objects;
-    std::vector<std::unique_ptr<Mesh>> scene_meshes;
 
     ShaderManager shader_manager;
-    TextureManager texture_manager;
+    AssetManager asset_manager;
 
 
     Camera camera = Camera(
@@ -35,7 +34,7 @@ namespace vasylnaz {
         glm::vec3(0.0f, 0.0f, 1.0f),   // normalized vector
         glm::vec3(0.0f, 1.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 5.0f),
-        0.1f,
+        0.05f,
         0.2f
     );
     
@@ -59,8 +58,9 @@ namespace vasylnaz {
         shader_manager.compile_shaders();
         shader_manager.generateUBOs();
 
-        texture_manager.diffuse_map_location = shader_manager.positionDiffuseMap;
-        texture_manager.addTetxure("thermos", "Textures/plastic_thermos.png");
+        asset_manager.diffuse_map_location = shader_manager.positionDiffuseMap;
+        asset_manager.loadTetxure("thermos", "Textures/plastic_thermos.png");
+        asset_manager.loadTetxure("blank", "Textures/blank.png");
 
        
         const float vertices[] = {
@@ -138,6 +138,28 @@ namespace vasylnaz {
             Attenuation(1.0f, 0.09f, 0.032f)
         );
 
+
+        const LightSource testLight2(
+            POINT,
+            glm::vec3(0.1f),     //amb
+            glm::vec3(2.0f),     //diff
+            glm::vec3(1.0f),    //spec
+            glm::vec3(6.0f, 2.0f, 5.0f),    //pos
+            Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
+            Attenuation(1.0f, 0.09f, 0.032f)
+        );
+
+
+        const LightSource testLight3(
+            POINT,
+            glm::vec3(0.1f),     //amb
+            glm::vec3(2.0f),     //diff
+            glm::vec3(1.0f),    //spec
+            glm::vec3(6.0f, 2.0f, 8.0f),    //pos
+            Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
+            Attenuation(1.0f, 0.09f, 0.032f)
+        );
+
         
 
         /*const LightSource testLight2(
@@ -150,14 +172,15 @@ namespace vasylnaz {
         );*/
 
         light_block.addLight(testLight);
-        //light_block.addLight(testLight2);
+        light_block.addLight(testLight2);
+        light_block.addLight(testLight3);
 
 
         /*scene_meshes.emplace_back(std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), normals,
             indices, sizeof(indices) / sizeof(unsigned short), shader_manager));*/
 
-        //scene_meshes.emplace_back(std::make_unique<Mesh>("Models/cube.obj", shader_manager));
-        scene_meshes.emplace_back(std::make_unique<Mesh>("Models/plastic_thermos_1k.obj", shader_manager));
+        asset_manager.loadMesh("cube", "Models/cube.obj", shader_manager);
+        asset_manager.loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);
 
 
         Material redPlastic;
@@ -172,24 +195,27 @@ namespace vasylnaz {
         basic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
         basic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-        auto test_object = Object(scene_meshes[0].get(), glm::mat4(1.0f), basic, "thermos");
+        asset_manager.loadMaterial("red_plastic", redPlastic);
+        asset_manager.loadMaterial("basic", basic);
+
+        auto test_object = Object(asset_manager, "thermos", glm::mat4(1.0f), "basic", "thermos");
         auto model_mat2 = glm::mat4(
-            10.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 10.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 10.0f, 0.0f,
+            5.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 5.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 5.0f, 0.0f,
             5.0f, 0.0f, 0.0f, 1.0f);
-        //auto test_object2 = Object(scene_meshes[1].get(), model_mat2, redPlastic);
+        auto test_object2 = Object(asset_manager, "cube", model_mat2, "basic", "blank");
 
         auto model_mat3 = glm::mat4(
             100.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 0.1f, 0.0f, 0.0f,
             0.0f, 0.0f, 100.0f, 0.0f,
             0.0f, -3.0f, 0.0f, 1.0f);
-        //auto test_object3 = Object(scene_meshes[0].get(), model_mat3, redPlastic);
+        auto test_object3 = Object(asset_manager, "cube", model_mat3, "red_plastic");
 
         scene_objects[test_object.get_mesh()->mesh_id].emplace_back(std::move(test_object));
-        //scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
-        //scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
+        scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
+        scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
     }
 
 
@@ -210,7 +236,7 @@ namespace vasylnaz {
 
         for (const auto& array : scene_objects) {
             for (const auto& obj : array.second) {
-                obj.draw(shader_manager, texture_manager, View);
+                obj.draw(shader_manager, View);
             }
         }
 
