@@ -134,6 +134,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsssetManager.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="PGR-semester-work.cpp" />
   </ItemGroup>
   <ItemGroup>

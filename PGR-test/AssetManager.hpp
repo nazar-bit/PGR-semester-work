@@ -1,11 +1,14 @@
 #pragma once
 
 #include <unordered_map>
+#include <iostream>
 #include <string>
 #include <glm/glm.hpp>
 
 #include "pgr.h"
 #include "Material.hpp"
+#include "Mesh.hpp"
+#include "ShaderManager.hpp"
 
 using std::string;
 
@@ -21,6 +24,9 @@ namespace vasylnaz {
 		{
 			//
 		}
+
+
+		void init(ShaderManager shader_manager);
 
 		
 		void loadTetxure(const string& name, const string& file_path) {

@@ -15,7 +15,6 @@
 namespace vasylnaz {
     long Object::global_object_id = 0;
     long Mesh::global_mesh_id = 0;
-    long LightSource::global_light_id = 0;
 
     const int WIN_WIDTH = 1024;
     const int WIN_HEIGHT = 768;
@@ -58,9 +57,7 @@ namespace vasylnaz {
         shader_manager.compile_shaders();
         shader_manager.generateUBOs();
 
-        asset_manager.diffuse_map_location = shader_manager.positionDiffuseMap;
-        asset_manager.loadTetxure("thermos", "Textures/plastic_thermos.png");
-        asset_manager.loadTetxure("blank", "Textures/blank.png");
+        asset_manager.init(shader_manager);
 
        
         const float vertices[] = {
@@ -179,24 +176,6 @@ namespace vasylnaz {
         /*scene_meshes.emplace_back(std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), normals,
             indices, sizeof(indices) / sizeof(unsigned short), shader_manager));*/
 
-        asset_manager.loadMesh("cube", "Models/cube.obj", shader_manager);
-        asset_manager.loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);
-
-
-        Material redPlastic;
-        redPlastic.ambient = glm::vec4(0.5f, 0.0f, 0.0f, 0.0f);
-        redPlastic.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-        redPlastic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
-        redPlastic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-        Material basic;
-        basic.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
-        basic.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        basic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
-        basic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-        asset_manager.loadMaterial("red_plastic", redPlastic);
-        asset_manager.loadMaterial("basic", basic);
 
         auto test_object = Object(asset_manager, "thermos", glm::mat4(1.0f), "basic", "thermos");
         auto model_mat2 = glm::mat4(

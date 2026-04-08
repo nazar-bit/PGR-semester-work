@@ -7,7 +7,7 @@ namespace vasylnaz {
 
     #define MAX_LIGHTS 10
 
-    glm::vec3 GLOBAL_AMBIENT = glm::vec3(0.11f);
+    extern glm::vec3 GLOBAL_AMBIENT;
 
 
     enum LightType {
@@ -76,7 +76,7 @@ namespace vasylnaz {
                 glm::vec4(ambient, 0.0f),  
                 glm::vec4(diffuse, 0.0f),  
                 glm::vec4(specular, spotlight.cutoff),
-                glm::vec4(LT == DIRECTIONAL ? glm::vec4(0.0f) : glm::vec4(position, 1.0f)),
+                glm::vec4(position, LT == DIRECTIONAL ? 0.0f : 1.0f),
                 glm::vec4(attenuation.constant, attenuation.linear, attenuation.quadratic, spotlight.exponent),
                 glm::vec4(LT == SPOTLIGHT ? glm::vec4(spotlight.direction, 0.0f) : glm::vec4(0.0f)),
             }, light_id(global_light_id++)
