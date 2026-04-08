@@ -135,8 +135,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AsssetManager.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PGR-semester-work.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />

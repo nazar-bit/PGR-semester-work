@@ -113,26 +113,13 @@ namespace vasylnaz {
             //
         }
 
+        /// @brief 
+        /// @param LS 
+        void addLight(const LightSource& LS);
 
-        void addLight(const LightSource& LS) {
-            if (LBD.numLights >= MAX_LIGHTS) return;
-
-            scene_light.emplace_back(LS);
-            LBD.lights[LBD.numLights++] = LS.getLight();
-        }
-
-
-        void updateViewSpacePositions(const glm::mat4& viewMatrix) {
-            for (int i = 0; i < LBD.numLights; ++i) {
-                Light currentLight = scene_light[i].getLight();
-                currentLight.position = viewMatrix * currentLight.position;
-                if (currentLight.spotlight != glm::vec4(0.0f))
-                {
-                    currentLight.spotlight = glm::normalize(viewMatrix * currentLight.spotlight);
-                }
-                LBD.lights[i] = currentLight;
-            }
-        }
+        /// @brief 
+        /// @param viewMatrix 
+        void updateViewSpacePositions(const glm::mat4& viewMatrix);
 
 
         const LightBlockData& getLBD() const {
