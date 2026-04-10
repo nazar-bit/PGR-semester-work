@@ -2,6 +2,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include "Item.hpp"
+
 
 namespace vasylnaz {
 
@@ -42,7 +44,7 @@ namespace vasylnaz {
         }
     };
 
-
+    
     struct Light {
         glm::vec4 ambient;   // w empty
         glm::vec4 diffuse;   // w empty 
@@ -56,7 +58,7 @@ namespace vasylnaz {
 
 
     /// @brief 
-    class LightSource 
+    class LightSource : public Item
     {
     public:
 
@@ -81,18 +83,24 @@ namespace vasylnaz {
                 glm::vec4(LT == SPOTLIGHT ? glm::vec4(spotlight.direction, 0.0f) : glm::vec4(0.0f)),
             }, light_id(global_light_id++)
         {
-            //
+            global_light = light;
         }
 
-
-        const Light& getLight() const {
-            return light;
+        /// @brief 
+        /// @return 
+        const Light& getGlobalLight() const {
+            return global_light;
         }
+
+        /// @brief 
+        /// @param parent_model_matrix 
+        void updateItem(const glm::mat4& parent_model_matrix) override;
 
 
     private:
         static long global_light_id;
         Light light;
+        Light global_light;
     };
 
 
@@ -115,7 +123,8 @@ namespace vasylnaz {
 
         /// @brief 
         /// @param LS 
-        void addLight(const LightSource& LS);
+        void addLight(LightSource* LS);
+
 
         /// @brief 
         /// @param viewMatrix 
@@ -129,7 +138,7 @@ namespace vasylnaz {
 
     private:
         LightBlockData LBD;
-        std::vector<LightSource> scene_light;
+        std::vector<LightSource*> scene_light;
     };
 
 

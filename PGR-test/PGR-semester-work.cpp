@@ -40,7 +40,7 @@ namespace vasylnaz {
     glm::mat4 View;
     glm::mat4 Projection;
 
-    LightBlock light_block;
+    
 
     InputHandler input_handler;
     SceneGraph scene_graph;
@@ -125,63 +125,8 @@ namespace vasylnaz {
         };
 
 
-        const LightSource testLight(
-            POINT,
-            glm::vec3(0.1f),     //amb
-            glm::vec3(2.0f),     //diff
-            glm::vec3(1.0f),    //spec
-            glm::vec3(2.0f, 2.0f, 5.0f),    //pos
-            Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
-            Attenuation(1.0f, 0.09f, 0.032f)
-        );
-
-
-        const LightSource testLight2(
-            POINT,
-            glm::vec3(0.1f),     //amb
-            glm::vec3(2.0f),     //diff
-            glm::vec3(1.0f),    //spec
-            glm::vec3(6.0f, 2.0f, 5.0f),    //pos
-            Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
-            Attenuation(1.0f, 0.09f, 0.032f)
-        );
-
-
-        const LightSource testLight3(
-            POINT,
-            glm::vec3(0.1f),     //amb
-            glm::vec3(2.0f),     //diff
-            glm::vec3(1.0f),    //spec
-            glm::vec3(6.0f, 2.0f, 8.0f),    //pos
-            Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
-            Attenuation(1.0f, 0.09f, 0.032f)
-        );
-
-        
-
-        /*const LightSource testLight2(
-            glm::vec3(0.1f),
-            glm::vec3(0.8f),
-            glm::vec3(1.0f),
-            glm::vec3(0.0f, 15.0f, 0.0f),
-            1.0f,
-            1.0f
-        );*/
-
-        light_block.addLight(testLight);
-        light_block.addLight(testLight2);
-        light_block.addLight(testLight3);
-
-
-        /*scene_meshes.emplace_back(std::make_unique<Mesh>(vertices, sizeof(vertices) / sizeof(float), normals,
-            indices, sizeof(indices) / sizeof(unsigned short), shader_manager));*/
-
-
         scene_graph.init(asset_manager);
 
-        //scene_graph.objects[test_object.get_mesh()->mesh_id].emplace_back(std::move(test_object));
-        //scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
-        //scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
     }
 
 
@@ -195,12 +140,12 @@ namespace vasylnaz {
         Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
         glUniformMatrix4fv(shader_manager.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
 
-        light_block.updateViewSpacePositions(View);
-        shader_manager.update_light(light_block.getLBD());
+        scene_graph.render_context.light_block.updateViewSpacePositions(View);
+        shader_manager.update_light(scene_graph.render_context.light_block.getLBD());
 
         glUniform3fv(shader_manager.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        for (const auto& array : scene_graph.objects) {
+        for (const auto& array : scene_graph.render_context.objects) {
             for (const auto& obj : array.second) {
                 obj->draw(shader_manager, View);
             }
