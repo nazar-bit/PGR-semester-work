@@ -4,6 +4,8 @@
 #include "Mesh.hpp"
 #include "Material.hpp"
 #include "AssetManager.hpp"
+#include "Item.hpp"
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,7 +14,7 @@
 
 namespace vasylnaz {
 
-	class Object
+	class Object : public Item
 	{
 	public:
 		const long object_id;
@@ -32,6 +34,9 @@ namespace vasylnaz {
 		void draw(const ShaderManager& shader_manager, const glm::mat4& view) const;
 
 
+		void updateItem(const glm::mat4& parent_model_matrix) override;
+
+
 		const Mesh* get_mesh() const {
 			return mesh;
 		}
@@ -43,6 +48,7 @@ namespace vasylnaz {
 		const Material* material;
 		GLuint dif_texture;
 		glm::mat4 model_matrix;
+		glm::mat4 global_model_matrix;
 	};
 
 

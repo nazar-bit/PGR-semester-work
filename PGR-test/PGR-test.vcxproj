@@ -145,10 +145,12 @@
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="InputHandler.hpp" />
+    <ClInclude Include="Item.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="SceneGraph.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
     <ClInclude Include="AssetManager.hpp" />
   </ItemGroup>

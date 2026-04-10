@@ -8,11 +8,13 @@
 #include "Light.hpp"
 #include "InputHandler.hpp"
 #include "AssetManager.hpp"
+#include "SceneGraph.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
 
 namespace vasylnaz {
+    long Node::global_node_id = 0;
     long Object::global_object_id = 0;
     long Mesh::global_mesh_id = 0;
 
@@ -20,9 +22,6 @@ namespace vasylnaz {
     const int WIN_HEIGHT = 768;
     const char* WIN_TITLE = "Hello World";
 
-
-    // Mesh Id lets you access objects sharing this mesh
-    std::unordered_map<long, std::vector<Object>> scene_objects;
 
     ShaderManager shader_manager;
     AssetManager asset_manager;
@@ -44,6 +43,7 @@ namespace vasylnaz {
     LightBlock light_block;
 
     InputHandler input_handler;
+    SceneGraph scene_graph;
 
 
 
@@ -177,24 +177,11 @@ namespace vasylnaz {
             indices, sizeof(indices) / sizeof(unsigned short), shader_manager));*/
 
 
-        auto test_object = Object(asset_manager, "thermos", glm::mat4(1.0f), "basic", "thermos");
-        auto model_mat2 = glm::mat4(
-            5.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 5.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 5.0f, 0.0f,
-            5.0f, 0.0f, 0.0f, 1.0f);
-        auto test_object2 = Object(asset_manager, "cube", model_mat2, "basic", "blank");
+        scene_graph.init(asset_manager);
 
-        auto model_mat3 = glm::mat4(
-            100.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.1f, 0.0f, 0.0f,
-            0.0f, 0.0f, 100.0f, 0.0f,
-            0.0f, -3.0f, 0.0f, 1.0f);
-        auto test_object3 = Object(asset_manager, "cube", model_mat3, "red_plastic");
-
-        scene_objects[test_object.get_mesh()->mesh_id].emplace_back(std::move(test_object));
-        scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
-        scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
+        //scene_graph.objects[test_object.get_mesh()->mesh_id].emplace_back(std::move(test_object));
+        //scene_objects[test_object2.get_mesh()->mesh_id].emplace_back(std::move(test_object2));
+        //scene_objects[test_object3.get_mesh()->mesh_id].emplace_back(std::move(test_object3));
     }
 
 
@@ -213,9 +200,9 @@ namespace vasylnaz {
 
         glUniform3fv(shader_manager.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        for (const auto& array : scene_objects) {
+        for (const auto& array : scene_graph.objects) {
             for (const auto& obj : array.second) {
-                obj.draw(shader_manager, View);
+                obj->draw(shader_manager, View);
             }
         }
 
@@ -226,6 +213,7 @@ namespace vasylnaz {
     void timerCallback(int value) {
 
         input_handler.update_camera(camera);
+        scene_graph.update();
 
         glutPostRedisplay();
         glutTimerFunc(16, timerCallback, 0);

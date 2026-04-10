@@ -1,10 +1,12 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "SceneGraph.hpp"
 
 
 namespace vasylnaz {
-    struct Camera {
+    class Camera {
+    public:
         glm::vec3 position;
         glm::vec3 target;   // normalized vector
         glm::vec3 up;
@@ -27,6 +29,11 @@ namespace vasylnaz {
         {
             //
         }
+
+
+    private:
+
     };
 
+   
 }
