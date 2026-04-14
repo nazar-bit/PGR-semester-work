@@ -39,6 +39,11 @@ namespace vasylnaz {
 		/// @param shader_manager 
 		Mesh(const string& filePath, ShaderManager shader_manager);
 
+		/// @brief 
+		/// @param mesh 
+		/// @param shader_manager 
+		Mesh(const aiMesh* mesh, ShaderManager shader_manager);
+
 
 		~Mesh();
 

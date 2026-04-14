@@ -26,24 +26,57 @@ namespace vasylnaz {
 		}
 
 
-		void init(ShaderManager shader_manager);
+		void init(ShaderManager& shader_manager);
 
 		
 		void loadTetxure(const string& name, const string& file_path) {
-			GLuint texID = pgr::createTexture(file_path);
-			textures.emplace(name, texID);
-			std::cout << "Successfully loaded: " << file_path << std::endl;
+			auto it = textures.find(name);
+
+			if (it != textures.end()) {
+				std::cout << "Texture was already loaded" << "\n";
+			}
+			else {
+				GLuint texID = pgr::createTexture(file_path);
+				textures.emplace(name, texID);
+				std::cout << "Successfully loaded: " << file_path << std::endl;
+			}
 		}
 
 
 		void loadMaterial(const string& name, const Material& material) {
-			materials.emplace(name, std::make_unique<Material>(material));
-			std::cout << "Successfully loaded: " << name << std::endl;
+			auto it = materials.find(name);
+
+			if (it != materials.end()) {
+				std::cout << "Material was already loaded" << "\n";
+			}
+			else {
+				materials.emplace(name, std::make_unique<Material>(material));
+				std::cout << "Successfully loaded: " << name << std::endl;
+			}
 		}
 
 
-		void loadMesh(const string& name, const string& file_path, ShaderManager shader_manager) {
-			meshes.emplace(name, std::make_unique<Mesh>(file_path, shader_manager));
+		void loadMesh(const string& name, const string& file_path, ShaderManager& shader_manager) {
+			auto it = meshes.find(name);
+
+			if (it != meshes.end()) {
+				std::cout << "Mesh was already loaded" << "\n";
+			}
+			else {
+				meshes.emplace(name, std::make_unique<Mesh>(file_path, shader_manager));
+			}
+		}
+
+
+		void loadMesh(const string& name, std::unique_ptr<Mesh> mesh) {
+			auto it = meshes.find(name);
+
+			if (it != meshes.end()) {
+				std::cout << "Mesh was already loaded" << "\n";
+			}
+			else {
+				meshes.emplace(name, std::move(mesh));
+			}
 		}
 
 
@@ -60,7 +93,6 @@ namespace vasylnaz {
 		const Mesh* getMesh(const string& name) const {
 			return meshes.at(name).get();
 		}
-
 
 
 	private:

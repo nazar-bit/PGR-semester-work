@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "AssetManager.hpp"
 #include "Item.hpp"
@@ -78,9 +79,15 @@ namespace vasylnaz {
 			update_recursive(root);
 		}
 
+		/// @brief loads an OBJ file by reading all meshes, textures, creating objects.
+		/// @param filepath 
+		/// @param asset_manager 
+		/// @return Node* items of which consist of objects created from .obj.
+		std::unique_ptr<Node> loadOBJ(const std::string& filepath, AssetManager& asset_manager, ShaderManager& shader_manager);
+
 		/// @brief 
 		/// @param asset_manager 
-		void init(AssetManager& asset_manager);
+		void init(AssetManager& asset_manager, ShaderManager& shader_manager);
 
 
 	private:

@@ -52,6 +52,57 @@ namespace vasylnaz {
 		std::cout << "Total meshes found: " << scene->mNumMeshes << std::endl;
 
 		aiMesh* mesh = scene->mMeshes[0];
+
+		std::vector<unsigned int> indices;
+		indices.reserve(mesh->mNumFaces * 3);
+
+		for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
+			aiFace face = mesh->mFaces[i];
+			for (unsigned int j = 0; j < face.mNumIndices; j++) {
+				indices.push_back(face.mIndices[j]);
+			}
+		}
+		indices_count = indices.size();
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(shader_manager.positionLoc);
+		glVertexAttribPointer(shader_manager.positionLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glGenBuffers(1, &normals_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
+		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mNormals, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(shader_manager.positionNormal);
+		glVertexAttribPointer(shader_manager.positionNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		if (mesh->HasTextureCoords(0)) {
+			glBindBuffer(GL_ARRAY_BUFFER, texels_vbo);
+			glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mTextureCoords[0], GL_STATIC_DRAW);
+			glEnableVertexAttribArray(shader_manager.positionTex);
+			glVertexAttribPointer(shader_manager.positionTex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		else {
+			glDisableVertexAttribArray(shader_manager.positionTex);
+		}
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_count * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
+		glBindVertexArray(0);
+	}
+
+
+
+	Mesh::Mesh(const aiMesh* mesh, ShaderManager shader_manager)
+
+		: mesh_id(global_mesh_id++), indices_count(0) {
+
+		
 		std::vector<unsigned int> indices;
 		indices.reserve(mesh->mNumFaces * 3);
 

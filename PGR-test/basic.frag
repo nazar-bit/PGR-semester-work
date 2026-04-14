@@ -40,7 +40,16 @@ void main() {
     vec3 view_pos = fg_position.xyz;
 
     // TextureColor
-    vec3 tex_color = texture(texSampler, fg_tex_coords).xyz;
+    vec4 tex_clr = texture(texSampler, fg_tex_coords);
+    if(tex_clr.a < 0.1){
+        discard;
+    }
+    if (tex_clr.r < 0.1 && tex_clr.g < 0.1 && tex_clr.b < 0.1) {
+        discard;
+    }
+    vec3 tex_color = tex_clr.xyz;
+
+    
     
     for(int i = 0; i < numLights; ++i) {
         Light cur_light = lights[i];

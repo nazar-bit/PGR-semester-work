@@ -54,6 +54,10 @@ namespace vasylnaz {
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
+
         shader_manager.compile_shaders();
         shader_manager.generateUBOs();
 
@@ -125,7 +129,7 @@ namespace vasylnaz {
         };
 
 
-        scene_graph.init(asset_manager);
+        scene_graph.init(asset_manager, shader_manager);
 
     }
 

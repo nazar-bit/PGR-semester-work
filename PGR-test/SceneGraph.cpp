@@ -45,7 +45,80 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::init(AssetManager& asset_manager) {
+	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, AssetManager& asset_manager, ShaderManager& shader_manager) {
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(filepath,
+			aiProcess_Triangulate |           // Transform all primitives to triangles
+			aiProcess_JoinIdenticalVertices | // Merge identical vertices
+			aiProcess_CalcTangentSpace        // Calculate tangents and bitangents
+		);
+
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+			std::cerr << "ASSIMP Error: " << importer.GetErrorString() << std::endl;
+			return nullptr;
+		}
+		std::cout << "Successfully loaded: " << filepath << std::endl;
+		std::cout << "Total meshes found: " << scene->mNumMeshes << std::endl;
+
+
+		auto node = std::make_unique<Node>();
+
+
+		for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+			aiMesh* mesh = scene->mMeshes[i];
+
+			auto mesh_name = mesh->mName.C_Str();
+			auto msh = std::make_unique<Mesh>(mesh, shader_manager);
+			asset_manager.loadMesh(mesh_name, std::move(msh));
+
+			unsigned int materialIndex = mesh->mMaterialIndex;
+
+			if (materialIndex >= 0 && materialIndex < scene->mNumMaterials) {
+				aiMaterial* material = scene->mMaterials[materialIndex];
+				aiString texturePath;
+				aiString materialName;
+				bool hasDifTex = true;
+				// Get texture name
+				if (material->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS) {
+					std::cout << "Object " << mesh_name
+						<< " uses Texture: " << materialName.C_Str() << std::endl;
+				}
+				else {
+					std::cout << "Object " << mesh_name << " uses an unnamed material." << std::endl;
+					hasDifTex = false;
+				}
+
+				// Get texture
+				if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
+
+					std::cout << "Object " << mesh_name
+						<< " uses Diffuse Texture: " << texturePath.C_Str() << std::endl;
+					asset_manager.loadTetxure(materialName.C_Str(), texturePath.C_Str());
+				}
+				else {
+					std::cout << "Object " << mesh_name << " has no diffuse texture." << std::endl;
+					hasDifTex = false;
+				}
+
+				std::unique_ptr<Object> object;
+				if (hasDifTex) {
+					object = std::make_unique<Object>(asset_manager, mesh_name, glm::mat4(1.0f),
+						"basic", materialName.C_Str());
+				}
+				else {
+					object = std::make_unique<Object>(asset_manager, mesh_name, glm::mat4(1.0f));
+				}
+
+				node->addItem(std::move(object), render_context);
+			}
+		}
+
+		return node;
+	}
+
+
+
+	void SceneGraph::init(AssetManager& asset_manager, ShaderManager& shader_manager) {
 		// 1
 		auto test_object = std::make_unique<Object>(asset_manager, "thermos", glm::mat4(1.0f), "basic", "thermos");
 		// 2
@@ -76,6 +149,15 @@ namespace vasylnaz {
 		root->addItem(std::move(test_object2), render_context);
 		auto floor_node = root->addChild(std::move(floor));
 		floor_node->addItem(std::move(test_object3), render_context);
+
+		auto grass = loadOBJ("Models/searsia_lucida_1k.obj", asset_manager, shader_manager);
+		auto grass_mat = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, -0.8f, 0.0f, 1.0f);
+		grass->model_mat = grass_mat;
+		root->addChild(std::move(grass));
 
 
 		auto testLight = std::make_unique<LightSource>(
