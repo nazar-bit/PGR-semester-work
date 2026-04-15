@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "AssetManager.hpp"
 #include "Item.hpp"
@@ -83,7 +84,8 @@ namespace vasylnaz {
 		/// @param filepath 
 		/// @param asset_manager 
 		/// @return Node* items of which consist of objects created from .obj.
-		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderManager& shader_manager);
+		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
+			const unsigned int from, const unsigned int to);
 
 		/// @brief 
 		/// @param asset_manager 

@@ -47,9 +47,9 @@ void main() {
     if(tex_clr.a < 0.1){
         discard;
     }
-    if (tex_clr.r < 0.1 && tex_clr.g < 0.1 && tex_clr.b < 0.1) {
-        discard;
-    }
+    //if (tex_clr.r < 0.1 && tex_clr.g < 0.1 && tex_clr.b < 0.1) {
+    //    discard;
+    //}
     vec3 tex_color = tex_clr.xyz;
 
     

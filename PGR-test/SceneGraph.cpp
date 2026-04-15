@@ -45,7 +45,9 @@ namespace vasylnaz {
 
 
 
-	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderManager& shader_manager) {
+	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
+		const unsigned int from = 0, const unsigned int to = 10000) {
+
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(filepath,
 			aiProcess_Triangulate |           // Transform all primitives to triangles
@@ -65,9 +67,10 @@ namespace vasylnaz {
 
 
 		for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
+			if (!(i >= from && i <= to)) continue;
 			aiMesh* mesh = scene->mMeshes[i];
 
-			auto mesh_name = mesh->mName.C_Str();
+			auto mesh_name = filepath + mesh->mName.C_Str();
 			auto msh = std::make_unique<Mesh>(mesh, shader_manager);
 			AssetManager::getInstance().loadMesh(mesh_name, std::move(msh));
 
@@ -76,38 +79,46 @@ namespace vasylnaz {
 			if (materialIndex >= 0 && materialIndex < scene->mNumMaterials) {
 				aiMaterial* material = scene->mMaterials[materialIndex];
 				aiString texturePath;
-				aiString materialName;
-				bool hasDifTex = true;
+				//aiString materialName;
+				std::string dif_tex = "blank";
+				std::string norm_map = "blank_norm";
 				// Get texture name
-				if (material->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS) {
+				/*if (material->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS) {
 					std::cout << "Object " << mesh_name
 						<< " uses Texture: " << materialName.C_Str() << std::endl;
 				}
 				else {
 					std::cout << "Object " << mesh_name << " uses an unnamed material." << std::endl;
 					hasDifTex = false;
-				}
+				}*/
 
-				// Get texture
+
+				// Get Diffuse texture
 				if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
 
 					std::cout << "Object " << mesh_name
 						<< " uses Diffuse Texture: " << texturePath.C_Str() << std::endl;
-					AssetManager::getInstance().loadTetxure(materialName.C_Str(), texturePath.C_Str());
+					AssetManager::getInstance().loadTetxure(texturePath.C_Str(), texturePath.C_Str());
+					dif_tex = texturePath.C_Str();
 				}
 				else {
 					std::cout << "Object " << mesh_name << " has no diffuse texture." << std::endl;
-					hasDifTex = false;
 				}
 
-				std::unique_ptr<Object> object;
-				if (hasDifTex) {
-					object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f),
-						"basic", materialName.C_Str());
+				// Get Normal map
+				if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == AI_SUCCESS) {
+
+					std::cout << "Object " << mesh_name
+						<< " uses Normal map: " << texturePath.C_Str() << std::endl;
+					AssetManager::getInstance().loadTetxure(texturePath.C_Str(), texturePath.C_Str());
+					norm_map = texturePath.C_Str();
 				}
 				else {
-					object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f));
+					std::cout << "Object " << mesh_name << " has no normal map." << std::endl;
 				}
+
+				auto object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f),
+					"basic", dif_tex, norm_map);
 
 				node->addItem(std::move(object), render_context);
 			}
@@ -120,7 +131,7 @@ namespace vasylnaz {
 
 	void SceneGraph::init(ShaderManager& shader_manager) {
 		// 1
-		auto test_object = std::make_unique<Object>("thermos", glm::mat4(1.0f), "basic", "thermos");
+		auto test_object = std::make_unique<Object>("thermos", glm::mat4(1.0f), "basic", "thermos", "thermos_norm");
 		// 2
 		auto model_mat2 = glm::mat4(
 			5.0f, 0.0f, 0.0f, 0.0f,
@@ -145,22 +156,96 @@ namespace vasylnaz {
 		auto floor = std::make_unique<Node>(floor_mat);
 
 		//ground_obj
-		auto ground_obj = std::make_unique<Object>("ground", glm::mat4(1.0f), "basic", "rocks", "rocks_norm");
+		auto ground_mat = glm::mat4(
+			10.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 10.0f, 0.0f,
+			0.0f, -0.8f, 0.0f, 1.0f);
+		auto ground_obj = std::make_unique<Object>("ground", ground_mat, "basic", "rocks", "rocks_norm");
 		root->addItem(std::move(ground_obj), render_context);
 
 		root->addItem(std::move(test_object), render_context);
 		root->addItem(std::move(test_object2), render_context);
 		auto floor_node = root->addChild(std::move(floor));
 		floor_node->addItem(std::move(test_object3), render_context);
-
-		auto grass = loadOBJ("Models/searsia_lucida_1k.obj", shader_manager);
+		// Grass
+		/*auto grass = loadOBJ("Models/searsia_lucida_1k.obj", shader_manager, 3, 5);
 		auto grass_mat = glm::mat4(
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.0f, -0.8f, 0.0f, 1.0f);
 		grass->model_mat = grass_mat;
-		root->addChild(std::move(grass));
+		root->addChild(std::move(grass));*/
+		// Table
+		auto table = loadOBJ("Models/wooden_picnic_table_1k.gltf.obj", shader_manager);
+		auto table_mat = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, -0.8f, 0.0f, 1.0f);
+		table->model_mat = table_mat;
+		root->addChild(std::move(table));
+
+		// Stone fire
+		auto sfire = loadOBJ("Models/stone_fire_pit_1k.gltf.obj", shader_manager);
+		auto sfire_mat = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			-2.0f, -0.7f, 0.0f, 1.0f);
+		sfire->model_mat = sfire_mat;
+		root->addChild(std::move(sfire));
+
+		//// Fir
+		//auto fir = loadOBJ("Models/fir_sapling_medium_1k.gltf.obj", shader_manager, 6, 8);
+		//auto fir_mat = glm::mat4(
+		//	1.0f, 0.0f, 0.0f, 0.0f,
+		//	0.0f, 1.0f, 0.0f, 0.0f,
+		//	0.0f, 0.0f, 1.0f, 0.0f,
+		//	-10.0f, -0.7f, 0.0f, 1.0f);
+		//fir->model_mat = fir_mat;
+		//root->addChild(std::move(fir));
+
+
+		// White bricks
+		glm::mat4 bricks_mat = glm::mat4(1.0f);
+		bricks_mat = glm::rotate(bricks_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		bricks_mat = glm::scale(bricks_mat, glm::vec3(10.0f, 1.0f, 10.0f));
+		auto bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		root->addItem(std::move(bricks), render_context);
+
+
+		// Wooden gates
+		glm::mat4 gates_mat = glm::mat4(1.0f);
+		gates_mat = glm::translate(gates_mat, glm::vec3(0.0f, -0.5f, 0.1f));
+		gates_mat = glm::rotate(gates_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		gates_mat = glm::scale(gates_mat, glm::vec3(10.0f, 1.0f, 1.0f));
+		auto gates = std::make_unique<Object>("ground", gates_mat, "basic", "wooden_gate", "wooden_gate_norm");
+		root->addItem(std::move(gates), render_context);
+
+
+		//black planks 
+		auto planks_mat = glm::mat4(
+			10.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 10.0f, 0.0f,
+			0.0f, -0.7f, 0.0f, 1.0f);
+		auto planks_obj = std::make_unique<Object>("ground", planks_mat, "basic", "black_painted_planks", "black_painted_planks_norm");
+		root->addItem(std::move(planks_obj), render_context);
+
+		// MAC
+		/*auto mac = loadOBJ("Models/macintosh_128k.obj", shader_manager);
+		auto mac_mat = glm::mat4(
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 1.0f);
+		mac->model_mat = mac_mat;
+		root->addChild(std::move(mac));*/
+
+		
+		
 
 
 		auto testLight = std::make_unique<LightSource>(

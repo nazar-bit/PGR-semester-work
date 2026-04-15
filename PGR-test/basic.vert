@@ -17,7 +17,11 @@ void main() {
     gl_Position = PVM * vec4(position, 1.0);
     
     fg_position = VM * vec4(position, 1.0);
-    fg_tex_coords = vec2(tex_coords.x, tex_coords.y);
+    //fg_tex_coords = vec2(tex_coords.x, tex_coords.y);
+
+    float scaleX = length(vec3(VM[0]));
+    float scaleZ = length(vec3(VM[2]));
+    fg_tex_coords = vec2(tex_coords.x * scaleX, tex_coords.y * scaleZ);
 
     vec3 T = normalize(vec3(VN * vec4(tangent, 0.0)));
     vec3 N = normalize(vec3(VN * vec4(normal, 0.0)));
