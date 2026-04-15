@@ -45,7 +45,7 @@ namespace vasylnaz {
 
 
 
-	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, AssetManager& asset_manager, ShaderManager& shader_manager) {
+	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderManager& shader_manager) {
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(filepath,
 			aiProcess_Triangulate |           // Transform all primitives to triangles
@@ -69,7 +69,7 @@ namespace vasylnaz {
 
 			auto mesh_name = mesh->mName.C_Str();
 			auto msh = std::make_unique<Mesh>(mesh, shader_manager);
-			asset_manager.loadMesh(mesh_name, std::move(msh));
+			AssetManager::getInstance().loadMesh(mesh_name, std::move(msh));
 
 			unsigned int materialIndex = mesh->mMaterialIndex;
 
@@ -93,7 +93,7 @@ namespace vasylnaz {
 
 					std::cout << "Object " << mesh_name
 						<< " uses Diffuse Texture: " << texturePath.C_Str() << std::endl;
-					asset_manager.loadTetxure(materialName.C_Str(), texturePath.C_Str());
+					AssetManager::getInstance().loadTetxure(materialName.C_Str(), texturePath.C_Str());
 				}
 				else {
 					std::cout << "Object " << mesh_name << " has no diffuse texture." << std::endl;
@@ -102,11 +102,11 @@ namespace vasylnaz {
 
 				std::unique_ptr<Object> object;
 				if (hasDifTex) {
-					object = std::make_unique<Object>(asset_manager, mesh_name, glm::mat4(1.0f),
+					object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f),
 						"basic", materialName.C_Str());
 				}
 				else {
-					object = std::make_unique<Object>(asset_manager, mesh_name, glm::mat4(1.0f));
+					object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f));
 				}
 
 				node->addItem(std::move(object), render_context);
@@ -118,23 +118,23 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::init(AssetManager& asset_manager, ShaderManager& shader_manager) {
+	void SceneGraph::init(ShaderManager& shader_manager) {
 		// 1
-		auto test_object = std::make_unique<Object>(asset_manager, "thermos", glm::mat4(1.0f), "basic", "thermos");
+		auto test_object = std::make_unique<Object>("thermos", glm::mat4(1.0f), "basic", "thermos");
 		// 2
 		auto model_mat2 = glm::mat4(
 			5.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 5.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 5.0f, 0.0f,
 			5.0f, 0.0f, 0.0f, 1.0f);
-		auto test_object2 = std::make_unique<Object>(asset_manager, "cube", model_mat2, "basic", "blank");
+		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank");
 		// 3
 		auto model_mat3 = glm::mat4(
 			100.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 0.1f, 0.0f, 0.0f,
 			0.0f, 0.0f, 100.0f, 0.0f,
 			0.0f, -3.0f, 0.0f, 1.0f);
-		auto test_object3 = std::make_unique<Object>(asset_manager, "cube", model_mat3, "red_plastic");
+		auto test_object3 = std::make_unique<Object>("cube", model_mat3, "red_plastic");
 
 		// floor
 		auto floor_mat = glm::mat4(
@@ -144,13 +144,16 @@ namespace vasylnaz {
 			0.0f, 2.0f, 0.0f, 1.0f);
 		auto floor = std::make_unique<Node>(floor_mat);
 
+		//ground_obj
+		auto ground_obj = std::make_unique<Object>("ground", glm::mat4(1.0f), "basic", "rocks");
+		root->addItem(std::move(ground_obj), render_context);
 
 		root->addItem(std::move(test_object), render_context);
 		root->addItem(std::move(test_object2), render_context);
 		auto floor_node = root->addChild(std::move(floor));
 		floor_node->addItem(std::move(test_object3), render_context);
 
-		auto grass = loadOBJ("Models/searsia_lucida_1k.obj", asset_manager, shader_manager);
+		auto grass = loadOBJ("Models/searsia_lucida_1k.obj", shader_manager);
 		auto grass_mat = glm::mat4(
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,

@@ -20,10 +20,11 @@ namespace vasylnaz {
 		const long object_id;
 
 
-		Object(const AssetManager& asset_manager, const string& mesh, const glm::mat4& model_matrix,
+		Object(const string& mesh, const glm::mat4& model_matrix,
 			const string& material = "basic", const string& dif_texture = "blank")
-			: object_id(global_object_id++), mesh(asset_manager.getMesh(mesh)), model_matrix(model_matrix),
-			material(asset_manager.getMaterial(material)), dif_texture(asset_manager.getTexture(dif_texture)){
+			: object_id(global_object_id++), mesh(AssetManager::getInstance().getMesh(mesh)), model_matrix(model_matrix),
+			material(AssetManager::getInstance().getMaterial(material)),
+			dif_texture(AssetManager::getInstance().getTexture(dif_texture)){
 			// 
 		}
 

@@ -25,7 +25,7 @@ Pl 1
 Ka 1 1 1
 Kd 1 1 1
 Ke 0 0 0
-map_Kd searsia_lucida.png
+map_Kd Textures/searsia_lucida.png
 map_Pm metalnessMap1.png
 map_Pr metalnessMap1.png
 norm normalMap1.png
@@ -40,7 +40,7 @@ Pl 1
 Ka 1 1 1
 Kd 1 1 1
 Ke 0 0 0
-map_Kd searsia_lucida.png
+map_Kd Textures/searsia_lucida.png
 map_Pm metalnessMap1.png
 map_Pr metalnessMap1.png
 norm normalMap1.png

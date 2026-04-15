@@ -24,7 +24,6 @@ namespace vasylnaz {
 
 
     ShaderManager shader_manager;
-    AssetManager asset_manager;
 
 
     Camera camera = Camera(
@@ -51,6 +50,7 @@ namespace vasylnaz {
     void init() {
         glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
@@ -61,7 +61,7 @@ namespace vasylnaz {
         shader_manager.compile_shaders();
         shader_manager.generateUBOs();
 
-        asset_manager.init(shader_manager);
+        AssetManager::getInstance().init(shader_manager);
 
        
         const float vertices[] = {
@@ -129,14 +129,19 @@ namespace vasylnaz {
         };
 
 
-        scene_graph.init(asset_manager, shader_manager);
+        scene_graph.init(shader_manager);
 
     }
 
 
     void draw() {
+        /*glDisable(GL_SCISSOR_TEST);*/
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(shader_manager.shaderProgram);
+
+        /*glEnable(GL_SCISSOR_TEST);
+        glScissor(50, 50, 800, 800);*/
 
         View = glm::lookAt(camera.position,
             camera.position - length(camera.camera_target_distance) * camera.target,
@@ -197,7 +202,6 @@ namespace vasylnaz {
     void handleSpecialKeysUp(int key, int x, int y) {
         input_handler.set_special_key_false(key);
     }
-
 }
 
 

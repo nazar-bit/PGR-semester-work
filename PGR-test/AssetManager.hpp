@@ -20,64 +20,41 @@ namespace vasylnaz {
 		GLint diffuse_map_location;
 
 
-		AssetManager()
-		{
-			//
+		static AssetManager& getInstance() {
+			static AssetManager AM;
+			return AM;
 		}
 
 
-		void init(ShaderManager& shader_manager);
+		AssetManager(const AssetManager&) = delete;
+		AssetManager& operator=(const AssetManager&) = delete;
+
+		AssetManager(AssetManager&&) = delete;
+		AssetManager& operator=(AssetManager&&) = delete;
 
 		
-		void loadTetxure(const string& name, const string& file_path) {
-			auto it = textures.find(name);
+		void init(ShaderManager& shader_manager);
 
-			if (it != textures.end()) {
-				std::cout << "Texture was already loaded" << "\n";
-			}
-			else {
-				GLuint texID = pgr::createTexture(file_path);
-				textures.emplace(name, texID);
-				std::cout << "Successfully loaded: " << file_path << std::endl;
-			}
-		}
+		/// @brief 
+		/// @param name 
+		/// @param file_path 
+		void loadTetxure(const string& name, const string& file_path);
 
+		/// @brief 
+		/// @param name 
+		/// @param material 
+		void loadMaterial(const string& name, const Material& material);
 
-		void loadMaterial(const string& name, const Material& material) {
-			auto it = materials.find(name);
+		/// @brief 
+		/// @param name 
+		/// @param file_path 
+		/// @param shader_manager 
+		void loadMesh(const string& name, const string& file_path, ShaderManager& shader_manager);
 
-			if (it != materials.end()) {
-				std::cout << "Material was already loaded" << "\n";
-			}
-			else {
-				materials.emplace(name, std::make_unique<Material>(material));
-				std::cout << "Successfully loaded: " << name << std::endl;
-			}
-		}
-
-
-		void loadMesh(const string& name, const string& file_path, ShaderManager& shader_manager) {
-			auto it = meshes.find(name);
-
-			if (it != meshes.end()) {
-				std::cout << "Mesh was already loaded" << "\n";
-			}
-			else {
-				meshes.emplace(name, std::make_unique<Mesh>(file_path, shader_manager));
-			}
-		}
-
-
-		void loadMesh(const string& name, std::unique_ptr<Mesh> mesh) {
-			auto it = meshes.find(name);
-
-			if (it != meshes.end()) {
-				std::cout << "Mesh was already loaded" << "\n";
-			}
-			else {
-				meshes.emplace(name, std::move(mesh));
-			}
-		}
+		/// @brief 
+		/// @param name 
+		/// @param mesh 
+		void loadMesh(const string& name, std::unique_ptr<Mesh> mesh);
 
 
 		const GLuint getTexture(const string& name) const {
@@ -99,6 +76,11 @@ namespace vasylnaz {
 		std::unordered_map<string, GLuint> textures;
 		std::unordered_map<string, std::unique_ptr<Material>> materials;
 		std::unordered_map<string, std::unique_ptr<Mesh>> meshes;
+
+		AssetManager()
+		{
+			//
+		}
 	};
 
 
