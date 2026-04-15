@@ -4,10 +4,13 @@ namespace vasylnaz {
 
     void AssetManager::init(ShaderManager& shader_manager) {
         diffuse_map_location = shader_manager.positionDiffuseMap;
-
+        //diffuse
         loadTetxure("thermos", "Textures/plastic_thermos.png");
         loadTetxure("blank", "Textures/blank.png");
+        loadTetxure("blank_norm", "Textures/blank_norm.png");
         loadTetxure("rocks", "Textures/gray_rocks.png");
+        //normal
+        loadTetxure("rocks_norm", "Textures/normalMapRocks.png");
 
         loadMesh("cube", "Models/cube.obj", shader_manager);
         loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);

@@ -4,10 +4,17 @@
 namespace vasylnaz {
 
 	void Object::draw(const ShaderManager& shader_manager, const glm::mat4& view) const {
+		// material
 		shader_manager.change_material(*material);
+		// diffuseTex
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, dif_texture);
 		glUniform1i(shader_manager.positionDiffuseMap, 0);
+		// NormMap
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, normal_map);
+		glUniform1i(shader_manager.positionNormalMap, 1);
+		// Draw
 		mesh->draw(shader_manager, global_model_matrix, view);
 	}
 

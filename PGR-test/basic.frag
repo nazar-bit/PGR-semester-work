@@ -25,10 +25,11 @@ layout (std140) uniform LightBlock {
 
 uniform vec3 global_ambient;
 uniform sampler2D texSampler;
+uniform sampler2D normSampler;
 
 in vec2 fg_tex_coords;
+in mat3 TBN;
 
-in vec4 fg_normal;
 in vec4 fg_position;
 out vec4 color;
 
@@ -36,7 +37,9 @@ out vec4 color;
 void main() {
     vec3 sum_light = vec3(0.0);
     
-    vec3 norm = normalize(fg_normal.xyz);
+    vec3 normMap = texture(normSampler, fg_tex_coords).rgb;
+    normMap = normMap * 2.0 - 1.0; 
+    vec3 norm = normalize(TBN * normMap); 
     vec3 view_pos = fg_position.xyz;
 
     // TextureColor

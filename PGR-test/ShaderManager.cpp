@@ -17,6 +17,7 @@ namespace vasylnaz {
 		positionLoc = glGetAttribLocation(shaderProgram, "position");
 		positionNormal = glGetAttribLocation(shaderProgram, "normal");
 		positionTex = glGetAttribLocation(shaderProgram, "tex_coords");
+		positionTangent = glGetAttribLocation(shaderProgram, "tangent");
 
 		positionVM = glGetUniformLocation(shaderProgram, "VM");
 		positionVN = glGetUniformLocation(shaderProgram, "VN");
@@ -24,6 +25,7 @@ namespace vasylnaz {
 
 		positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
 		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
+		positionNormalMap = glGetUniformLocation(shaderProgram, "normSampler");
 	}
 
 

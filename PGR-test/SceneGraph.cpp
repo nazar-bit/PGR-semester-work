@@ -145,7 +145,7 @@ namespace vasylnaz {
 		auto floor = std::make_unique<Node>(floor_mat);
 
 		//ground_obj
-		auto ground_obj = std::make_unique<Object>("ground", glm::mat4(1.0f), "basic", "rocks");
+		auto ground_obj = std::make_unique<Object>("ground", glm::mat4(1.0f), "basic", "rocks", "rocks_norm");
 		root->addItem(std::move(ground_obj), render_context);
 
 		root->addItem(std::move(test_object), render_context);
@@ -190,7 +190,7 @@ namespace vasylnaz {
 			glm::vec3(0.1f),     //amb
 			glm::vec3(2.0f),     //diff
 			glm::vec3(1.0f),    //spec
-			glm::vec3(6.0f, 2.0f, 8.0f),    //pos
+			glm::vec3(2.0f, 2.0f, -8.0f),    //pos
 			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
 			Attenuation(1.0f, 0.09f, 0.032f)
 		);

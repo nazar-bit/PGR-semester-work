@@ -31,18 +31,21 @@ namespace vasylnaz {
 		/// @param shader_manager 
 		Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
 			const unsigned int* vertices_indices, const long indices_count,
-			ShaderManager shader_manager);
+			ShaderManager& shader_manager);
 
 
 		/// @brief 
 		/// @param filePath 
 		/// @param shader_manager 
-		Mesh(const string& filePath, ShaderManager shader_manager);
+		Mesh(const string& filePath, ShaderManager& shader_manager);
 
 		/// @brief 
 		/// @param mesh 
 		/// @param shader_manager 
-		Mesh(const aiMesh* mesh, ShaderManager shader_manager);
+		Mesh(const aiMesh* mesh, ShaderManager& shader_manager);
+
+
+		void setBuffers(const aiMesh* mesh, ShaderManager& shader_manager);
 
 
 		~Mesh();
@@ -68,6 +71,7 @@ namespace vasylnaz {
 		GLuint vbo;
 		GLuint normals_vbo;
 		GLuint texels_vbo;
+		GLuint tangents_vbo;
 		GLuint ebo;
 
 		long indices_count;

@@ -19,6 +19,7 @@ namespace vasylnaz {
 		GLuint positionLoc = 0;
 		GLuint positionNormal = 0;
 		GLuint positionTex = 0;
+		GLuint positionTangent = 0;
 
 		GLuint positionVM = 0;
 		GLuint positionVN = 0;
@@ -26,6 +27,7 @@ namespace vasylnaz {
 
 		GLuint positionGlobalAmb = 0;
 		GLuint positionDiffuseMap = 0;
+		GLuint positionNormalMap = 0;
 
 
 		void compile_shaders();
