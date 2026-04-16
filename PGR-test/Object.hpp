@@ -19,16 +19,19 @@ namespace vasylnaz {
 	public:
 		const long object_id;
 		glm::mat4 model_matrix;
+		const Material* material;
+		RenderQueue rq;
 
 
 		Object(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",
 			const string& dif_texture = "blank", const string& normal_map = "blank_norm",
-			const string& em_map = "blank_em")
+			const string& em_map = "blank_em", const RenderQueue rq = RenderQueue::OPAQUE_INSIDE)
 			: object_id(global_object_id++), mesh(AssetManager::getInstance().getMesh(mesh)), model_matrix(model_matrix),
 			material(AssetManager::getInstance().getMaterial(material)),
 			dif_texture(AssetManager::getInstance().getTexture(dif_texture)),
 			normal_map(AssetManager::getInstance().getTexture(normal_map)),
-			em_map(AssetManager::getInstance().getTexture(em_map))
+			em_map(AssetManager::getInstance().getTexture(em_map)),
+			rq(rq)
 			{
 				// 
 			}
@@ -51,7 +54,6 @@ namespace vasylnaz {
 	private:
 		static long global_object_id;
 		const Mesh* mesh;
-		const Material* material;
 		GLuint dif_texture;
 		GLuint normal_map;
 		GLuint em_map;

@@ -41,15 +41,21 @@ namespace vasylnaz {
         redPlastic.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
         redPlastic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
         redPlastic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        loadMaterial("red_plastic", redPlastic);
 
         Material basic;
         basic.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
         basic.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         basic.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
         basic.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-        loadMaterial("red_plastic", redPlastic);
         loadMaterial("basic", basic);
+
+        Material semi_trans;
+        semi_trans.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
+        semi_trans.diffuse = glm::vec4(0.1f, 0.1f, 0.1f, 0.3f);
+        semi_trans.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
+        semi_trans.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        loadMaterial("semi_trans", semi_trans);
     }
 
 

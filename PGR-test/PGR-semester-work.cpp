@@ -135,14 +135,6 @@ namespace vasylnaz {
 
 
     void draw() {
-        /*glDisable(GL_SCISSOR_TEST);*/
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shader_manager.shaderProgram);
-
-        /*glEnable(GL_SCISSOR_TEST);
-        glScissor(50, 50, 800, 800);*/
-
         View = glm::lookAt(camera.position,
             camera.position - length(camera.camera_target_distance) * camera.target,
             camera.up);
@@ -154,10 +146,55 @@ namespace vasylnaz {
 
         glUniform3fv(shader_manager.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        for (const auto& array : scene_graph.render_context.objects) {
+        /*for (const auto& array : scene_graph.render_context.objects) {
             for (const auto& obj : array.second) {
                 obj->draw(shader_manager, View);
             }
+        }*/
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glUseProgram(shader_manager.shaderProgram);
+
+        glEnable(GL_STENCIL_TEST);
+        glStencilMask(0xFF);
+
+        
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        glDepthMask(GL_FALSE);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::WINDOW_MASK]) {
+            obj->draw(shader_manager, View);
+        }
+
+       
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glDepthMask(GL_TRUE);
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_INSIDE]) {
+            obj->draw(shader_manager, View);
+        }
+
+        
+        glStencilFunc(GL_EQUAL, 1, 0xFF);
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_OUTSIDE]) {
+            obj->draw(shader_manager, View);
+        }
+
+        
+        glDisable(GL_STENCIL_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::WINDOW_MASK]) {
+            obj->draw(shader_manager, View);
+        }
+
+        
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
+            obj->draw(shader_manager, View);
         }
 
         glutSwapBuffers();
@@ -213,7 +250,7 @@ int main(int argc, char** argv) {
     glutInitContextVersion(pgr::OGL_VER_MAJOR, pgr::OGL_VER_MINOR);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL);
     glutInitWindowSize(WIN_WIDTH, WIN_HEIGHT);
     glutCreateWindow(WIN_TITLE);
 

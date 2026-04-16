@@ -5,6 +5,13 @@
 
 namespace vasylnaz {
 
+	enum class RenderQueue {
+		WINDOW_MASK,
+		OPAQUE_INSIDE,
+		OPAQUE_OUTSIDE,
+		TRANSPARENT_MASK
+	};
+
 	class Item {
 	public:
 

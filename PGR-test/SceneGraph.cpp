@@ -12,15 +12,30 @@ namespace vasylnaz {
 
 
 
-	void Node::addItem(std::unique_ptr<Item> item, RenderContext& render_context) {
+	void Node::addItem(std::unique_ptr<Item> item, RenderContext& render_context, bool render) {
 		item->updateItem(global_model_mat);
-		if (Object* obj = dynamic_cast<Object*>(item.get())) {
-			render_context.objects[obj->get_mesh()->mesh_id].push_back(obj);
-		}
-		else if (LightSource* ls = dynamic_cast<LightSource*>(item.get())) {
-			render_context.light_block.addLight(ls);
+		if (render)
+		{
+			if (Object* obj = dynamic_cast<Object*>(item.get())) {
+				render_context.objects[obj->rq].push_back(obj);
+			}
+			else if (LightSource* ls = dynamic_cast<LightSource*>(item.get())) {
+				render_context.light_block.addLight(ls);
+			}
 		}
 		items.push_back(std::move(item));
+	}
+
+
+	void Node::renderItems(RenderContext& render_context) {
+		for (auto& item : items) {
+			if (Object* obj = dynamic_cast<Object*>(item.get())) {
+				render_context.objects[obj->rq].push_back(obj);
+			}
+			else if (LightSource* ls = dynamic_cast<LightSource*>(item.get())) {
+				render_context.light_block.addLight(ls);
+			}
+		}
 	}
 
 
@@ -46,7 +61,7 @@ namespace vasylnaz {
 
 
 	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
-		const unsigned int from = 0, const unsigned int to = 10000) {
+		const unsigned int from = 0, const unsigned int to = 10000, bool render) {
 
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(filepath,
@@ -139,7 +154,7 @@ namespace vasylnaz {
 				auto object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f),
 					"basic", dif_tex, norm_map, em_map);
 
-				node->addItem(std::move(object), render_context);
+				node->addItem(std::move(object), render_context, render);
 			}
 		}
 
@@ -152,12 +167,13 @@ namespace vasylnaz {
 		// 1
 		auto test_object = std::make_unique<Object>("thermos", glm::mat4(1.0f), "basic", "thermos", "thermos_norm");
 		// 2
-		/*auto model_mat2 = glm::mat4(
+		auto model_mat2 = glm::mat4(
 			5.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 5.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 5.0f, 0.0f,
-			5.0f, 0.0f, 0.0f, 1.0f);
-		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank");*/
+			15.0f, 0.0f, 4.0f, 1.0f);
+		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em", RenderQueue::OPAQUE_OUTSIDE);
+		root->addItem(std::move(test_object2), render_context);
 		// 3
 		auto model_mat3 = glm::mat4(
 			100.0f, 0.0f, 0.0f, 0.0f,
@@ -282,6 +298,22 @@ namespace vasylnaz {
 		// Wall support
 		auto wall_support4 = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
 		wall_4->addItem(std::move(wall_support4), render_context);
+		
+		// Window
+		auto window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
+		Object* obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		auto window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, glm::vec3(1.0f, 0.0f, -0.2f));
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		wall_4->addChild(std::move(window));
+
 		root->addChild(std::move(wall_4));
 
 
@@ -349,7 +381,7 @@ namespace vasylnaz {
 		auto cub_1 = std::make_unique<Node>();
 		auto cub_1_mat = glm::mat4(1.0f);
 		cub_1_mat = glm::translate(cub_1_mat, glm::vec3(0.0f, -0.96f, 3.0f));
-		//cub_1_mat = glm::rotate(cub_1_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		cub_1_mat = glm::rotate(cub_1_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub_1->model_mat = cub_1_mat;
 
 		// MAC
@@ -376,6 +408,22 @@ namespace vasylnaz {
 		cub_1->addChild(std::move(chair));
 		
 		root->addChild(std::move(cub_1));
+
+		
+		
+
+		// Hanging Light ---|---
+		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		auto hanging_light_mat = glm::mat4(1.0f);
+		hanging_light_mat = glm::translate(hanging_light_mat, glm::vec3(0.0f, 2.5f, 1.0f));
+		//hanging_light_mat = glm::rotate(hanging_light_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		hanging_light->model_mat = hanging_light_mat;
+		root->addChild(std::move(hanging_light));
+
+
+
+		
+		
 
 		
 		

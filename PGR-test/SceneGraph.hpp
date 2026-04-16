@@ -15,8 +15,7 @@
 namespace vasylnaz {
 
 	struct RenderContext {
-		// Mesh Id lets you access objects sharing this mesh
-		std::unordered_map<long, std::vector<Object*>> objects;
+		std::unordered_map<RenderQueue, std::vector<Object*>> objects;
 		LightBlock light_block;
 	};
 
@@ -54,7 +53,11 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param item 
 		/// @param render_context 
-		void addItem(std::unique_ptr<Item> item, RenderContext& render_context);
+		/// @param render 
+		void addItem(std::unique_ptr<Item> item, RenderContext& render_context, bool render = true);
+
+		/// @brief 
+		void renderItems(RenderContext& render_context);
 
 
 	private:
@@ -86,7 +89,7 @@ namespace vasylnaz {
 		/// @param asset_manager 
 		/// @return Node* items of which consist of objects created from .obj.
 		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
-			const unsigned int from, const unsigned int to);
+			const unsigned int from, const unsigned int to, bool render = true);
 
 		/// @brief 
 		/// @param asset_manager 
