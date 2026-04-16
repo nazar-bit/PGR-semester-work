@@ -224,82 +224,64 @@ namespace vasylnaz {
 
 
 
-		// Wall_1 ---|---
-		auto wall_1 = std::make_unique<Node>();
-		auto wall_1_mat = glm::mat4(1.0f);
-		wall_1_mat = glm::rotate(wall_1_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_1->model_mat = wall_1_mat;
-
-		// White bricks
 		glm::mat4 bricks_mat = glm::mat4(1.0f);
 		bricks_mat = glm::scale(bricks_mat, glm::vec3(10.0f, 1.0f, 10.0f));
 
-		auto bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_1->addItem(std::move(bricks), render_context);
-
-		// Wall support
 		glm::mat4 wall_support_mat = glm::mat4(1.0f);
 		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
 		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(10.0f, 1.0f, 1.0f));
 
+		// Wall_1 ---|---
+		auto wall = std::make_unique<Node>();
+		auto wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall->model_mat = wall_mat;
+
+		// White bricks
+		auto bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
+
+		// Wall support
 		auto wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall_1->addItem(std::move(wall_support), render_context);
-		root->addChild(std::move(wall_1));
+		wall->addItem(std::move(wall_support), render_context);
+		root->addChild(std::move(wall));
 
 
 		// Wall_2 ---
-		auto wall_2 = std::make_unique<Node>();
-		auto wall_2_mat = glm::mat4(1.0f);
-		wall_2_mat = glm::translate(wall_2_mat, glm::vec3(-5.0f, 0.0f, 5.0f));
-		wall_2_mat = glm::rotate(wall_2_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_2_mat = glm::rotate(wall_2_mat, glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		wall_2->model_mat = wall_2_mat;
+		wall = std::make_unique<Node>();
+		wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::translate(wall_mat, glm::vec3(-5.0f, 0.0f, 5.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		wall->model_mat = wall_mat;
 
 		// White bricks
-		auto bricks2 = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_2->addItem(std::move(bricks2), render_context);
+		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
-		auto wall_support2 = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall_2->addItem(std::move(wall_support2), render_context);
-		root->addChild(std::move(wall_2));
+		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
+		root->addChild(std::move(wall));
 
 
 		// Wall_3 ---
-		auto wall_3 = std::make_unique<Node>();
-		auto wall_3_mat = glm::mat4(1.0f);
-		wall_3_mat = glm::translate(wall_3_mat, glm::vec3(0.0f, 0.0f, 10.0f));
-		wall_3_mat = glm::rotate(wall_3_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_3_mat = glm::rotate(wall_3_mat, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		wall_3->model_mat = wall_3_mat;
+		wall = std::make_unique<Node>();
+		wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::translate(wall_mat, glm::vec3(0.0f, 0.0f, 10.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		wall->model_mat = wall_mat;
 
 		// White bricks
-		auto bricks3 = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_3->addItem(std::move(bricks3), render_context);
+		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
-		auto wall_support3 = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall_3->addItem(std::move(wall_support3), render_context);
-		root->addChild(std::move(wall_3));
+		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
 
-
-		// Wall_4 ---
-		auto wall_4 = std::make_unique<Node>();
-		auto wall_4_mat = glm::mat4(1.0f);
-		wall_4_mat = glm::translate(wall_4_mat, glm::vec3(5.0f, 0.0f, 5.0f));
-		wall_4_mat = glm::rotate(wall_4_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_4_mat = glm::rotate(wall_4_mat, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		wall_4->model_mat = wall_4_mat;
-
-		// White bricks
-		auto bricks4 = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_4->addItem(std::move(bricks4), render_context);
-
-		// Wall support
-		auto wall_support4 = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall_4->addItem(std::move(wall_support4), render_context);
-		
-		// Window
+		//// Window 1
 		auto window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		Object* obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
@@ -309,54 +291,134 @@ namespace vasylnaz {
 		obj->rq = RenderQueue::WINDOW_MASK;
 		auto window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(1.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(-3.0f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
-		wall_4->addChild(std::move(window));
+		wall->addChild(std::move(window));
 
-		root->addChild(std::move(wall_4));
+		//// Window 2
+		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
+		obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, glm::vec3(0.0f, 0.0f, -0.2f));
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		wall->addChild(std::move(window));
+
+		// Window 3
+		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
+		obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, glm::vec3(3.0f, 0.0f, -0.2f));
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		wall->addChild(std::move(window));
+
+		root->addChild(std::move(wall));
+
+
+		// Wall_4 ---
+		wall = std::make_unique<Node>();
+		wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::translate(wall_mat, glm::vec3(5.0f, 0.0f, 5.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		wall->model_mat = wall_mat;
+
+		// White bricks
+		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
+
+		// Wall support
+		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
+
+		// Window 4
+		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
+		obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, glm::vec3(0.0f, 0.0f, -0.2f));
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		wall->addChild(std::move(window));
+
+		// Window 5
+		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
+		obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::WINDOW_MASK;
+		window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, glm::vec3(3.0f, 0.0f, -0.2f));
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		wall->addChild(std::move(window));
+
+		root->addChild(std::move(wall));
 
 
 		// Wall_5 ---
-		auto wall_5 = std::make_unique<Node>();
-		auto wall_5_mat = glm::mat4(1.0f);
-		wall_5_mat = glm::translate(wall_5_mat, glm::vec3(3.5f, 0.0f, 3.0f));
-		wall_5_mat = glm::rotate(wall_5_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_5->model_mat = wall_5_mat;
+		wall = std::make_unique<Node>();
+		wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::translate(wall_mat, glm::vec3(3.5f, 0.0f, 3.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall->model_mat = wall_mat;
 
 		// White bricks
-		glm::mat4 bricks_mat5 = glm::mat4(1.0f);
-		bricks_mat5 = glm::scale(bricks_mat5, glm::vec3(3.0f, 1.0f, 10.0f));
+		bricks_mat = glm::mat4(1.0f);
+		bricks_mat = glm::scale(bricks_mat, glm::vec3(3.0f, 1.0f, 10.0f));
 
-		auto bricks5 = std::make_unique<Object>("ground", bricks_mat5, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_5->addItem(std::move(bricks5), render_context);
+		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
-		glm::mat4 wall_support_mat5 = glm::mat4(1.0f);
-		wall_support_mat5 = glm::translate(wall_support_mat5, glm::vec3(0.0f, 0.001f, 0.5f));
-		wall_support_mat5 = glm::scale(wall_support_mat5, glm::vec3(3.0f, 1.0f, 1.0f));
+		wall_support_mat = glm::mat4(1.0f);
+		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
+		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(3.0f, 1.0f, 1.0f));
 
-		auto wall_support5 = std::make_unique<Object>("ground", wall_support_mat5, "basic", "wall_support", "wall_support_norm");
-		wall_5->addItem(std::move(wall_support5), render_context);
-		root->addChild(std::move(wall_5));
+		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
+		root->addChild(std::move(wall));
 
 
 		// Wall_6 ---
-		auto wall_6 = std::make_unique<Node>();
-		auto wall_6_mat = glm::mat4(1.0f);
-		wall_6_mat = glm::translate(wall_6_mat, glm::vec3(2.0f, 0.0f, 1.5f));
-		wall_6_mat = glm::rotate(wall_6_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		wall_6_mat = glm::rotate(wall_6_mat, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		wall_6->model_mat = wall_6_mat;
+		wall = std::make_unique<Node>();
+		wall_mat = glm::mat4(1.0f);
+		wall_mat = glm::translate(wall_mat, glm::vec3(2.0f, 0.0f, 1.5f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		wall->model_mat = wall_mat;
 
 		// White bricks
-		auto bricks6 = std::make_unique<Object>("ground", bricks_mat5, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall_6->addItem(std::move(bricks6), render_context);
+		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
-		auto wall_support6 = std::make_unique<Object>("ground", wall_support_mat5, "basic", "wall_support", "wall_support_norm");
-		wall_6->addItem(std::move(wall_support6), render_context);
-		root->addChild(std::move(wall_6));
+		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
+		root->addChild(std::move(wall));
+
 
 
 		//floor ---|---
@@ -377,12 +439,14 @@ namespace vasylnaz {
 		root->addItem(std::move(ceiling_obj), render_context);
 
 
+
+
 		// Cubical 1 ---|---
-		auto cub_1 = std::make_unique<Node>();
-		auto cub_1_mat = glm::mat4(1.0f);
-		cub_1_mat = glm::translate(cub_1_mat, glm::vec3(0.0f, -0.96f, 3.0f));
-		cub_1_mat = glm::rotate(cub_1_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub_1->model_mat = cub_1_mat;
+		auto cub = std::make_unique<Node>();
+		auto cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 2.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
 
 		// MAC
 		auto mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
@@ -390,14 +454,14 @@ namespace vasylnaz {
 		mac_mat = glm::translate(mac_mat, glm::vec3(0.1f, 1.0f, 1.4f));
 		mac_mat = glm::rotate(mac_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		mac->model_mat = mac_mat;
-		cub_1->addChild(std::move(mac));
+		cub->addChild(std::move(mac));
 
 		// desk
 		auto desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
 		auto desk_mat = glm::mat4(1.0f);
 		desk_mat = glm::translate(desk_mat, glm::vec3(0.0f, 0.0f, 0.6f));
 		desk->model_mat = desk_mat;
-		cub_1->addChild(std::move(desk));
+		cub->addChild(std::move(desk));
 
 		// Chair
 		auto chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
@@ -405,9 +469,193 @@ namespace vasylnaz {
 		chair_mat = glm::translate(chair_mat, glm::vec3(0.2f, 0.28f, 1.0f));
 		chair_mat = glm::rotate(chair_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		chair->model_mat = chair_mat;
-		cub_1->addChild(std::move(chair));
+		cub->addChild(std::move(chair));
 		
-		root->addChild(std::move(cub_1));
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 2 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 2.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 3 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 4 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+
+		// Cubical 5 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 6 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 7 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
+
+
+
+
+		// Cubical 8 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		// MAC
+		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		root->addChild(std::move(cub));
 
 		
 		
@@ -442,25 +690,65 @@ namespace vasylnaz {
 		root->addItem(std::move(testLight), render_context);
 
 
-		auto testLight2 = std::make_unique<LightSource>(
-			DIRECTIONAL,
+		//auto testLight2 = std::make_unique<LightSource>(
+		//	DIRECTIONAL,
+		//	glm::vec3(0.1f),     //amb
+		//	glm::vec3(0.1f),     //diff
+		//	glm::vec3(0.2f),    //spec
+		//	glm::vec3(0.0f, -1.0f, 1.0f)   //pos
+		//);
+		//root->addItem(std::move(testLight2), render_context);
+
+
+		// Room point
+		auto point_lights_node = std::make_unique<Node>();
+		auto point_light = std::make_unique<LightSource>(
+			POINT,
 			glm::vec3(0.1f),     //amb
 			glm::vec3(0.1f),     //diff
-			glm::vec3(0.2f),    //spec
-			glm::vec3(0.0f, -1.0f, 1.0f)   //pos
+			glm::vec3(0.0f),    //spec
+			glm::vec3(1.0f, 0.0f, 3.0f),    //pos
+			Attenuation(1.0f, 0.01f, 0.0017f),
+			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
 		);
-		root->addItem(std::move(testLight2), render_context);
+		point_lights_node->addItem(std::move(point_light), render_context);
 
 
-		//auto testLight = std::make_unique<LightSource>(
-		//	POINT,
-		//	glm::vec3(0.1f),     //amb
-		//	glm::vec3(2.0f),     //diff
-		//	glm::vec3(1.0f),    //spec
-		//	glm::vec3(2.0f, 2.0f, 5.0f),    //pos
-		//	Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f),
-		//	Attenuation(1.0f, 0.09f, 0.032f)
-		//);
+		point_light = std::make_unique<LightSource>(
+			POINT,
+			glm::vec3(0.1f),     //amb
+			glm::vec3(0.1f),     //diff
+			glm::vec3(0.0f),    //spec
+			glm::vec3(-2.0f, 0.0f, 3.0f),    //pos
+			Attenuation(1.0f, 0.01f, 0.0017f),
+			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		);
+		point_lights_node->addItem(std::move(point_light), render_context);
+
+
+		point_light = std::make_unique<LightSource>(
+			POINT,
+			glm::vec3(0.1f),     //amb
+			glm::vec3(0.1f),     //diff
+			glm::vec3(0.0f),    //spec
+			glm::vec3(-2.0f, 0.0f, 7.0f),    //pos
+			Attenuation(1.0f, 0.01f, 0.0017f),
+			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		);
+		point_lights_node->addItem(std::move(point_light), render_context);
+
+
+		point_light = std::make_unique<LightSource>(
+			POINT,
+			glm::vec3(0.1f),     //amb
+			glm::vec3(0.1f),     //diff
+			glm::vec3(0.0f),    //spec
+			glm::vec3(4.0f, 0.0f, 7.0f),    //pos
+			Attenuation(1.0f, 0.01f, 0.0017f),
+			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		);
+		point_lights_node->addItem(std::move(point_light), render_context);
+		root->addChild(std::move(point_lights_node));
 
 
 		//auto testLight2 = std::make_unique<LightSource>(
