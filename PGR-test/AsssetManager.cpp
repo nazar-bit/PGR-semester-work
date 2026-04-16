@@ -24,6 +24,10 @@ namespace vasylnaz {
         loadTetxure("black_painted_planks_norm", "Textures/granite_tile_nor_gl_1k.jpg");
         loadTetxure("wooden_gate_norm", "Textures/wooden_gate_nor_gl_1k.jpg");
 
+        //emission
+        loadTetxure("blank_em", "Textures/blank_em.png");
+        
+
         loadMesh("cube", "Models/cube.obj", shader_manager);
         loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);
         loadMesh("ground", "Models/ground.obj", shader_manager);

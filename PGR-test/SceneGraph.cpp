@@ -82,6 +82,7 @@ namespace vasylnaz {
 				//aiString materialName;
 				std::string dif_tex = "blank";
 				std::string norm_map = "blank_norm";
+				std::string em_map = "blank_em";
 				// Get texture name
 				/*if (material->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS) {
 					std::cout << "Object " << mesh_name
@@ -113,12 +114,30 @@ namespace vasylnaz {
 					AssetManager::getInstance().loadTetxure(texturePath.C_Str(), texturePath.C_Str());
 					norm_map = texturePath.C_Str();
 				}
+				else if (material->GetTexture(aiTextureType_HEIGHT, 0, &texturePath) == AI_SUCCESS) {
+					std::cout << "Object " << mesh_name << " uses Normal map (loaded from Height/Bump slot): " << texturePath.C_Str() << std::endl;
+					AssetManager::getInstance().loadTetxure(texturePath.C_Str(), texturePath.C_Str());
+					norm_map = texturePath.C_Str();
+				}
 				else {
 					std::cout << "Object " << mesh_name << " has no normal map." << std::endl;
 				}
 
+				// Get Emission map
+				if (material->GetTextureCount(aiTextureType_EMISSIVE) > 0) {
+
+					if (material->GetTexture(aiTextureType_EMISSIVE, 0, &texturePath) == AI_SUCCESS) {
+						std::cout << "Found Emissive Map: " << texturePath.C_Str() << '\n';
+						AssetManager::getInstance().loadTetxure(texturePath.C_Str(), texturePath.C_Str());
+						em_map = texturePath.C_Str();
+					}
+				}
+				else {
+					std::cout << "Object " << mesh_name << " has no emission map." << std::endl;
+				}
+
 				auto object = std::make_unique<Object>(mesh_name, glm::mat4(1.0f),
-					"basic", dif_tex, norm_map);
+					"basic", dif_tex, norm_map, em_map);
 
 				node->addItem(std::move(object), render_context);
 			}
@@ -235,14 +254,15 @@ namespace vasylnaz {
 		root->addItem(std::move(planks_obj), render_context);
 
 		// MAC
-		/*auto mac = loadOBJ("Models/macintosh_128k.obj", shader_manager);
-		auto mac_mat = glm::mat4(
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 1.0f);
+		auto mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		auto mac_mat = glm::mat4(1.0f);
+		mac_mat = glm::translate(mac_mat, glm::vec3(0, 0, 0.6));
+		//mac_mat = glm::scale(mac_mat, glm::vec3(0.01, 0.01, 0.01));
 		mac->model_mat = mac_mat;
-		root->addChild(std::move(mac));*/
+
+		//Object* obj = static_cast<Object*>(mac->items[2].get());
+		//obj->model_matrix = glm::translate(obj->model_matrix, glm::vec3(1, 0, 0));
+		root->addChild(std::move(mac));
 
 		
 		

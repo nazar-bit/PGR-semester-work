@@ -26,6 +26,7 @@ namespace vasylnaz {
 		positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
 		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
 		positionNormalMap = glGetUniformLocation(shaderProgram, "normSampler");
+		positionEmmisionMap = glGetUniformLocation(shaderProgram, "emSampler");
 	}
 
 

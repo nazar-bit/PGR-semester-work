@@ -14,6 +14,10 @@ namespace vasylnaz {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, normal_map);
 		glUniform1i(shader_manager.positionNormalMap, 1);
+		// EmMap
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, em_map);
+		glUniform1i(shader_manager.positionEmmisionMap, 2);
 		// Draw
 		mesh->draw(shader_manager, global_model_matrix, view);
 	}

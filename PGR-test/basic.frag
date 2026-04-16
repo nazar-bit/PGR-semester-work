@@ -26,6 +26,7 @@ layout (std140) uniform LightBlock {
 uniform vec3 global_ambient;
 uniform sampler2D texSampler;
 uniform sampler2D normSampler;
+uniform sampler2D emSampler;
 
 in vec2 fg_tex_coords;
 in mat3 TBN;
@@ -90,7 +91,16 @@ void main() {
         sum_light += (spotlightEffect * attenuationFactor) * (ambient_ref + diffuse_ref + specular_ref);
     }
 
-    vec3 res = emission.xyz + (global_ambient * tex_color) + sum_light;
+
+    // Emission
+    vec3 final_em = emission.xyz;
+    vec3 em_tex = texture(emSampler, fg_tex_coords).rgb;
+    if(em_tex != vec3(0.0)){
+        final_em = em_tex;  
+    }
+
+    // Result
+    vec3 res = final_em + (global_ambient * tex_color) + sum_light;
     color = vec4(res, 1.0);
     //color = texture(texSampler, fg_tex_coords);
 }

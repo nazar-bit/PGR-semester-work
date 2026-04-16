@@ -28,6 +28,8 @@ namespace vasylnaz {
 		GLuint positionGlobalAmb = 0;
 		GLuint positionDiffuseMap = 0;
 		GLuint positionNormalMap = 0;
+		GLuint positionEmmisionMap = 0;
+		
 
 
 		void compile_shaders();
