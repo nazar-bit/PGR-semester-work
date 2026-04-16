@@ -1,6 +1,6 @@
-input_filename = 'mac.obj'
-output_filename = 'mac_scaled.obj'
-scale_factor = 0.01  # Adjust this value to get the exact size you need
+input_filename = 'office_chair_modern.obj'
+output_filename = 'office_chair_modern_scaled.obj'
+scale_factor = 0.91  # Adjust this value to get the exact size you need
 
 with open(input_filename, 'r') as f_in, open(output_filename, 'w') as f_out:
     for line in f_in:

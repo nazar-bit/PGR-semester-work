@@ -57,7 +57,12 @@ void main() {
     
     for(int i = 0; i < numLights; ++i) {
         Light cur_light = lights[i];
-        vec3 light_dir = normalize(cur_light.position.xyz - view_pos);
+        vec3 light_dir;
+        if (cur_light.position.w == 0.0) {
+        light_dir = normalize(cur_light.position.xyz);
+        } else {
+            light_dir = normalize(cur_light.position.xyz - view_pos);
+        }
         // SpotlightEffect
         float spotlightEffect = 1.0;
         if(cur_light.spotlight != vec4(0.0))

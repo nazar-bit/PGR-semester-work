@@ -10,7 +10,7 @@ namespace vasylnaz {
     #define MAX_LIGHTS 10
 
     extern glm::vec3 GLOBAL_AMBIENT;
-
+   
 
     enum LightType {
         DIRECTIONAL,
@@ -44,6 +44,10 @@ namespace vasylnaz {
         }
     };
 
+
+    extern Spotlight DEFAULT_SPOT;
+    extern Attenuation DEFAULT_ATTEN;
+
     
     struct Light {
         glm::vec4 ambient;   // w empty
@@ -73,7 +77,7 @@ namespace vasylnaz {
         /// @param spotlight 
         /// @param attenuation 
         LightSource(const LightType& LT, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const glm::vec3& position,
-            const Spotlight& spotlight, const Attenuation& attenuation)
+            const Attenuation& attenuation = DEFAULT_ATTEN, const Spotlight& spotlight = DEFAULT_SPOT)
             : light{
                 glm::vec4(ambient, 0.0f),  
                 glm::vec4(diffuse, 0.0f),  

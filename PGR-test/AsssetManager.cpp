@@ -7,22 +7,25 @@ namespace vasylnaz {
         //diffuse
         loadTetxure("thermos", "Textures/plastic_thermos.png");
         loadTetxure("blank", "Textures/blank.png");
-        loadTetxure("blank_norm", "Textures/blank_norm.png");
         loadTetxure("rocks", "Textures/gray_rocks.png");
         //loadTetxure("whitewashed_brick", "Textures/brick_wall_10_diff_1k.jpg");
         loadTetxure("whitewashed_brick", "Textures/Bricks038_1K-JPG_Color.jpg");
-        loadTetxure("black_painted_planks", "Textures/granite_tile_diff_1k.jpg");
-        loadTetxure("wooden_gate", "Textures/wooden_gate_diff_1k.jpg");
+        loadTetxure("floor", "Textures/granite_tile_diff_1k.jpg");
+        loadTetxure("wall_support", "Textures/wooden_gate_diff_1k.jpg");
+        loadTetxure("ceiling", "Textures/OfficeCeiling001_1K-JPG_Color.jpg");
+        
         
         
         
         //normal
+        loadTetxure("blank_norm", "Textures/blank_norm.png");
         loadTetxure("rocks_norm", "Textures/normalMapRocks.png");
         loadTetxure("thermos_norm", "Textures/normalThermos.png");
         /*loadTetxure("whitewashed_brick_norm", "Textures/brick_wall_10_nor_gl_1k.jpg");*/
         loadTetxure("whitewashed_brick_norm", "Textures/Bricks038_1K-JPG_NormalGL.jpg");
-        loadTetxure("black_painted_planks_norm", "Textures/granite_tile_nor_gl_1k.jpg");
-        loadTetxure("wooden_gate_norm", "Textures/wooden_gate_nor_gl_1k.jpg");
+        loadTetxure("floor_norm", "Textures/granite_tile_nor_gl_1k.jpg");
+        loadTetxure("wall_support_norm", "Textures/wooden_gate_nor_gl_1k.jpg");
+        loadTetxure("ceiling_norm", "Textures/OfficeCeiling001_1K-JPG_NormalGL.jpg");
 
         //emission
         loadTetxure("blank_em", "Textures/blank_em.png");

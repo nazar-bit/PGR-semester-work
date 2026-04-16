@@ -8,6 +8,7 @@
 #include "AssetManager.hpp"
 #include "Item.hpp"
 #include "Object.hpp"
+#include "Light.hpp"
 
 
 

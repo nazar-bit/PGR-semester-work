@@ -7,6 +7,10 @@ namespace vasylnaz {
 	long LightSource::global_light_id = 0;
 
 
+    Spotlight DEFAULT_SPOT = Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f);
+    Attenuation DEFAULT_ATTEN = Attenuation(1.0f, 0.09f, 0.032f);
+
+
     void LightSource::updateItem(const glm::mat4& parent_model_matrix) {
         global_light.ambient = light.ambient;
         global_light.diffuse = light.diffuse;
