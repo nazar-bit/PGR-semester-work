@@ -165,7 +165,7 @@ namespace vasylnaz {
 
 	void SceneGraph::init(ShaderManager& shader_manager) {
 		// 1
-		auto test_object = std::make_unique<Object>("thermos", glm::mat4(1.0f), "basic", "thermos", "thermos_norm");
+		
 		// 2
 		auto model_mat2 = glm::mat4(
 			5.0f, 0.0f, 0.0f, 0.0f,
@@ -199,7 +199,7 @@ namespace vasylnaz {
 		auto ground_obj = std::make_unique<Object>("ground", ground_mat, "basic", "rocks", "rocks_norm");
 		root->addItem(std::move(ground_obj), render_context);*/
 
-		root->addItem(std::move(test_object), render_context);
+		
 		//root->addItem(std::move(test_object2), render_context);
 		//auto floor_node = root->addChild(std::move(floor));
 		//floor_node->addItem(std::move(test_object3), render_context);
@@ -470,6 +470,14 @@ namespace vasylnaz {
 		chair_mat = glm::rotate(chair_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
+
+		// Hanging Light 
+		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		auto hanging_light_mat = glm::mat4(1.0f);
+		hanging_light_mat = glm::translate(hanging_light_mat, glm::vec3(-1.0f, 3.46f, 0.5f));
+		hanging_light_mat = glm::rotate(hanging_light_mat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
 		
 		root->addChild(std::move(cub));
 
@@ -497,6 +505,11 @@ namespace vasylnaz {
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
 
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+
 		root->addChild(std::move(cub));
 
 
@@ -523,6 +536,11 @@ namespace vasylnaz {
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
 
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+
 		root->addChild(std::move(cub));
 
 
@@ -548,6 +566,11 @@ namespace vasylnaz {
 		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
+
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
 
 		root->addChild(std::move(cub));
 
@@ -576,6 +599,17 @@ namespace vasylnaz {
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
 
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+
+		// Thermos
+		auto thermos_mat = glm::mat4(1.0f);
+		thermos_mat = glm::translate(thermos_mat, glm::vec3(-0.4f, 1.0f, 0.7f));
+		auto thermos = std::make_unique<Object>("thermos", thermos_mat, "basic", "thermos", "thermos_norm");
+		cub->addItem(std::move(thermos), render_context);
+
 		root->addChild(std::move(cub));
 
 
@@ -602,6 +636,11 @@ namespace vasylnaz {
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
 
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+
 		root->addChild(std::move(cub));
 
 
@@ -627,6 +666,11 @@ namespace vasylnaz {
 		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
+
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
 
 		root->addChild(std::move(cub));
 
@@ -655,18 +699,17 @@ namespace vasylnaz {
 		chair->model_mat = chair_mat;
 		cub->addChild(std::move(chair));
 
+		// Hanging Light 
+		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+
 		root->addChild(std::move(cub));
 
 		
 		
 
-		// Hanging Light ---|---
-		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		auto hanging_light_mat = glm::mat4(1.0f);
-		hanging_light_mat = glm::translate(hanging_light_mat, glm::vec3(0.0f, 2.5f, 1.0f));
-		//hanging_light_mat = glm::rotate(hanging_light_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		hanging_light->model_mat = hanging_light_mat;
-		root->addChild(std::move(hanging_light));
+		
 
 
 
