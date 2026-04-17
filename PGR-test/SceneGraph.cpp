@@ -172,7 +172,15 @@ namespace vasylnaz {
 			0.0f, 5.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 5.0f, 0.0f,
 			15.0f, 0.0f, 4.0f, 1.0f);
-		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em", RenderQueue::OPAQUE_OUTSIDE);
+		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em");
+		root->addItem(std::move(test_object2), render_context);
+
+		model_mat2 = glm::mat4(
+			5.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 5.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 5.0f, 0.0f,
+			5.0f, 0.0f, 25.0f, 1.0f);
+		test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em");
 		root->addItem(std::move(test_object2), render_context);
 		// 3
 		auto model_mat3 = glm::mat4(
@@ -274,7 +282,9 @@ namespace vasylnaz {
 		wall->model_mat = wall_mat;
 
 		// White bricks
-		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		glm::mat4 special = glm::mat4(1.0f);
+		special = glm::translate(special, glm::vec3(-2.0f, 0.0f, 0.0f));
+		bricks = std::make_unique<Object>("wall_with_holes", special, "basic", "whitewashed_brick", "whitewashed_brick_norm");
 		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
@@ -285,13 +295,13 @@ namespace vasylnaz {
 		auto window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		Object* obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		obj = static_cast<Object*>(window->items[4].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		auto window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(-3.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(-2.9f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		wall->addChild(std::move(window));
@@ -300,13 +310,13 @@ namespace vasylnaz {
 		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		obj = static_cast<Object*>(window->items[4].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(0.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(0.1f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		wall->addChild(std::move(window));
@@ -315,13 +325,13 @@ namespace vasylnaz {
 		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		obj = static_cast<Object*>(window->items[4].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(3.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(3.1f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		wall->addChild(std::move(window));
@@ -338,7 +348,7 @@ namespace vasylnaz {
 		wall->model_mat = wall_mat;
 
 		// White bricks
-		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		bricks = std::make_unique<Object>("wall_with_holes", special, "basic", "whitewashed_brick", "whitewashed_brick_norm");
 		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
@@ -349,13 +359,13 @@ namespace vasylnaz {
 		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		obj = static_cast<Object*>(window->items[4].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(0.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(0.1f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		wall->addChild(std::move(window));
@@ -364,13 +374,13 @@ namespace vasylnaz {
 		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
 		obj = static_cast<Object*>(window->items[2].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		obj = static_cast<Object*>(window->items[4].get());
 		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::WINDOW_MASK;
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
 		window_mat = glm::mat4(1.0f);
 		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(3.0f, 0.0f, -0.2f));
+		window_mat = glm::translate(window_mat, glm::vec3(3.1f, 0.0f, -0.2f));
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		wall->addChild(std::move(window));

@@ -34,6 +34,7 @@ namespace vasylnaz {
         loadMesh("cube", "Models/cube.obj", shader_manager);
         loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);
         loadMesh("ground", "Models/ground.obj", shader_manager);
+        loadMesh("wall_with_holes", "Models/wall_with_holes.obj", shader_manager);
 
 
         Material redPlastic;

@@ -143,22 +143,36 @@ namespace vasylnaz {
 
         scene_graph.render_context.light_block.updateViewSpacePositions(View);
         shader_manager.update_light(scene_graph.render_context.light_block.getLBD());
-
         glUniform3fv(shader_manager.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        /*for (const auto& array : scene_graph.render_context.objects) {
+       
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glUseProgram(shader_manager.shaderProgram);
+
+
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_MASK]) {
+            obj->draw(shader_manager, View);
+        }
+
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
+            obj->draw(shader_manager, View);
+        }
+
+       /* for (const auto& array : scene_graph.render_context.objects) {
             for (const auto& obj : array.second) {
                 obj->draw(shader_manager, View);
             }
         }*/
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+       
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glUseProgram(shader_manager.shaderProgram);
-
-        glEnable(GL_STENCIL_TEST);
+        /*glEnable(GL_STENCIL_TEST);
         glStencilMask(0xFF);
 
         
@@ -195,7 +209,7 @@ namespace vasylnaz {
         
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
             obj->draw(shader_manager, View);
-        }
+        }*/
 
         glutSwapBuffers();
     }

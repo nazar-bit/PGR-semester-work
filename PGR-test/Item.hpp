@@ -6,9 +6,7 @@
 namespace vasylnaz {
 
 	enum class RenderQueue {
-		WINDOW_MASK,
-		OPAQUE_INSIDE,
-		OPAQUE_OUTSIDE,
+		OPAQUE_MASK,
 		TRANSPARENT_MASK
 	};
 
