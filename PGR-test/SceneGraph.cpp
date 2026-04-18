@@ -165,6 +165,35 @@ namespace vasylnaz {
 
 
 
+	void SceneGraph::findObject(long id, Actions action) {
+		findObjectRecursive(id, action, root);
+	}
+
+
+	bool SceneGraph::findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node) {
+
+		for (std::unique_ptr<Item>& item : node->items) {
+			if (Object* obj = dynamic_cast<Object*>(item.get())) {
+				if (obj->object_id == id) {
+					if (action == Actions::CLICK) {
+						obj->on_click(obj);
+					}
+					return true;
+				}
+			}
+		}
+
+		for (std::unique_ptr<Node>& child : node->children) {
+			if (findObjectRecursive(id, action, child)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+
 	void SceneGraph::init(ShaderProgram& shader_manager) {
 		// 1
 		
@@ -462,6 +491,8 @@ namespace vasylnaz {
 
 		// MAC
 		auto mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		auto screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		auto mac_mat = glm::mat4(1.0f);
 		mac_mat = glm::translate(mac_mat, glm::vec3(0.1f, 1.0f, 1.4f));
 		mac_mat = glm::rotate(mac_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -504,6 +535,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -535,6 +568,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -566,6 +601,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -598,6 +635,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -635,6 +674,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -666,6 +707,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -698,6 +741,8 @@ namespace vasylnaz {
 
 		// MAC
 		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
+		screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 

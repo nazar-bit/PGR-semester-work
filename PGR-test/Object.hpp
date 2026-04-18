@@ -5,6 +5,7 @@
 #include "Material.hpp"
 #include "AssetManager.hpp"
 #include "Item.hpp"
+#include <functional>
 
 
 #include <glm/glm.hpp>
@@ -14,6 +15,15 @@
 
 namespace vasylnaz {
 
+	class Object;
+
+
+	void doNothing(Object* obj);
+
+
+	void turnOffOnPC(Object* obj);
+
+
 	class Object : public Item
 	{
 	public:
@@ -21,6 +31,8 @@ namespace vasylnaz {
 		glm::mat4 model_matrix;
 		const Material* material;
 		RenderQueue rq;
+		std::function<void(Object*)> on_click = doNothing;
+		GLuint em_map;
 
 
 		Object(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",
@@ -59,13 +71,12 @@ namespace vasylnaz {
 		const Mesh* mesh;
 		GLuint dif_texture;
 		GLuint normal_map;
-		GLuint em_map;
 		glm::mat4 global_model_matrix;
 	};
 
 
 
-
+	
 
 	
 

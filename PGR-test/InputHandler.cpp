@@ -33,12 +33,12 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::pick(const PickingProgram& pick_prog, const SceneGraph& scene_graph,
+	void InputHandler::pick(const PickingProgram& pick_prog, SceneGraph& scene_graph,
 		const glm::mat4& view_mat, const glm::mat4& proj_mat) {
+
 		if (!mouse.buttons_state[GLUT_LEFT_BUTTON]) {
 			return;
 		}
-
 
 		glDisable(GL_BLEND);
 		glDisable(GL_STENCIL_TEST);
@@ -78,6 +78,7 @@ namespace vasylnaz {
 			std::cout << "clicked on object " << (int)pixel[0]
 				<< " in depth " << (float)pixel[2] * MAX_DEPTH / 255
 				<< std::endl;
+			scene_graph.findObject((long)pixel[0], Actions::CLICK);
 		}
 
 		glutPostRedisplay();

@@ -3,7 +3,25 @@
 
 namespace vasylnaz {
 
+	void doNothing(Object* obj) {
+		return;
+	}
+
+
+	void turnOffOnPC(Object* obj) {
+		static GLuint pc_on_map = obj->em_map;
+		static GLuint pc_off_map = AssetManager::getInstance().getTexture("blank_em");
+		if (obj->em_map == pc_off_map) {
+			obj->em_map = pc_on_map;
+		}
+		else {
+			obj->em_map = pc_off_map;
+		}
+	}
+
+
 	long Object::global_object_id = 0;
+
 
 	void Object::draw(const ShaderProgram& shader_manager, const glm::mat4& view) const {
 		// material

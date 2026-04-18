@@ -20,6 +20,11 @@ namespace vasylnaz {
 	};
 
 
+	enum Actions {
+		CLICK,
+	};
+
+
 
 	class Node {
 	public:
@@ -95,6 +100,11 @@ namespace vasylnaz {
 		/// @param asset_manager 
 		void init(ShaderProgram& shader_manager);
 
+		/// @brief 
+		/// @param id 
+		/// @param action 
+		void findObject(const long id, const Actions action);
+
 
 	private:
 		/// @brief 
@@ -103,5 +113,11 @@ namespace vasylnaz {
 		/// @param dirty 
 		void update_recursive(std::unique_ptr<Node>& node, const glm::mat4& parent_glob_mat = glm::mat4(1.0f),
 			bool dirty = false);
+
+		/// @brief 
+		/// @param id 
+		/// @param action 
+		/// @param node 
+		bool findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node);
 	};
 }
