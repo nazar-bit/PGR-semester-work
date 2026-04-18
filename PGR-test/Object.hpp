@@ -40,7 +40,10 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param shader_manager 
 		/// @param view 
-		void draw(const ShaderManager& shader_manager, const glm::mat4& view) const;
+		void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
+
+
+		void pickRender(const PickingProgram& pick_prog, const glm::mat4& view) const;
 
 
 		void updateItem(const glm::mat4& parent_model_matrix) override;

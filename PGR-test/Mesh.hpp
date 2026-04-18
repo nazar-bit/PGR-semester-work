@@ -31,21 +31,21 @@ namespace vasylnaz {
 		/// @param shader_manager 
 		Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
 			const unsigned int* vertices_indices, const long indices_count,
-			ShaderManager& shader_manager);
+			ShaderProgram& shader_manager);
 
 
 		/// @brief 
 		/// @param filePath 
 		/// @param shader_manager 
-		Mesh(const string& filePath, ShaderManager& shader_manager);
+		Mesh(const string& filePath, ShaderProgram& shader_manager);
 
 		/// @brief 
 		/// @param mesh 
 		/// @param shader_manager 
-		Mesh(const aiMesh* mesh, ShaderManager& shader_manager);
+		Mesh(const aiMesh* mesh, ShaderProgram& shader_manager);
 
 
-		void setBuffers(const aiMesh* mesh, ShaderManager& shader_manager);
+		void setBuffers(const aiMesh* mesh, ShaderProgram& shader_manager);
 
 
 		~Mesh();
@@ -55,7 +55,10 @@ namespace vasylnaz {
 		/// @param shader_manager 
 		/// @param model 
 		/// @param view 
-		void draw(const ShaderManager& shader_manager, const glm::mat4& model, const glm::mat4& view) const;
+		void draw(const ShaderProgram& shader_manager, const glm::mat4& model, const glm::mat4& view) const;
+
+
+		void pickRender(const PickingProgram& pick_prog, const glm::mat4& model, const glm::mat4& view) const;
 
 
 

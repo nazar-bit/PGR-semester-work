@@ -88,12 +88,12 @@ namespace vasylnaz {
 		/// @param filepath 
 		/// @param asset_manager 
 		/// @return Node* items of which consist of objects created from .obj.
-		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
+		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderProgram& shader_manager,
 			const unsigned int from, const unsigned int to, bool render = true);
 
 		/// @brief 
 		/// @param asset_manager 
-		void init(ShaderManager& shader_manager);
+		void init(ShaderProgram& shader_manager);
 
 
 	private:

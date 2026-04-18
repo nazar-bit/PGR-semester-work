@@ -33,7 +33,7 @@ namespace vasylnaz {
 		AssetManager& operator=(AssetManager&&) = delete;
 
 		
-		void init(ShaderManager& shader_manager);
+		void init(ShaderProgram& shader_manager);
 
 		/// @brief 
 		/// @param name 
@@ -49,7 +49,7 @@ namespace vasylnaz {
 		/// @param name 
 		/// @param file_path 
 		/// @param shader_manager 
-		void loadMesh(const string& name, const string& file_path, ShaderManager& shader_manager);
+		void loadMesh(const string& name, const string& file_path, ShaderProgram& shader_manager);
 
 		/// @brief 
 		/// @param name 

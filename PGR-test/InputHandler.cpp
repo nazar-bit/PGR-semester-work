@@ -23,6 +23,64 @@ namespace vasylnaz {
 				mouse.buttons_state[button] = false;
 			}
 		}
+		else if (button == GLUT_LEFT_BUTTON) {
+			mouse.last_coords = glm::vec2(x, y);
+			mouse.new_coords = glm::vec2(x, y);
+			if (state == GLUT_DOWN) {
+				mouse.buttons_state[button] = true;
+			}
+		}
+	}
+
+
+	void InputHandler::pick(const PickingProgram& pick_prog, const SceneGraph& scene_graph,
+		const glm::mat4& view_mat, const glm::mat4& proj_mat) {
+		if (!mouse.buttons_state[GLUT_LEFT_BUTTON]) {
+			return;
+		}
+
+
+		glDisable(GL_BLEND);
+		glDisable(GL_STENCIL_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glDepthMask(GL_TRUE);
+		glActiveTexture(GL_TEXTURE0); 
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, 1);
+		glBindTexture(GL_TEXTURE_2D, 2);
+
+
+		mouse.buttons_state[GLUT_LEFT_BUTTON] = false;
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		glUseProgram(pick_prog.shaderProgram);
+		glUniformMatrix4fv(pick_prog.positionP, 1, GL_FALSE, glm::value_ptr(proj_mat));
+
+		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::OPAQUE_MASK)) {
+			obj->pickRender(pick_prog, view_mat);
+		}
+
+		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::TRANSPARENT_MASK)) {
+			obj->pickRender(pick_prog, view_mat);
+		}
+		
+		glFinish();
+		unsigned char pixel[4];
+		glReadBuffer(GL_BACK);
+		glReadPixels(mouse.last_coords.x, WIN_HEIGHT - 1 - mouse.last_coords.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+
+		if (pixel[1] == 0) {
+			std::cout << "clicked on background" << std::endl;
+		}
+		else {
+			std::cout << "clicked on object " << (int)pixel[0]
+				<< " in depth " << (float)pixel[2] * MAX_DEPTH / 255
+				<< std::endl;
+		}
+
+		glutPostRedisplay();
 	}
 
 

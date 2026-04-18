@@ -4,15 +4,21 @@
 
 #include "Camera.hpp"
 #include "pgr.h"
+#include "Params.hpp"
+#include "Item.hpp"
+#include "SceneGraph.hpp"
+#include "Object.hpp"
 
 #define KEY_COUNT 256
 #define MOUSE_BUTTONS_COUNT 3
+#define MAX_DEPTH 100
 
 namespace vasylnaz {
 	class InputHandler {
 	public:
 
 		InputHandler();
+
 
 		/// @brief 
 		/// @param  
@@ -67,10 +73,19 @@ namespace vasylnaz {
 
 		/// @brief 
 		/// @param camera 
-		void update_camera(Camera& camera) {
+		void update_camera(Camera& camera, const PickingProgram& pick_prog,
+			const SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 			update_camera_pos(camera);
 			update_camera_target(camera);
+			pick(pick_prog, scene_graph, view_mat, proj_mat);
 		}
+
+		/// @brief 
+		/// @param pick_prog 
+		/// @param scene_graph 
+		/// @param view_mat 
+		void pick(const PickingProgram& pick_prog, const SceneGraph& scene_graph,
+			const glm::mat4& view_mat, const glm::mat4& proj_mat);
 
 
 	private:
@@ -82,7 +97,6 @@ namespace vasylnaz {
 
 		std::array<bool, KEY_COUNT> keys_state;
 		std::array<bool, KEY_COUNT> special_keys_state;
-
 	};
 
 }

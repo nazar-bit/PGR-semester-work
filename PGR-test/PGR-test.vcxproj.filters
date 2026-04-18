@@ -42,6 +42,9 @@
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Params.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.hpp">
@@ -74,9 +77,14 @@
     <ClInclude Include="Item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Params.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.vert" />
     <None Include="basic.frag" />
+    <None Include="pick.vert" />
+    <None Include="pick.frag" />
   </ItemGroup>
 </Project>

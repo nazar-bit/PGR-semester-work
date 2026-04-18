@@ -3,9 +3,11 @@
 
 namespace vasylnaz {
 
+	long Mesh::global_mesh_id = 0;
+
 	Mesh::Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
 		const unsigned int* vertices_indices, const long indices_count,
-		ShaderManager& shader_manager)
+		ShaderProgram& shader_manager)
 
 		: mesh_id(global_mesh_id++), indices_count(indices_count) {
 
@@ -33,7 +35,7 @@ namespace vasylnaz {
 
 
 
-	Mesh::Mesh(const string& filePath, ShaderManager& shader_manager)
+	Mesh::Mesh(const string& filePath, ShaderProgram& shader_manager)
 
 		: mesh_id(global_mesh_id++), indices_count(0) {
 
@@ -58,7 +60,7 @@ namespace vasylnaz {
 
 
 
-	Mesh::Mesh(const aiMesh* mesh, ShaderManager& shader_manager)
+	Mesh::Mesh(const aiMesh* mesh, ShaderProgram& shader_manager)
 		: mesh_id(global_mesh_id++), indices_count(0) {
 
 		setBuffers(mesh, shader_manager);
@@ -66,7 +68,7 @@ namespace vasylnaz {
 
 
 
-	void Mesh::setBuffers(const aiMesh* mesh, ShaderManager& shader_manager) {
+	void Mesh::setBuffers(const aiMesh* mesh, ShaderProgram& shader_manager) {
 		std::vector<unsigned int> indices;
 		indices.reserve(mesh->mNumFaces * 3);
 
@@ -136,12 +138,22 @@ namespace vasylnaz {
 	};
 
 
-	void Mesh::draw(const ShaderManager& shader_manager, const glm::mat4& model, const glm::mat4& view) const {
+	void Mesh::draw(const ShaderProgram& shader_manager, const glm::mat4& model, const glm::mat4& view) const {
 		glBindVertexArray(vao);
 
 		glUniformMatrix4fv(shader_manager.positionVM, 1, GL_FALSE, glm::value_ptr(view * model));
 		glUniformMatrix4fv(shader_manager.positionVN, 1, GL_FALSE,
 			glm::value_ptr(glm::transpose(glm::inverse(view * model))));
+
+		glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+	}
+
+
+	void Mesh::pickRender(const PickingProgram& pick_prog, const glm::mat4& model, const glm::mat4& view) const {
+		glBindVertexArray(vao);
+
+		glUniformMatrix4fv(pick_prog.positionVM, 1, GL_FALSE, glm::value_ptr(view * model));
 
 		glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

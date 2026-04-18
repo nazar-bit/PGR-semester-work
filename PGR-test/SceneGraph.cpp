@@ -3,6 +3,8 @@
 
 namespace vasylnaz {
 
+	long Node::global_node_id = 0;
+
 	Node* Node::addChild(std::unique_ptr<Node> child) {
 		Node* ptr = child.get();
 		children.push_back(std::move(child));
@@ -60,7 +62,7 @@ namespace vasylnaz {
 
 
 
-	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderManager& shader_manager,
+	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderProgram& shader_manager,
 		const unsigned int from = 0, const unsigned int to = 10000, bool render) {
 
 		Assimp::Importer importer;
@@ -163,7 +165,7 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::init(ShaderManager& shader_manager) {
+	void SceneGraph::init(ShaderProgram& shader_manager) {
 		// 1
 		
 		// 2

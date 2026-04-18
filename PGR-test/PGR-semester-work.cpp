@@ -9,21 +9,15 @@
 #include "InputHandler.hpp"
 #include "AssetManager.hpp"
 #include "SceneGraph.hpp"
+#include "Params.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
 
 namespace vasylnaz {
-    long Node::global_node_id = 0;
-    long Object::global_object_id = 0;
-    long Mesh::global_mesh_id = 0;
 
-    const int WIN_WIDTH = 1024;
-    const int WIN_HEIGHT = 768;
-    const char* WIN_TITLE = "Hello World";
-
-
-    ShaderManager shader_manager;
+    ShaderProgram shader_program;
+    PickingProgram pick_prog;
 
 
     Camera camera = Camera(
@@ -48,7 +42,6 @@ namespace vasylnaz {
 
 
     void init() {
-        glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
@@ -58,10 +51,11 @@ namespace vasylnaz {
         glFrontFace(GL_CCW);
         glCullFace(GL_BACK);
 
-        shader_manager.compile_shaders();
-        shader_manager.generateUBOs();
+        shader_program.compile_shaders();
+        shader_program.generateUBOs();
 
-        AssetManager::getInstance().init(shader_manager);
+        pick_prog.compile_shaders();
+        AssetManager::getInstance().init(shader_program);
 
        
         const float vertices[] = {
@@ -129,8 +123,7 @@ namespace vasylnaz {
         };
 
 
-        scene_graph.init(shader_manager);
-
+        scene_graph.init(shader_program);
     }
 
 
@@ -139,20 +132,24 @@ namespace vasylnaz {
             camera.position - length(camera.camera_target_distance) * camera.target,
             camera.up);
         Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-        glUniformMatrix4fv(shader_manager.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
 
         scene_graph.render_context.light_block.updateViewSpacePositions(View);
-        shader_manager.update_light(scene_graph.render_context.light_block.getLBD());
-        glUniform3fv(shader_manager.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+        shader_program.update_light(scene_graph.render_context.light_block.getLBD());
+
+        input_handler.update_camera(camera, pick_prog, scene_graph, View, Projection);
+        scene_graph.update();
 
        
-
+        glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glUseProgram(shader_manager.shaderProgram);
+        glUseProgram(shader_program.shaderProgram);
+
+        glUniformMatrix4fv(shader_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
+        glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
 
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_MASK]) {
-            obj->draw(shader_manager, View);
+            obj->draw(shader_program, View);
         }
 
 
@@ -161,55 +158,12 @@ namespace vasylnaz {
 
 
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
-            obj->draw(shader_manager, View);
+            obj->draw(shader_program, View);
         }
 
-       /* for (const auto& array : scene_graph.render_context.objects) {
-            for (const auto& obj : array.second) {
-                obj->draw(shader_manager, View);
-            }
-        }*/
 
-       
+        glDisable(GL_BLEND);
 
-        /*glEnable(GL_STENCIL_TEST);
-        glStencilMask(0xFF);
-
-        
-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        glDepthMask(GL_FALSE);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::WINDOW_MASK]) {
-            obj->draw(shader_manager, View);
-        }
-
-       
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-        glDepthMask(GL_TRUE);
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_INSIDE]) {
-            obj->draw(shader_manager, View);
-        }
-
-        
-        glStencilFunc(GL_EQUAL, 1, 0xFF);
-        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_OUTSIDE]) {
-            obj->draw(shader_manager, View);
-        }
-
-        
-        glDisable(GL_STENCIL_TEST);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::WINDOW_MASK]) {
-            obj->draw(shader_manager, View);
-        }
-
-        
-        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
-            obj->draw(shader_manager, View);
-        }*/
 
         glutSwapBuffers();
     }
@@ -217,8 +171,7 @@ namespace vasylnaz {
 
     void timerCallback(int value) {
 
-        input_handler.update_camera(camera);
-        scene_graph.update();
+        
 
         glutPostRedisplay();
         glutTimerFunc(16, timerCallback, 0);

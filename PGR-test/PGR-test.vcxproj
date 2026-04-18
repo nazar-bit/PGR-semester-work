@@ -139,6 +139,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Params.cpp" />
     <ClCompile Include="PGR-semester-work.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Params.hpp" />
     <ClInclude Include="SceneGraph.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
     <ClInclude Include="AssetManager.hpp" />
@@ -158,6 +160,8 @@
   <ItemGroup>
     <None Include="basic.frag" />
     <None Include="basic.vert" />
+    <None Include="pick.frag" />
+    <None Include="pick.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

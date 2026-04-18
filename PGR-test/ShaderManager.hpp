@@ -12,7 +12,7 @@
 
 namespace vasylnaz {
 
-	class ShaderManager
+	class ShaderProgram
 	{
 	public:
 		GLuint shaderProgram = 0;
@@ -55,11 +55,21 @@ namespace vasylnaz {
 
 		GLuint uboMaterial;
 		GLuint uboLightBlock;
-
-
-		std::string loadShaderSource(const std::string& filepath);
 	};
 
 
+	std::string loadShaderSource(const std::string& filepath);
 
+
+	class PickingProgram
+	{
+	public:
+		GLuint shaderProgram = 0;
+		GLuint positionLoc = 0;
+		GLuint positionVM = 0;
+		GLuint positionP = 0;
+		GLuint positionId = 0;
+
+		void compile_shaders();
+	};
 }

@@ -3,7 +3,9 @@
 
 namespace vasylnaz {
 
-	void Object::draw(const ShaderManager& shader_manager, const glm::mat4& view) const {
+	long Object::global_object_id = 0;
+
+	void Object::draw(const ShaderProgram& shader_manager, const glm::mat4& view) const {
 		// material
 		shader_manager.change_material(*material);
 		// diffuseTex
@@ -25,6 +27,12 @@ namespace vasylnaz {
 
 	void Object::updateItem(const glm::mat4& parent_model_matrix) {
 		global_model_matrix = parent_model_matrix * model_matrix;
+	}
+
+
+	void Object::pickRender(const PickingProgram& pick_prog, const glm::mat4& view) const {
+		glUniform1f(pick_prog.positionId, (float)object_id / 255.0f);
+		mesh->pickRender(pick_prog, global_model_matrix, view);
 	}
 
 

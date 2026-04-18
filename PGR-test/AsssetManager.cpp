@@ -2,7 +2,7 @@
 
 namespace vasylnaz {
 
-    void AssetManager::init(ShaderManager& shader_manager) {
+    void AssetManager::init(ShaderProgram& shader_manager) {
         diffuse_map_location = shader_manager.positionDiffuseMap;
         //diffuse
         loadTetxure("thermos", "Textures/plastic_thermos.png");
@@ -87,7 +87,7 @@ namespace vasylnaz {
     }
 
 
-    void AssetManager::loadMesh(const string& name, const string& file_path, ShaderManager& shader_manager) {
+    void AssetManager::loadMesh(const string& name, const string& file_path, ShaderProgram& shader_manager) {
         auto it = meshes.find(name);
 
         if (it != meshes.end()) {

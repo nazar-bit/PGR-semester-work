@@ -4,7 +4,7 @@
 namespace vasylnaz {
 
 
-	void ShaderManager::compile_shaders() {
+	void ShaderProgram::compile_shaders() {
 		std::string vertexShaderSrc = loadShaderSource("basic.vert");
 		std::string fragmentShaderSrc = loadShaderSource("basic.frag");
 
@@ -30,7 +30,7 @@ namespace vasylnaz {
 	}
 
 
-	void ShaderManager::generateUBOs() {
+	void ShaderProgram::generateUBOs() {
 		// ------- Material
 		glGenBuffers(1, &uboMaterial);
 		glBindBuffer(GL_UNIFORM_BUFFER, uboMaterial);
@@ -55,14 +55,14 @@ namespace vasylnaz {
 	}
 
 
-	void ShaderManager::change_material(const Material& material) const {
+	void ShaderProgram::change_material(const Material& material) const {
 		glBindBuffer(GL_UNIFORM_BUFFER, uboMaterial);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Material), &material);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 
-	void ShaderManager::update_light(const LightBlockData& LBD) const {
+	void ShaderProgram::update_light(const LightBlockData& LBD) const {
 		glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightBlockData), &LBD);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -70,7 +70,7 @@ namespace vasylnaz {
 
 
 
-	std::string ShaderManager::loadShaderSource(const std::string& filepath) {
+	std::string loadShaderSource(const std::string& filepath) {
 		std::ifstream file(filepath);
 
 		if (!file.is_open()) {
@@ -83,5 +83,25 @@ namespace vasylnaz {
 		file.close();
 
 		return stream.str();
+	}
+
+
+
+	void PickingProgram::compile_shaders() {
+		std::string vertexShaderSrc = loadShaderSource("pick.vert");
+		std::string fragmentShaderSrc = loadShaderSource("pick.frag");
+
+		GLuint shaders[] = {
+			pgr::createShaderFromSource(GL_VERTEX_SHADER, vertexShaderSrc),
+			pgr::createShaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSrc),
+			0
+		};
+		shaderProgram = pgr::createProgram(shaders);
+
+		positionLoc = glGetAttribLocation(shaderProgram, "position");
+		positionVM = glGetUniformLocation(shaderProgram, "VM");
+		positionP = glGetUniformLocation(shaderProgram, "P");
+
+		positionId = glGetUniformLocation(shaderProgram, "id");
 	}
 }
