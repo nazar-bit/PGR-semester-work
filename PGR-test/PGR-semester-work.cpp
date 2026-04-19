@@ -17,7 +17,8 @@
 namespace vasylnaz {
 
     ShaderProgram shader_program;
-    PickingProgram pick_prog;
+    ShaderProgram skybox_program;
+    ShaderProgram pick_prog;
 
 
     Camera camera = Camera(
@@ -47,14 +48,13 @@ namespace vasylnaz {
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
-        glEnable(GL_CULL_FACE);
-        glFrontFace(GL_CCW);
-        glCullFace(GL_BACK);
 
-        shader_program.compile_shaders();
+        shader_program.compile_shaders("basic.vert", "basic.frag");
         shader_program.generateUBOs();
 
-        pick_prog.compile_shaders();
+        skybox_program.compile_shaders("skybox.vert", "skybox.frag");
+
+        pick_prog.compile_shaders("pick.vert", "pick.frag");
         AssetManager::getInstance().init(shader_program);
 
        
@@ -139,7 +139,11 @@ namespace vasylnaz {
         input_handler.update_camera(camera, pick_prog, scene_graph, View, Projection);
         scene_graph.update();
 
-       
+
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CCW);
+        glCullFace(GL_BACK);
+
         glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glUseProgram(shader_program.shaderProgram);
@@ -147,23 +151,33 @@ namespace vasylnaz {
         glUniformMatrix4fv(shader_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-
+        // Normal stuff
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::OPAQUE_MASK]) {
             obj->draw(shader_program, View);
         }
 
 
+        // Skybox
+        glUseProgram(skybox_program.shaderProgram);
+        glUniformMatrix4fv(skybox_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
+
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::SKYBOX]) {
+            obj->draw(skybox_program, View);
+        }
+        
+
+        glUseProgram(shader_program.shaderProgram);
+
+        // Transparent
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
             obj->draw(shader_program, View);
         }
-
-
         glDisable(GL_BLEND);
 
+        
 
         glutSwapBuffers();
     }

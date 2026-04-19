@@ -4,32 +4,7 @@
 namespace vasylnaz {
 
 
-	void ShaderProgram::compile_shaders() {
-		std::string vertexShaderSrc = loadShaderSource("basic.vert");
-		std::string fragmentShaderSrc = loadShaderSource("basic.frag");
-
-		GLuint shaders[] = {
-			pgr::createShaderFromSource(GL_VERTEX_SHADER, vertexShaderSrc),
-			pgr::createShaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSrc),
-			0
-		};
-		shaderProgram = pgr::createProgram(shaders);
-		positionLoc = glGetAttribLocation(shaderProgram, "position");
-		positionNormal = glGetAttribLocation(shaderProgram, "normal");
-		positionTex = glGetAttribLocation(shaderProgram, "tex_coords");
-		positionTangent = glGetAttribLocation(shaderProgram, "tangent");
-
-		positionVM = glGetUniformLocation(shaderProgram, "VM");
-		positionVN = glGetUniformLocation(shaderProgram, "VN");
-		positionP = glGetUniformLocation(shaderProgram, "P");
-
-		positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
-		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
-		positionNormalMap = glGetUniformLocation(shaderProgram, "normSampler");
-		positionEmmisionMap = glGetUniformLocation(shaderProgram, "emSampler");
-	}
-
-
+	
 	void ShaderProgram::generateUBOs() {
 		// ------- Material
 		glGenBuffers(1, &uboMaterial);
@@ -55,10 +30,37 @@ namespace vasylnaz {
 	}
 
 
-	void ShaderProgram::change_material(const Material& material) const {
+	void ShaderProgram::loadMaterial(const Material& material) const {
 		glBindBuffer(GL_UNIFORM_BUFFER, uboMaterial);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Material), &material);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+
+	void ShaderProgram::loadDiffuse(const GLuint dif_texture) const {
+		if (positionDiffuseMap != -1) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, dif_texture);
+			glUniform1i(positionDiffuseMap, 0);
+		}
+	}
+
+
+	void ShaderProgram::loadNormal(const GLuint normal_texture) const {
+		if (positionNormalMap != -1) {
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, normal_texture);
+			glUniform1i(positionNormalMap, 1);
+		}
+	}
+
+
+	void ShaderProgram::loadEmission(const GLuint em_texture) const {
+		if (positionEmmisionMap != -1) {
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, em_texture);
+			glUniform1i(positionEmmisionMap, 2);
+		}
 	}
 
 
@@ -66,6 +68,43 @@ namespace vasylnaz {
 		glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightBlockData), &LBD);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+
+	void ShaderProgram::loadId(const long object_id) const {
+		if (positionId != -1)
+		{
+			glUniform1f(positionId, (float)object_id / 255.0f);
+		}
+	}
+
+
+
+	void ShaderProgram::compile_shaders(const std::string& vert_loc, const std::string& frag_loc) {
+		std::string vertexShaderSrc = loadShaderSource(vert_loc);
+		std::string fragmentShaderSrc = loadShaderSource(frag_loc);
+
+		GLuint shaders[] = {
+			pgr::createShaderFromSource(GL_VERTEX_SHADER, vertexShaderSrc),
+			pgr::createShaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSrc),
+			0
+		};
+		shaderProgram = pgr::createProgram(shaders);
+		positionLoc = glGetAttribLocation(shaderProgram, "position");
+		positionNormal = glGetAttribLocation(shaderProgram, "normal");
+		positionTex = glGetAttribLocation(shaderProgram, "tex_coords");
+		positionTangent = glGetAttribLocation(shaderProgram, "tangent");
+
+		positionVM = glGetUniformLocation(shaderProgram, "VM");
+		positionVN = glGetUniformLocation(shaderProgram, "VN");
+		positionP = glGetUniformLocation(shaderProgram, "P");
+
+		positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
+		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
+		positionNormalMap = glGetUniformLocation(shaderProgram, "normSampler");
+		positionEmmisionMap = glGetUniformLocation(shaderProgram, "emSampler");
+
+		positionId = glGetUniformLocation(shaderProgram, "id");
 	}
 
 
@@ -85,23 +124,4 @@ namespace vasylnaz {
 		return stream.str();
 	}
 
-
-
-	void PickingProgram::compile_shaders() {
-		std::string vertexShaderSrc = loadShaderSource("pick.vert");
-		std::string fragmentShaderSrc = loadShaderSource("pick.frag");
-
-		GLuint shaders[] = {
-			pgr::createShaderFromSource(GL_VERTEX_SHADER, vertexShaderSrc),
-			pgr::createShaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSrc),
-			0
-		};
-		shaderProgram = pgr::createProgram(shaders);
-
-		positionLoc = glGetAttribLocation(shaderProgram, "position");
-		positionVM = glGetUniformLocation(shaderProgram, "VM");
-		positionP = glGetUniformLocation(shaderProgram, "P");
-
-		positionId = glGetUniformLocation(shaderProgram, "id");
-	}
 }

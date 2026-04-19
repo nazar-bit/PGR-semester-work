@@ -769,8 +769,17 @@ namespace vasylnaz {
 		
 
 
-
-		
+		// Skybox --|--
+		auto skybox = loadOBJ("Models/skybox.obj", shader_manager, 0, 10000, false);
+		for (auto& item : skybox->items) {
+			auto skybox_obj = static_cast<Object*>(item.get());
+			skybox_obj->rq = RenderQueue::SKYBOX;
+		}
+		skybox->renderItems(render_context);
+		auto skybox_mat = glm::mat4(1.0f);
+		skybox_mat = glm::scale(skybox_mat, glm::vec3(50.0f));
+		skybox->model_mat = skybox_mat;
+		root->addChild(std::move(skybox));
 		
 
 		

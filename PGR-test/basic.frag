@@ -1,4 +1,4 @@
-#version 140
+#version 330
 #define MAX_LIGHTS 10
 
 layout (std140) uniform Material {

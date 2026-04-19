@@ -3,7 +3,7 @@
 namespace vasylnaz {
 
     void AssetManager::init(ShaderProgram& shader_manager) {
-        diffuse_map_location = shader_manager.positionDiffuseMap;
+       
         //diffuse
         loadTetxure("thermos", "Textures/plastic_thermos.png");
         loadTetxure("blank", "Textures/blank.png");

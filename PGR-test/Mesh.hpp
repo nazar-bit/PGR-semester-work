@@ -58,10 +58,6 @@ namespace vasylnaz {
 		void draw(const ShaderProgram& shader_manager, const glm::mat4& model, const glm::mat4& view) const;
 
 
-		void pickRender(const PickingProgram& pick_prog, const glm::mat4& model, const glm::mat4& view) const;
-
-
-
 		GLuint getVao() const {
 			return vao;
 		}

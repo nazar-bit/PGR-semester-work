@@ -17,14 +17,14 @@ namespace vasylnaz {
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices_count * sizeof(float), vertices_pos, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(shader_manager.positionLoc);
-		glVertexAttribPointer(shader_manager.positionLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(Attributes::POSITION);
+		glVertexAttribPointer(Attributes::POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 		glGenBuffers(1, &normals_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices_count * sizeof(float), normals, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(shader_manager.positionNormal);
-		glVertexAttribPointer(shader_manager.positionNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(Attributes::NORMAL);
+		glVertexAttribPointer(Attributes::NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -68,7 +68,7 @@ namespace vasylnaz {
 
 
 
-	void Mesh::setBuffers(const aiMesh* mesh, ShaderProgram& shader_manager) {
+	void Mesh::setBuffers(const aiMesh* mesh, ShaderProgram& shader_program) {
 		std::vector<unsigned int> indices;
 		indices.reserve(mesh->mNumFaces * 3);
 
@@ -86,36 +86,36 @@ namespace vasylnaz {
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mVertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(shader_manager.positionLoc);
-		glVertexAttribPointer(shader_manager.positionLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(Attributes::POSITION);
+		glVertexAttribPointer(Attributes::POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 		glGenBuffers(1, &normals_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
 		glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mNormals, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(shader_manager.positionNormal);
-		glVertexAttribPointer(shader_manager.positionNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(Attributes::NORMAL);
+		glVertexAttribPointer(Attributes::NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 		if (mesh->HasTextureCoords(0)) {
 			glGenBuffers(1, &texels_vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, texels_vbo);
 			glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mTextureCoords[0], GL_STATIC_DRAW);
-			glEnableVertexAttribArray(shader_manager.positionTex);
-			glVertexAttribPointer(shader_manager.positionTex, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(Attributes::TEXCOORD);
+			glVertexAttribPointer(Attributes::TEXCOORD, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		}
 		else {
-			glDisableVertexAttribArray(shader_manager.positionTex);
+			glDisableVertexAttribArray(Attributes::TEXCOORD);
 		}
 
 		if (mesh->HasTangentsAndBitangents()) {
 			glGenBuffers(1, &tangents_vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, tangents_vbo);
 			glBufferData(GL_ARRAY_BUFFER, mesh->mNumVertices * sizeof(aiVector3D), mesh->mTangents, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(shader_manager.positionTangent);
-			glVertexAttribPointer(shader_manager.positionTangent, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(Attributes::TANGENT);
+			glVertexAttribPointer(Attributes::TANGENT, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		}
 		else {
-			glDisableVertexAttribArray(shader_manager.positionTangent);
-			glVertexAttrib3f(shader_manager.positionTangent, 1.0f, 0.0f, 0.0f);
+			glDisableVertexAttribArray(Attributes::TANGENT);
+			glVertexAttrib3f(Attributes::TANGENT, 1.0f, 0.0f, 0.0f);
 		}
 
 		glGenBuffers(1, &ebo);
@@ -142,18 +142,11 @@ namespace vasylnaz {
 		glBindVertexArray(vao);
 
 		glUniformMatrix4fv(shader_manager.positionVM, 1, GL_FALSE, glm::value_ptr(view * model));
-		glUniformMatrix4fv(shader_manager.positionVN, 1, GL_FALSE,
+		if (shader_manager.positionVN != -1)
+		{
+			glUniformMatrix4fv(shader_manager.positionVN, 1, GL_FALSE,
 			glm::value_ptr(glm::transpose(glm::inverse(view * model))));
-
-		glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
-	}
-
-
-	void Mesh::pickRender(const PickingProgram& pick_prog, const glm::mat4& model, const glm::mat4& view) const {
-		glBindVertexArray(vao);
-
-		glUniformMatrix4fv(pick_prog.positionVM, 1, GL_FALSE, glm::value_ptr(view * model));
+		}
 
 		glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

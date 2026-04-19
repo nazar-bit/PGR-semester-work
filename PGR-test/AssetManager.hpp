@@ -17,9 +17,6 @@ namespace vasylnaz {
 	class AssetManager {
 	public:
 
-		GLint diffuse_map_location;
-
-
 		static AssetManager& getInstance() {
 			static AssetManager AM;
 			return AM;

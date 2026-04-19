@@ -11,7 +11,7 @@
 
 #define KEY_COUNT 256
 #define MOUSE_BUTTONS_COUNT 3
-#define MAX_DEPTH 100
+#define MAX_DEPTH 1
 
 namespace vasylnaz {
 	class InputHandler {
@@ -73,7 +73,7 @@ namespace vasylnaz {
 
 		/// @brief 
 		/// @param camera 
-		void update_camera(Camera& camera, const PickingProgram& pick_prog,
+		void update_camera(Camera& camera, const ShaderProgram& pick_prog,
 			SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 			update_camera_pos(camera);
 			update_camera_target(camera);
@@ -84,7 +84,7 @@ namespace vasylnaz {
 		/// @param pick_prog 
 		/// @param scene_graph 
 		/// @param view_mat 
-		void pick(const PickingProgram& pick_prog, SceneGraph& scene_graph,
+		void pick(const ShaderProgram& pick_prog, SceneGraph& scene_graph,
 			const glm::mat4& view_mat, const glm::mat4& proj_mat);
 
 

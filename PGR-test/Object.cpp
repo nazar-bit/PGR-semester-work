@@ -23,35 +23,19 @@ namespace vasylnaz {
 	long Object::global_object_id = 0;
 
 
-	void Object::draw(const ShaderProgram& shader_manager, const glm::mat4& view) const {
-		// material
-		shader_manager.change_material(*material);
-		// diffuseTex
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, dif_texture);
-		glUniform1i(shader_manager.positionDiffuseMap, 0);
-		// NormMap
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, normal_map);
-		glUniform1i(shader_manager.positionNormalMap, 1);
-		// EmMap
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, em_map);
-		glUniform1i(shader_manager.positionEmmisionMap, 2);
-		// Draw
-		mesh->draw(shader_manager, global_model_matrix, view);
+	void Object::draw(const ShaderProgram& shader_program, const glm::mat4& view) const {
+		
+		shader_program.loadMaterial(*material);
+		shader_program.loadDiffuse(dif_texture);
+		shader_program.loadNormal(normal_map);	
+		shader_program.loadEmission(em_map);
+		shader_program.loadId(object_id);
+	
+		mesh->draw(shader_program, global_model_matrix, view);
 	}
 
 
 	void Object::updateItem(const glm::mat4& parent_model_matrix) {
 		global_model_matrix = parent_model_matrix * model_matrix;
 	}
-
-
-	void Object::pickRender(const PickingProgram& pick_prog, const glm::mat4& view) const {
-		glUniform1f(pick_prog.positionId, (float)object_id / 255.0f);
-		mesh->pickRender(pick_prog, global_model_matrix, view);
-	}
-
-
 }

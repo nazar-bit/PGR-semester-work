@@ -1,5 +1,5 @@
-#version 130
-#define MAX_DEPTH 100
+#version 330
+#define MAX_DEPTH 1
 
 uniform float id;
 smooth in float depth;

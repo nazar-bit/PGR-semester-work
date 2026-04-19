@@ -33,7 +33,7 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::pick(const PickingProgram& pick_prog, SceneGraph& scene_graph,
+	void InputHandler::pick(const ShaderProgram& pick_prog, SceneGraph& scene_graph,
 		const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 
 		if (!mouse.buttons_state[GLUT_LEFT_BUTTON]) {
@@ -59,11 +59,11 @@ namespace vasylnaz {
 		glUniformMatrix4fv(pick_prog.positionP, 1, GL_FALSE, glm::value_ptr(proj_mat));
 
 		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::OPAQUE_MASK)) {
-			obj->pickRender(pick_prog, view_mat);
+			obj->draw(pick_prog, view_mat);
 		}
 
 		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::TRANSPARENT_MASK)) {
-			obj->pickRender(pick_prog, view_mat);
+			obj->draw(pick_prog, view_mat);
 		}
 		
 		glFinish();
@@ -82,6 +82,7 @@ namespace vasylnaz {
 		}
 
 		glutPostRedisplay();
+		/*glutSwapBuffers();*/
 	}
 
 

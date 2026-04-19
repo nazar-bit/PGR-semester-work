@@ -86,5 +86,7 @@
     <None Include="basic.frag" />
     <None Include="pick.vert" />
     <None Include="pick.frag" />
+    <None Include="skybox.vert" />
+    <None Include="skybox.frag" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
-#version 130
+#version 330
 uniform mat4 VM; 
 uniform mat4 P; 
-in vec3 position; 
+layout(location = 0) in vec3 position; 
 
 smooth out float depth; 
 
