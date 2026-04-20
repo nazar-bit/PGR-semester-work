@@ -104,6 +104,7 @@ void main() {
         final_em = em_tex;  
     }
 
+
     // Result
     vec3 res = final_em + (global_ambient * tex_color) + sum_light;
     color = vec4(res, diffuse.w);

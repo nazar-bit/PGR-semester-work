@@ -30,22 +30,21 @@ namespace vasylnaz {
 		/// @param indices_count 
 		/// @param shader_manager 
 		Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
-			const unsigned int* vertices_indices, const long indices_count,
-			ShaderProgram& shader_manager);
+			const unsigned int* vertices_indices, const long indices_count);
 
 
 		/// @brief 
 		/// @param filePath 
 		/// @param shader_manager 
-		Mesh(const string& filePath, ShaderProgram& shader_manager);
+		Mesh(const string& filePath);
 
 		/// @brief 
 		/// @param mesh 
 		/// @param shader_manager 
-		Mesh(const aiMesh* mesh, ShaderProgram& shader_manager);
+		Mesh(const aiMesh* mesh);
 
 
-		void setBuffers(const aiMesh* mesh, ShaderProgram& shader_manager);
+		void setBuffers(const aiMesh* mesh);
 
 
 		~Mesh();

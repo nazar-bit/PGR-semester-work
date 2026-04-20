@@ -62,7 +62,7 @@ namespace vasylnaz {
 
 
 
-	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath, ShaderProgram& shader_manager,
+	std::unique_ptr<Node> SceneGraph::loadOBJ(const std::string& filepath,
 		const unsigned int from = 0, const unsigned int to = 10000, bool render) {
 
 		Assimp::Importer importer;
@@ -88,7 +88,7 @@ namespace vasylnaz {
 			aiMesh* mesh = scene->mMeshes[i];
 
 			auto mesh_name = filepath + mesh->mName.C_Str();
-			auto msh = std::make_unique<Mesh>(mesh, shader_manager);
+			auto msh = std::make_unique<Mesh>(mesh);
 			AssetManager::getInstance().loadMesh(mesh_name, std::move(msh));
 
 			unsigned int materialIndex = mesh->mMaterialIndex;
@@ -194,6 +194,94 @@ namespace vasylnaz {
 
 
 
+	void addWallObjects(Node* wall, RenderContext& render_context, const glm::vec3& scale_vec) {
+		static glm::mat4 bricks_mat = glm::mat4(1.0f);
+		static glm::mat4 wall_support_mat = glm::mat4(1.0f);
+		
+		bricks_mat = glm::mat4(1.0f);
+		bricks_mat = glm::scale(bricks_mat, glm::vec3(scale_vec));
+
+		wall_support_mat = glm::mat4(1.0f);
+		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
+		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(scale_vec.x, scale_vec.y, 1.0f));
+		
+
+		// White bricks
+		auto bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		wall->addItem(std::move(bricks), render_context);
+
+		// Wall support
+		auto wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		wall->addItem(std::move(wall_support), render_context);
+	}
+
+
+	void SceneGraph::addCubicalObjects(Node* cub) {
+		static bool launched = false;
+		static auto mac_mat = glm::mat4(1.0f);
+		static auto desk_mat = glm::mat4(1.0f);
+		static auto chair_mat = glm::mat4(1.0f);
+		static auto hanging_light_mat = glm::mat4(1.0f);
+
+		if (!launched) {
+			launched = true;
+
+			mac_mat = glm::translate(mac_mat, glm::vec3(0.1f, 1.0f, 1.4f));
+			mac_mat = glm::rotate(mac_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			desk_mat = glm::translate(desk_mat, glm::vec3(0.0f, 0.0f, 0.6f));
+
+			chair_mat = glm::translate(chair_mat, glm::vec3(0.2f, 0.28f, 1.0f));
+			chair_mat = glm::rotate(chair_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			hanging_light_mat = glm::translate(hanging_light_mat, glm::vec3(-1.0f, 3.46f, 0.5f));
+			hanging_light_mat = glm::rotate(hanging_light_mat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+
+		// MAC
+		auto mac = loadOBJ("Models/mac_scaled.obj");
+		auto screen = static_cast<Object*>(mac->items[0].get());
+		screen->on_click = turnOffOnPC;
+		mac->model_mat = mac_mat;
+		cub->addChild(std::move(mac));
+
+		// desk
+		auto desk = loadOBJ("Models/office-desk_scaled.obj");
+		desk->model_mat = desk_mat;
+		cub->addChild(std::move(desk));
+
+		// Chair
+		auto chair = loadOBJ("Models/office_chair_modern_scaled.obj");
+		chair->model_mat = chair_mat;
+		cub->addChild(std::move(chair));
+
+		// Hanging Light 
+		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj");
+		hanging_light->model_mat = hanging_light_mat;
+		cub->addChild(std::move(hanging_light));
+	}
+
+
+
+	std::unique_ptr<Node> SceneGraph::createWindow(RenderContext& render_context, const glm::vec3& trans_vec) {
+		//// Window 1
+		auto window = loadOBJ("Models/window_scaled.obj", 5, 9, false);
+		Object* obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
+		auto window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, trans_vec);
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		return std::move(window);
+	}
+
+
+
 	void SceneGraph::init(ShaderProgram& shader_manager) {
 		// 1
 		
@@ -221,69 +309,21 @@ namespace vasylnaz {
 			0.0f, -3.0f, 0.0f, 1.0f);
 		auto test_object3 = std::make_unique<Object>("cube", model_mat3, "red_plastic");
 
-		// floor
-		/*auto floor_mat = glm::mat4(
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 2.0f, 0.0f, 1.0f);
-		auto floor = std::make_unique<Node>(floor_mat);*/
-
-		//ground_obj
-		/*auto ground_mat = glm::mat4(
-			10.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 10.0f, 0.0f,
-			0.0f, -0.8f, 0.0f, 1.0f);
-		auto ground_obj = std::make_unique<Object>("ground", ground_mat, "basic", "rocks", "rocks_norm");
-		root->addItem(std::move(ground_obj), render_context);*/
-
 		
-		//root->addItem(std::move(test_object2), render_context);
-		//auto floor_node = root->addChild(std::move(floor));
-		//floor_node->addItem(std::move(test_object3), render_context);
-		// Grass
-		/*auto grass = loadOBJ("Models/searsia_lucida_1k.obj", shader_manager, 3, 5);
-		auto grass_mat = glm::mat4(
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, -0.8f, 0.0f, 1.0f);
-		grass->model_mat = grass_mat;
-		root->addChild(std::move(grass));*/
-		// Table
-		/*auto table = loadOBJ("Models/wooden_picnic_table_1k.gltf.obj", shader_manager);
-		auto table_mat = glm::mat4(
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, -0.8f, 0.0f, 1.0f);
-		table->model_mat = table_mat;
-		root->addChild(std::move(table));*/
-
-
-
-		glm::mat4 bricks_mat = glm::mat4(1.0f);
-		bricks_mat = glm::scale(bricks_mat, glm::vec3(10.0f, 1.0f, 10.0f));
-
 		glm::mat4 wall_support_mat = glm::mat4(1.0f);
 		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
 		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(10.0f, 1.0f, 1.0f));
+		
 
 		// Wall_1 ---|---
 		auto wall = std::make_unique<Node>();
 		auto wall_mat = glm::mat4(1.0f);
 		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		wall->model_mat = wall_mat;
-
-		// White bricks
-		auto bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall->addItem(std::move(bricks), render_context);
-
-		// Wall support
-		auto wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall->addItem(std::move(wall_support), render_context);
+		addWallObjects(wall.get(), render_context, glm::vec3(10.0f, 1.0f, 5.0f));
 		root->addChild(std::move(wall));
+
+		
 
 
 		// Wall_2 ---
@@ -293,14 +333,7 @@ namespace vasylnaz {
 		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		wall_mat = glm::rotate(wall_mat, glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		wall->model_mat = wall_mat;
-
-		// White bricks
-		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall->addItem(std::move(bricks), render_context);
-
-		// Wall support
-		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall->addItem(std::move(wall_support), render_context);
+		addWallObjects(wall.get(), render_context, glm::vec3(10.0f, 1.0f, 10.0f));
 		root->addChild(std::move(wall));
 
 
@@ -315,56 +348,23 @@ namespace vasylnaz {
 		// White bricks
 		glm::mat4 special = glm::mat4(1.0f);
 		special = glm::translate(special, glm::vec3(-2.0f, 0.0f, 0.0f));
-		bricks = std::make_unique<Object>("wall_with_holes", special, "basic", "whitewashed_brick", "whitewashed_brick_norm");
+		auto bricks = std::make_unique<Object>("wall_with_holes", special, "basic", "whitewashed_brick", "whitewashed_brick_norm");
 		wall->addItem(std::move(bricks), render_context);
 
 		// Wall support
-		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
+		auto wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
 		wall->addItem(std::move(wall_support), render_context);
 
 		//// Window 1
-		auto window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
-		Object* obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		auto window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(-2.9f, 0.0f, -0.2f));
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
+		auto window = createWindow(render_context, glm::vec3(-2.9f, 0.0f, -0.2f));
 		wall->addChild(std::move(window));
 
 		//// Window 2
-		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
-		obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(0.1f, 0.0f, -0.2f));
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
+		window = createWindow(render_context, glm::vec3(0.1f, 0.0f, -0.2f));
 		wall->addChild(std::move(window));
 
 		// Window 3
-		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
-		obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(3.1f, 0.0f, -0.2f));
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
+		window = createWindow(render_context, glm::vec3(3.1f, 0.0f, -0.2f));
 		wall->addChild(std::move(window));
 
 		root->addChild(std::move(wall));
@@ -387,33 +387,11 @@ namespace vasylnaz {
 		wall->addItem(std::move(wall_support), render_context);
 
 		// Window 4
-		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
-		obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(0.1f, 0.0f, -0.2f));
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
+		window = createWindow(render_context, glm::vec3(0.1f, 0.0f, -0.2f));
 		wall->addChild(std::move(window));
 
 		// Window 5
-		window = loadOBJ("Models/window_scaled.obj", shader_manager, 5, 9, false);
-		obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, glm::vec3(3.1f, 0.0f, -0.2f));
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
+		window = createWindow(render_context, glm::vec3(3.1f, 0.0f, -0.2f));
 		wall->addChild(std::move(window));
 
 		root->addChild(std::move(wall));
@@ -426,20 +404,7 @@ namespace vasylnaz {
 		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		wall->model_mat = wall_mat;
 
-		// White bricks
-		bricks_mat = glm::mat4(1.0f);
-		bricks_mat = glm::scale(bricks_mat, glm::vec3(3.0f, 1.0f, 10.0f));
-
-		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall->addItem(std::move(bricks), render_context);
-
-		// Wall support
-		wall_support_mat = glm::mat4(1.0f);
-		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
-		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(3.0f, 1.0f, 1.0f));
-
-		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall->addItem(std::move(wall_support), render_context);
+		addWallObjects(wall.get(), render_context, glm::vec3(3.0f, 1.0f, 5.0f));
 		root->addChild(std::move(wall));
 
 
@@ -451,13 +416,7 @@ namespace vasylnaz {
 		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		wall->model_mat = wall_mat;
 
-		// White bricks
-		bricks = std::make_unique<Object>("ground", bricks_mat, "basic", "whitewashed_brick", "whitewashed_brick_norm");
-		wall->addItem(std::move(bricks), render_context);
-
-		// Wall support
-		wall_support = std::make_unique<Object>("ground", wall_support_mat, "basic", "wall_support", "wall_support_norm");
-		wall->addItem(std::move(wall_support), render_context);
+		addWallObjects(wall.get(), render_context, glm::vec3(3.0f, 1.0f, 5.0f));
 		root->addChild(std::move(wall));
 
 
@@ -481,7 +440,6 @@ namespace vasylnaz {
 
 
 
-
 		// Cubical 1 ---|---
 		auto cub = std::make_unique<Node>();
 		auto cub_mat = glm::mat4(1.0f);
@@ -489,41 +447,9 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		auto mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		auto screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		auto mac_mat = glm::mat4(1.0f);
-		mac_mat = glm::translate(mac_mat, glm::vec3(0.1f, 1.0f, 1.4f));
-		mac_mat = glm::rotate(mac_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		auto desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		auto desk_mat = glm::mat4(1.0f);
-		desk_mat = glm::translate(desk_mat, glm::vec3(0.0f, 0.0f, 0.6f));
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		auto chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		auto chair_mat = glm::mat4(1.0f);
-		chair_mat = glm::translate(chair_mat, glm::vec3(0.2f, 0.28f, 1.0f));
-		chair_mat = glm::rotate(chair_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		auto hanging_light_mat = glm::mat4(1.0f);
-		hanging_light_mat = glm::translate(hanging_light_mat, glm::vec3(-1.0f, 3.46f, 0.5f));
-		hanging_light_mat = glm::rotate(hanging_light_mat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 		
 		root->addChild(std::move(cub));
-
 
 
 		// Cubical 2 ---
@@ -533,30 +459,9 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
-
 
 
 		// Cubical 3 ---
@@ -566,30 +471,9 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
-
 
 
 		// Cubical 4 ---
@@ -599,31 +483,9 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
-
-
 
 
 		// Cubical 5 ---
@@ -633,27 +495,7 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		// Thermos
 		auto thermos_mat = glm::mat4(1.0f);
@@ -672,27 +514,7 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
 
@@ -705,27 +527,7 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
 
@@ -739,27 +541,7 @@ namespace vasylnaz {
 		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		cub->model_mat = cub_mat;
 
-		// MAC
-		mac = loadOBJ("Models/mac_scaled.obj", shader_manager);
-		screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
-		mac->model_mat = mac_mat;
-		cub->addChild(std::move(mac));
-
-		// desk
-		desk = loadOBJ("Models/office-desk_scaled.obj", shader_manager);
-		desk->model_mat = desk_mat;
-		cub->addChild(std::move(desk));
-
-		// Chair
-		chair = loadOBJ("Models/office_chair_modern_scaled.obj", shader_manager);
-		chair->model_mat = chair_mat;
-		cub->addChild(std::move(chair));
-
-		// Hanging Light 
-		hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj", shader_manager);
-		hanging_light->model_mat = hanging_light_mat;
-		cub->addChild(std::move(hanging_light));
+		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
 
@@ -770,7 +552,7 @@ namespace vasylnaz {
 
 
 		// Skybox --|--
-		auto skybox = loadOBJ("Models/skybox.obj", shader_manager, 0, 10000, false);
+		auto skybox = loadOBJ("Models/skybox.obj", 0, 10000, false);
 		for (auto& item : skybox->items) {
 			auto skybox_obj = static_cast<Object*>(item.get());
 			skybox_obj->rq = RenderQueue::SKYBOX;

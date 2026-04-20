@@ -31,10 +31,10 @@ namespace vasylnaz {
         loadTetxure("blank_em", "Textures/blank_em.png");
         
 
-        loadMesh("cube", "Models/cube.obj", shader_manager);
-        loadMesh("thermos", "Models/plastic_thermos_1k.obj", shader_manager);
-        loadMesh("ground", "Models/ground.obj", shader_manager);
-        loadMesh("wall_with_holes", "Models/wall_with_holes.obj", shader_manager);
+        loadMesh("cube", "Models/cube.obj");
+        loadMesh("thermos", "Models/plastic_thermos_1k.obj");
+        loadMesh("ground", "Models/ground.obj");
+        loadMesh("wall_with_holes", "Models/wall_with_holes.obj");
 
 
         Material redPlastic;
@@ -87,14 +87,14 @@ namespace vasylnaz {
     }
 
 
-    void AssetManager::loadMesh(const string& name, const string& file_path, ShaderProgram& shader_manager) {
+    void AssetManager::loadMesh(const string& name, const string& file_path) {
         auto it = meshes.find(name);
 
         if (it != meshes.end()) {
             std::cout << "Mesh was already loaded" << "\n";
         }
         else {
-            meshes.emplace(name, std::make_unique<Mesh>(file_path, shader_manager));
+            meshes.emplace(name, std::make_unique<Mesh>(file_path));
         }
     }
 

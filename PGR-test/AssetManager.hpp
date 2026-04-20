@@ -46,7 +46,7 @@ namespace vasylnaz {
 		/// @param name 
 		/// @param file_path 
 		/// @param shader_manager 
-		void loadMesh(const string& name, const string& file_path, ShaderProgram& shader_manager);
+		void loadMesh(const string& name, const string& file_path);
 
 		/// @brief 
 		/// @param name 

@@ -93,7 +93,7 @@ namespace vasylnaz {
 		/// @param filepath 
 		/// @param asset_manager 
 		/// @return Node* items of which consist of objects created from .obj.
-		std::unique_ptr<Node> loadOBJ(const std::string& filepath, ShaderProgram& shader_manager,
+		std::unique_ptr<Node> loadOBJ(const std::string& filepath,
 			const unsigned int from, const unsigned int to, bool render = true);
 
 		/// @brief 
@@ -104,6 +104,9 @@ namespace vasylnaz {
 		/// @param id 
 		/// @param action 
 		void findObject(const long id, const Actions action);
+
+		
+		
 
 
 	private:
@@ -119,5 +122,11 @@ namespace vasylnaz {
 		/// @param action 
 		/// @param node 
 		bool findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node);
+
+
+		void addCubicalObjects(Node* cub);
+
+
+		std::unique_ptr<Node> createWindow(RenderContext& render_context, const glm::vec3& trans_vec);
 	};
 }

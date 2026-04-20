@@ -6,8 +6,7 @@ namespace vasylnaz {
 	long Mesh::global_mesh_id = 0;
 
 	Mesh::Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
-		const unsigned int* vertices_indices, const long indices_count,
-		ShaderProgram& shader_manager)
+		const unsigned int* vertices_indices, const long indices_count)
 
 		: mesh_id(global_mesh_id++), indices_count(indices_count) {
 
@@ -35,7 +34,7 @@ namespace vasylnaz {
 
 
 
-	Mesh::Mesh(const string& filePath, ShaderProgram& shader_manager)
+	Mesh::Mesh(const string& filePath)
 
 		: mesh_id(global_mesh_id++), indices_count(0) {
 
@@ -55,20 +54,20 @@ namespace vasylnaz {
 
 		aiMesh* mesh = scene->mMeshes[0];
 
-		setBuffers(mesh, shader_manager);
+		setBuffers(mesh);
 	}
 
 
 
-	Mesh::Mesh(const aiMesh* mesh, ShaderProgram& shader_manager)
+	Mesh::Mesh(const aiMesh* mesh)
 		: mesh_id(global_mesh_id++), indices_count(0) {
 
-		setBuffers(mesh, shader_manager);
+		setBuffers(mesh);
 	}
 
 
 
-	void Mesh::setBuffers(const aiMesh* mesh, ShaderProgram& shader_program) {
+	void Mesh::setBuffers(const aiMesh* mesh) {
 		std::vector<unsigned int> indices;
 		indices.reserve(mesh->mNumFaces * 3);
 
