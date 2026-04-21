@@ -37,9 +37,33 @@ namespace vasylnaz {
 	}
 
 
-
 	void FanSwitch::update() {
 		fan_anim->activated = owner->clicked;
 	}
+
+
+
+	LightSwitch::LightSwitch(Object* owner)
+		: Script(owner)
+	{
+		//
+	}
+
+
+	void LightSwitch::update() {
+		if (activated != owner->clicked) {
+			activated = owner->clicked;
+			for (auto& lamp : lamps) {
+				if (activated) {
+					lamp->em_map = lamp_on_map;
+				}
+				else {
+					lamp->em_map = lamp_off_map;
+				}
+			}
+		}
+	}
+
+
 }
 

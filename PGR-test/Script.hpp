@@ -54,4 +54,21 @@ namespace vasylnaz {
 
 	private:
 	};
+
+
+
+	class LightSwitch : public Script {
+	public:
+
+		std::vector<Object*> lamps;
+		GLuint lamp_on_map = -1;
+		GLuint lamp_off_map = AssetManager::getInstance().getTexture("blank_em");
+
+		LightSwitch(Object* owner);
+
+		void update();
+
+	private:
+		bool activated = true;
+	};
 }

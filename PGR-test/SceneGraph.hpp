@@ -128,10 +128,12 @@ namespace vasylnaz {
 		/// @param node 
 		bool findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node);
 
-		void addCubicalObjects(Node* cub);
+		void addCubicalObjects(Node* cub, LightSwitch* script);
 
 		std::unique_ptr<Node> createWindow(RenderContext& render_context, const glm::vec3& trans_vec);
 
-		void createFan(Node* root, RenderContext& render_context);
+		void createFan(Node* root);
+
+		void createCubicals(Node* root);
 	};
 }

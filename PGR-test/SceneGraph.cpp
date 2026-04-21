@@ -230,7 +230,59 @@ namespace vasylnaz {
 	}
 
 
-	void SceneGraph::addCubicalObjects(Node* cub) {
+
+	std::unique_ptr<Node> SceneGraph::createWindow(RenderContext& render_context, const glm::vec3& trans_vec) {
+		//// Window 1
+		auto window = loadOBJ("Models/window_scaled.obj", 5, 9, false);
+		Object* obj = static_cast<Object*>(window->items[2].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
+		obj = static_cast<Object*>(window->items[4].get());
+		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
+		obj->rq = RenderQueue::TRANSPARENT_MASK;
+		auto window_mat = glm::mat4(1.0f);
+		window->renderItems(render_context);
+		window_mat = glm::translate(window_mat, trans_vec);
+		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		window->model_mat = window_mat;
+		return std::move(window);
+	}
+
+
+
+	void SceneGraph::createFan(Node* root) {
+		// Fan --|--
+		auto fan = loadOBJ("Models/ceiling_fan_1k.gltf.obj");
+		auto fan_anim = std::make_unique<FanAnim>(fan.get());
+		auto fan_anim_ptr = fan_anim.get();
+		fan->scripts.push_back(std::move(fan_anim));
+		auto fan_mat = glm::mat4(1.0f);
+		fan_mat = glm::translate(fan_mat, glm::vec3(0.0f, 2.5f, 6.0f));
+		fan_mat = glm::rotate(fan_mat, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		fan->model_mat = fan_mat;
+		root->addChild(std::move(fan));
+
+
+		// Fan Switch --|--
+		auto f_switch = loadOBJ("Models/light_switch_scaled.obj");
+		auto f_switch_mat = glm::mat4(1.0f);
+		f_switch_mat = glm::translate(f_switch_mat, glm::vec3(2.0f, 0.3f, 2.6f));
+		f_switch_mat = glm::rotate(f_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		f_switch->model_mat = f_switch_mat;
+		for (auto& item : f_switch->items) {
+			auto f_switch_obj = static_cast<Object*>(item.get());
+			f_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
+		}
+		auto f_switch_obj = static_cast<Object*>(f_switch->items[3].get());
+		auto script = std::make_unique<FanSwitch>(f_switch_obj);
+		script->fan_anim = fan_anim_ptr;
+		f_switch_obj->scripts.push_back(std::move(script));
+		root->addChild(std::move(f_switch));
+	}
+
+
+
+	void SceneGraph::addCubicalObjects(Node* cub, LightSwitch* script) {
 		static bool launched = false;
 		static auto mac_mat = glm::mat4(1.0f);
 		static auto desk_mat = glm::mat4(1.0f);
@@ -272,58 +324,139 @@ namespace vasylnaz {
 		// Hanging Light 
 		auto hanging_light = loadOBJ("Models/caged_hanging_light_1k.gltf.obj");
 		hanging_light->model_mat = hanging_light_mat;
+		auto hanging_light_obj = static_cast<Object*>(hanging_light->items[0].get());
+		script->lamps.push_back(hanging_light_obj);
+		if (script->lamp_on_map == -1) {
+			script->lamp_on_map = hanging_light_obj->em_map;
+		}
 		cub->addChild(std::move(hanging_light));
 	}
 
 
 
-	std::unique_ptr<Node> SceneGraph::createWindow(RenderContext& render_context, const glm::vec3& trans_vec) {
-		//// Window 1
-		auto window = loadOBJ("Models/window_scaled.obj", 5, 9, false);
-		Object* obj = static_cast<Object*>(window->items[2].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		obj = static_cast<Object*>(window->items[4].get());
-		obj->material = AssetManager::getInstance().getMaterial("semi_trans");
-		obj->rq = RenderQueue::TRANSPARENT_MASK;
-		auto window_mat = glm::mat4(1.0f);
-		window->renderItems(render_context);
-		window_mat = glm::translate(window_mat, trans_vec);
-		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		window->model_mat = window_mat;
-		return std::move(window);
-	}
 
-
-
-	void SceneGraph::createFan(Node* root, RenderContext& render_context) {
-		// Fan --|--
-		auto fan = loadOBJ("Models/ceiling_fan_1k.gltf.obj");
-		auto fan_anim = std::make_unique<FanAnim>(fan.get());
-		auto fan_anim_ptr = fan_anim.get();
-		fan->scripts.push_back(std::move(fan_anim));
-		auto fan_mat = glm::mat4(1.0f);
-		fan_mat = glm::translate(fan_mat, glm::vec3(0.0f, 2.5f, 6.0f));
-		fan_mat = glm::rotate(fan_mat, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		fan->model_mat = fan_mat;
-		root->addChild(std::move(fan));
-
-
-		// Fan Switch --|--
-		auto f_switch = loadOBJ("Models/light_switch_scaled.obj");
-		auto f_switch_mat = glm::mat4(1.0f);
-		f_switch_mat = glm::translate(f_switch_mat, glm::vec3(2.0f, 0.3f, 2.6f));
-		f_switch_mat = glm::rotate(f_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		f_switch->model_mat = f_switch_mat;
-		for (auto& item : f_switch->items) {
-			auto f_switch_obj = static_cast<Object*>(item.get());
-			f_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
+	void SceneGraph::createCubicals(Node* root) {
+		// Light Switch --|--
+		auto l_switch = loadOBJ("Models/light_switch_scaled.obj");
+		auto l_switch_mat = glm::mat4(1.0f);
+		l_switch_mat = glm::translate(l_switch_mat, glm::vec3(2.0f, 0.3f, 2.4f));
+		l_switch_mat = glm::rotate(l_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		l_switch->model_mat = l_switch_mat;
+		for (auto& item : l_switch->items) {
+			auto l_switch_obj = static_cast<Object*>(item.get());
+			l_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
 		}
-		auto f_switch_obj = static_cast<Object*>(f_switch->items[3].get());
-		auto script = std::make_unique<FanSwitch>(f_switch_obj);
-		script->fan_anim = fan_anim_ptr;
-		f_switch_obj->scripts.push_back(std::move(script));
-		root->addChild(std::move(f_switch));
+		auto l_switch_obj = static_cast<Object*>(l_switch->items[3].get());
+		auto script = std::make_unique<LightSwitch>(l_switch_obj);
+		
+
+		// Cubical 1 ---|---
+		auto cub = std::make_unique<Node>();
+		auto cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 2.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+		// Cubical 2 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 2.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+		// Cubical 3 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+		// Cubical 4 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+		// Cubical 5 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 5.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		// Thermos
+		auto thermos_mat = glm::mat4(1.0f);
+		thermos_mat = glm::translate(thermos_mat, glm::vec3(-0.4f, 1.0f, 0.7f));
+		auto thermos = std::make_unique<Object>("thermos", thermos_mat, "basic", "thermos", "thermos_norm");
+		cub->addItem(std::move(thermos), render_context);
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 6 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+
+		// Cubical 7 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+
+
+
+		// Cubical 8 ---
+		cub = std::make_unique<Node>();
+		cub_mat = glm::mat4(1.0f);
+		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 8.5f));
+		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		cub->model_mat = cub_mat;
+
+		addCubicalObjects(cub.get(), script.get());
+
+		root->addChild(std::move(cub));
+
+		l_switch_obj->scripts.push_back(std::move(script));
+		root->addChild(std::move(l_switch));
 	}
 
 
@@ -467,7 +600,7 @@ namespace vasylnaz {
 
 
 
-		//floor ---|---
+		// Floor ---|---
 		auto floor_mat = glm::mat4(
 			10.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
@@ -476,7 +609,7 @@ namespace vasylnaz {
 		auto floor_obj = std::make_unique<Object>("ground", floor_mat, "basic", "floor", "floor_norm");
 		root->addItem(std::move(floor_obj), render_context);
 
-		//black ceiling  ---|---
+		// Ceiling  ---|---
 		auto ceiling_mat = glm::mat4(1.0f);
 		ceiling_mat = glm::translate(ceiling_mat, glm::vec3(0.0f, 2.5f, 5.0f));
 		ceiling_mat = glm::rotate(ceiling_mat, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -485,129 +618,12 @@ namespace vasylnaz {
 		root->addItem(std::move(ceiling_obj), render_context);
 
 
-
-		// Light Switch --|--
-		auto l_switch = loadOBJ("Models/light_switch_scaled.obj");
-		auto l_switch_mat = glm::mat4(1.0f);
-		l_switch_mat = glm::translate(l_switch_mat, glm::vec3(2.0f, 0.3f, 2.4f));
-		l_switch_mat = glm::rotate(l_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		l_switch->model_mat = l_switch_mat;
-		for (auto& item : l_switch->items) {
-			auto l_switch_obj = static_cast<Object*>(item.get());
-			l_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
-		}
-		root->addChild(std::move(l_switch));
+		// Fan --|--
+		createFan(root.get());
 
 
-
-		createFan(root.get(), render_context);
-
-
-
-		// Cubical 1 ---|---
-		auto cub = std::make_unique<Node>();
-		auto cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 2.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-		
-		root->addChild(std::move(cub));
-
-
-		// Cubical 2 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 2.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
-
-
-		// Cubical 3 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 5.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
-
-
-		// Cubical 4 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 5.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
-
-
-		// Cubical 5 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 5.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		// Thermos
-		auto thermos_mat = glm::mat4(1.0f);
-		thermos_mat = glm::translate(thermos_mat, glm::vec3(-0.4f, 1.0f, 0.7f));
-		auto thermos = std::make_unique<Object>("thermos", thermos_mat, "basic", "thermos", "thermos_norm");
-		cub->addItem(std::move(thermos), render_context);
-
-		root->addChild(std::move(cub));
-
-
-
-		// Cubical 6 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(-2.0f, -0.96f, 8.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
-
-
-
-		// Cubical 7 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(0.5f, -0.96f, 8.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
-
-
-
-
-		// Cubical 8 ---
-		cub = std::make_unique<Node>();
-		cub_mat = glm::mat4(1.0f);
-		cub_mat = glm::translate(cub_mat, glm::vec3(3.0f, -0.96f, 8.5f));
-		cub_mat = glm::rotate(cub_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		cub->model_mat = cub_mat;
-
-		addCubicalObjects(cub.get());
-
-		root->addChild(std::move(cub));
+		// Cubicals --|--
+		createCubicals(root.get());
 
 
 
