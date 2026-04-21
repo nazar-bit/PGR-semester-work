@@ -9,10 +9,14 @@
 #include "Item.hpp"
 #include "Object.hpp"
 #include "Light.hpp"
+#include "NodeScript.hpp"
 
 
 
 namespace vasylnaz {
+
+	class Node;
+
 
 	struct RenderContext {
 		std::unordered_map<RenderQueue, std::vector<Object*>> objects;
@@ -43,6 +47,7 @@ namespace vasylnaz {
 		const long node_id;
 		glm::mat4 model_mat;
 		glm::mat4 global_model_mat;
+		std::vector<std::unique_ptr<NodeScript>> scripts;
 
 		/// @brief 
 		/// @param parent_mat 
@@ -123,10 +128,10 @@ namespace vasylnaz {
 		/// @param node 
 		bool findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node);
 
-
 		void addCubicalObjects(Node* cub);
 
-
 		std::unique_ptr<Node> createWindow(RenderContext& render_context, const glm::vec3& trans_vec);
+
+		void createFan(Node* root, RenderContext& render_context);
 	};
 }

@@ -138,10 +138,12 @@
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="NodeScript.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Params.cpp" />
     <ClCompile Include="PGR-semester-work.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
+    <ClCompile Include="Script.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +153,11 @@
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="NodeScript.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Params.hpp" />
     <ClInclude Include="SceneGraph.hpp" />
+    <ClInclude Include="Script.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
     <ClInclude Include="AssetManager.hpp" />
   </ItemGroup>

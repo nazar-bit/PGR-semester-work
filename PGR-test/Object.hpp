@@ -5,8 +5,7 @@
 #include "Material.hpp"
 #include "AssetManager.hpp"
 #include "Item.hpp"
-#include <functional>
-
+#include "Script.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -15,13 +14,8 @@
 
 namespace vasylnaz {
 
-	class Object;
 
-
-	void doNothing(Object* obj);
-
-
-	void turnOffOnPC(Object* obj);
+	class Script;
 
 
 	class Object : public Item
@@ -31,8 +25,9 @@ namespace vasylnaz {
 		glm::mat4 model_matrix;
 		const Material* material;
 		RenderQueue rq;
-		std::function<void(Object*)> on_click = doNothing;
+		std::vector<std::unique_ptr<Script>> scripts;
 		GLuint em_map;
+		bool clicked = false;
 
 
 		Object(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",

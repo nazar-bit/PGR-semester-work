@@ -57,6 +57,13 @@ namespace vasylnaz {
         semi_trans.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
         semi_trans.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         loadMaterial("semi_trans", semi_trans);
+
+        Material gray;
+        gray.ambient = glm::vec4(0.2f, 0.2f, 0.2f, 0.0f);
+        gray.diffuse = glm::vec4(0.4f, 0.6f, 0.6f, 1.0f);
+        gray.specular = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
+        gray.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        loadMaterial("gray", gray);
     }
 
 

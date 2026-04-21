@@ -14,6 +14,7 @@ namespace vasylnaz {
 
 
 
+
 	void Node::addItem(std::unique_ptr<Item> item, RenderContext& render_context, bool render) {
 		item->updateItem(global_model_mat);
 		if (render)
@@ -45,19 +46,69 @@ namespace vasylnaz {
 	void SceneGraph::update_recursive(std::unique_ptr<Node>& node,
 		const glm::mat4& parent_glob_mat, bool dirty) {
 
-		bool new_dirty = false;
+		for (std::unique_ptr<Item>& item : node->items) {
+			if (Object* obj = dynamic_cast<Object*>(item.get())) {
+				for (auto& script : obj->scripts) {
+					script->update();
+				}
+			}
+		}
+
+		if (node->scripts.size() != 0) {
+			for (auto& script : node->scripts) {
+				script->update();
+			}
+			dirty = true;
+		}
+		
+
 		if (dirty || node->isDirty) {
 			node->update(parent_glob_mat);
 			for (std::unique_ptr<Item>& item : node->items) {
 				item->updateItem(node->global_model_mat);
 			}
 			node->isDirty = false;
-			new_dirty = true;
+			dirty = true;
 		}
 
 		for (std::unique_ptr<Node>& child : node->children) {
-			update_recursive(child, node->global_model_mat, new_dirty);
+			update_recursive(child, node->global_model_mat, dirty);
 		}
+	}
+
+
+
+
+	void SceneGraph::findObject(long id, Actions action) {
+		findObjectRecursive(id, action, root);
+	}
+
+
+	bool SceneGraph::findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node) {
+
+		for (std::unique_ptr<Item>& item : node->items) {
+			if (Object* obj = dynamic_cast<Object*>(item.get())) {
+				if (obj->object_id == id) {
+					if (action == Actions::CLICK) {
+						if (obj->clicked) {
+							obj->clicked = false;
+						}
+						else {
+							obj->clicked = true;
+						}
+					}
+					return true;
+				}
+			}
+		}
+
+		for (std::unique_ptr<Node>& child : node->children) {
+			if (findObjectRecursive(id, action, child)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
@@ -76,8 +127,8 @@ namespace vasylnaz {
 			std::cerr << "ASSIMP Error: " << importer.GetErrorString() << std::endl;
 			return nullptr;
 		}
-		std::cout << "Successfully loaded: " << filepath << std::endl;
-		std::cout << "Total meshes found: " << scene->mNumMeshes << std::endl;
+		std::cout << "----Successfully loaded: " << filepath << std::endl;
+		std::cout << "----Total meshes found: " << scene->mNumMeshes << std::endl;
 
 
 		auto node = std::make_unique<Node>();
@@ -100,16 +151,6 @@ namespace vasylnaz {
 				std::string dif_tex = "blank";
 				std::string norm_map = "blank_norm";
 				std::string em_map = "blank_em";
-				// Get texture name
-				/*if (material->Get(AI_MATKEY_NAME, materialName) == AI_SUCCESS) {
-					std::cout << "Object " << mesh_name
-						<< " uses Texture: " << materialName.C_Str() << std::endl;
-				}
-				else {
-					std::cout << "Object " << mesh_name << " uses an unnamed material." << std::endl;
-					hasDifTex = false;
-				}*/
-
 
 				// Get Diffuse texture
 				if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
@@ -165,33 +206,6 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::findObject(long id, Actions action) {
-		findObjectRecursive(id, action, root);
-	}
-
-
-	bool SceneGraph::findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node) {
-
-		for (std::unique_ptr<Item>& item : node->items) {
-			if (Object* obj = dynamic_cast<Object*>(item.get())) {
-				if (obj->object_id == id) {
-					if (action == Actions::CLICK) {
-						obj->on_click(obj);
-					}
-					return true;
-				}
-			}
-		}
-
-		for (std::unique_ptr<Node>& child : node->children) {
-			if (findObjectRecursive(id, action, child)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 
 
 	void addWallObjects(Node* wall, RenderContext& render_context, const glm::vec3& scale_vec) {
@@ -241,7 +255,7 @@ namespace vasylnaz {
 		// MAC
 		auto mac = loadOBJ("Models/mac_scaled.obj");
 		auto screen = static_cast<Object*>(mac->items[0].get());
-		screen->on_click = turnOffOnPC;
+		screen->scripts.push_back(std::move(std::make_unique<PCScript>(screen)));
 		mac->model_mat = mac_mat;
 		cub->addChild(std::move(mac));
 
@@ -278,6 +292,38 @@ namespace vasylnaz {
 		window_mat = glm::rotate(window_mat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		window->model_mat = window_mat;
 		return std::move(window);
+	}
+
+
+
+	void SceneGraph::createFan(Node* root, RenderContext& render_context) {
+		// Fan --|--
+		auto fan = loadOBJ("Models/ceiling_fan_1k.gltf.obj");
+		auto fan_anim = std::make_unique<FanAnim>(fan.get());
+		auto fan_anim_ptr = fan_anim.get();
+		fan->scripts.push_back(std::move(fan_anim));
+		auto fan_mat = glm::mat4(1.0f);
+		fan_mat = glm::translate(fan_mat, glm::vec3(0.0f, 2.5f, 6.0f));
+		fan_mat = glm::rotate(fan_mat, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		fan->model_mat = fan_mat;
+		root->addChild(std::move(fan));
+
+
+		// Fan Switch --|--
+		auto f_switch = loadOBJ("Models/light_switch_scaled.obj");
+		auto f_switch_mat = glm::mat4(1.0f);
+		f_switch_mat = glm::translate(f_switch_mat, glm::vec3(2.0f, 0.3f, 2.6f));
+		f_switch_mat = glm::rotate(f_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		f_switch->model_mat = f_switch_mat;
+		for (auto& item : f_switch->items) {
+			auto f_switch_obj = static_cast<Object*>(item.get());
+			f_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
+		}
+		auto f_switch_obj = static_cast<Object*>(f_switch->items[3].get());
+		auto script = std::make_unique<FanSwitch>(f_switch_obj);
+		script->fan_anim = fan_anim_ptr;
+		f_switch_obj->scripts.push_back(std::move(script));
+		root->addChild(std::move(f_switch));
 	}
 
 
@@ -440,6 +486,24 @@ namespace vasylnaz {
 
 
 
+		// Light Switch --|--
+		auto l_switch = loadOBJ("Models/light_switch_scaled.obj");
+		auto l_switch_mat = glm::mat4(1.0f);
+		l_switch_mat = glm::translate(l_switch_mat, glm::vec3(2.0f, 0.3f, 2.4f));
+		l_switch_mat = glm::rotate(l_switch_mat, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		l_switch->model_mat = l_switch_mat;
+		for (auto& item : l_switch->items) {
+			auto l_switch_obj = static_cast<Object*>(item.get());
+			l_switch_obj->material = AssetManager::getInstance().getMaterial("gray");
+		}
+		root->addChild(std::move(l_switch));
+
+
+
+		createFan(root.get(), render_context);
+
+
+
 		// Cubical 1 ---|---
 		auto cub = std::make_unique<Node>();
 		auto cub_mat = glm::mat4(1.0f);
@@ -544,6 +608,20 @@ namespace vasylnaz {
 		addCubicalObjects(cub.get());
 
 		root->addChild(std::move(cub));
+
+
+
+		// Door --|--
+		auto door = loadOBJ("Models/door_scaled.obj");
+		auto door_mat = glm::mat4(1.0f);
+		door_mat = glm::translate(door_mat, glm::vec3(2.1f, -1.0f, 1.5f));
+		door_mat = glm::rotate(door_mat, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		door->model_mat = door_mat;
+		root->addChild(std::move(door));
+
+
+
+		
 
 		
 		
