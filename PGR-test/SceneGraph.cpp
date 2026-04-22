@@ -606,7 +606,7 @@ namespace vasylnaz {
 			0.0f, 1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 10.0f, 0.0f,
 			0.0f, -0.7f, 5.0f, 1.0f);
-		auto floor_obj = std::make_unique<Object>("ground", floor_mat, "basic", "floor", "floor_norm");
+		auto floor_obj = std::make_unique<Object>("ground", floor_mat, "floor", "floor", "floor_norm");
 		root->addItem(std::move(floor_obj), render_context);
 
 		// Ceiling  ---|---
@@ -635,6 +635,18 @@ namespace vasylnaz {
 		door->model_mat = door_mat;
 		root->addChild(std::move(door));
 
+
+
+
+		// Fern --|--
+		auto fern = loadOBJ("Models/fern.obj", 0, 10000, false);
+		auto fern_mat = glm::mat4(1.0f);
+		fern_mat = glm::translate(fern_mat, glm::vec3(4.0f, -0.7f, 4.0f));
+		fern->model_mat = fern_mat;
+		auto fern_leaf = static_cast<Object*>(fern->items[1].get());
+		fern_leaf->rq = RenderQueue::LEAF_MASK;
+		fern->renderItems(render_context);
+		root->addChild(std::move(fern));
 
 
 		

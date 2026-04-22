@@ -4,34 +4,54 @@
 namespace vasylnaz {
 
 
-	
-	void ShaderProgram::generateUBOs() {
-		// ------- Material
-		glGenBuffers(1, &uboMaterial);
-		glBindBuffer(GL_UNIFORM_BUFFER, uboMaterial);
+	const GLuint MATERIAL_BINDING_POINT = 0;
+	const GLuint LIGHT_BINDING_POINT = 1;
+
+	GLuint globalUboMaterial = 0;
+	GLuint globalUboLight = 0;
+
+
+	void initializeSharedUBOs() {
+		glGenBuffers(1, &globalUboMaterial);
+		glBindBuffer(GL_UNIFORM_BUFFER, globalUboMaterial);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Material), NULL, GL_DYNAMIC_DRAW);
+		glBindBufferBase(GL_UNIFORM_BUFFER, MATERIAL_BINDING_POINT, globalUboMaterial);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, materialBindingPoint, uboMaterial);
-		GLuint blockIndex = glGetUniformBlockIndex(shaderProgram, "Material");
-
-		glUniformBlockBinding(shaderProgram, blockIndex, materialBindingPoint);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-		// ------- Light
-		glGenBuffers(1, &uboLightBlock);
-		glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
+		glGenBuffers(1, &globalUboLight);
+		glBindBuffer(GL_UNIFORM_BUFFER, globalUboLight);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(LightBlockData), NULL, GL_DYNAMIC_DRAW);
+		glBindBufferBase(GL_UNIFORM_BUFFER, LIGHT_BINDING_POINT, globalUboLight);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, lightBindingPoint, uboLightBlock);
-		blockIndex = glGetUniformBlockIndex(shaderProgram, "LightBlock");
-
-		glUniformBlockBinding(shaderProgram, blockIndex, lightBindingPoint);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
 
+
+	void updateLights(const LightBlockData& newLightData) {
+		glBindBuffer(GL_UNIFORM_BUFFER, globalUboLight);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightBlockData), &newLightData);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+
+	
+	void ShaderProgram::bindUBOs() {
+		// Material
+		GLuint materialBlockIndex = glGetUniformBlockIndex(shaderProgram, "Material");
+		if (materialBlockIndex != GL_INVALID_INDEX) {
+			glUniformBlockBinding(shaderProgram, materialBlockIndex, MATERIAL_BINDING_POINT);
+		}
+
+		// Light
+		GLuint lightBlockIndex = glGetUniformBlockIndex(shaderProgram, "LightBlock");
+		if (lightBlockIndex != GL_INVALID_INDEX) {
+			glUniformBlockBinding(shaderProgram, lightBlockIndex, LIGHT_BINDING_POINT);
+		}
+	}
+
+
 	void ShaderProgram::loadMaterial(const Material& material) const {
-		glBindBuffer(GL_UNIFORM_BUFFER, uboMaterial);
+		glBindBuffer(GL_UNIFORM_BUFFER, globalUboMaterial);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Material), &material);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
@@ -64,13 +84,6 @@ namespace vasylnaz {
 	}
 
 
-	void ShaderProgram::update_light(const LightBlockData& LBD) const {
-		glBindBuffer(GL_UNIFORM_BUFFER, uboLightBlock);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightBlockData), &LBD);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	}
-
-
 	void ShaderProgram::loadId(const long object_id) const {
 		if (positionId != -1)
 		{
@@ -98,6 +111,7 @@ namespace vasylnaz {
 		positionVM = glGetUniformLocation(shaderProgram, "VM");
 		positionVN = glGetUniformLocation(shaderProgram, "VN");
 		positionP = glGetUniformLocation(shaderProgram, "P");
+		positionTime = glGetUniformLocation(shaderProgram, "time");
 
 		positionGlobalAmb = glGetUniformLocation(shaderProgram, "global_ambient");
 		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");

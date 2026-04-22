@@ -21,6 +21,20 @@ namespace vasylnaz {
 	};
 
 
+
+	const extern GLuint MATERIAL_BINDING_POINT;
+	const extern GLuint LIGHT_BINDING_POINT;
+
+	extern GLuint globalUboMaterial;
+	extern GLuint globalUboLight;
+
+
+	void initializeSharedUBOs();
+
+	void updateLights(const LightBlockData& newLightData);
+
+
+
 	class ShaderProgram
 	{
 	public:
@@ -33,6 +47,7 @@ namespace vasylnaz {
 		GLuint positionVM = -1;
 		GLuint positionVN = -1;
 		GLuint positionP = -1;
+		GLuint positionTime = -1;
 
 		GLuint positionGlobalAmb = -1;
 		GLuint positionDiffuseMap = -1;
@@ -60,26 +75,19 @@ namespace vasylnaz {
 		void loadId(const long object_id) const;
 
 
-		void update_light(const LightBlockData& LBD) const;
+		void bindUBOs();
 
 
-		void generateUBOs();
-
-
-		const GLuint& getUboMaterial() const {
-			return uboMaterial;
-		}
 
 
 	private:
-		GLuint uboMaterial;
-		const GLuint materialBindingPoint = 0;
-		const GLuint lightBindingPoint = 1;
-
-		GLuint uboLightBlock;
 	};
 
 
 
 	std::string loadShaderSource(const std::string& filepath);
+
+
+
+
 }

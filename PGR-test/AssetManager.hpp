@@ -8,7 +8,7 @@
 #include "pgr.h"
 #include "Material.hpp"
 #include "Mesh.hpp"
-#include "ShaderManager.hpp"
+
 
 using std::string;
 
@@ -30,7 +30,7 @@ namespace vasylnaz {
 		AssetManager& operator=(AssetManager&&) = delete;
 
 		
-		void init(ShaderProgram& shader_manager);
+		void init();
 
 		/// @brief 
 		/// @param name 

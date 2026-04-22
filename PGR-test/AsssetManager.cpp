@@ -2,7 +2,7 @@
 
 namespace vasylnaz {
 
-    void AssetManager::init(ShaderProgram& shader_manager) {
+    void AssetManager::init() {
        
         //diffuse
         loadTetxure("thermos", "Textures/plastic_thermos.png");
@@ -64,6 +64,13 @@ namespace vasylnaz {
         gray.specular = glm::vec4(1.0f, 1.0f, 1.0f, 100.0f);
         gray.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         loadMaterial("gray", gray);
+
+        Material floor;
+        floor.ambient = glm::vec4(0.2f, 0.2f, 0.2f, 0.0f);
+        floor.diffuse = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+        floor.specular = glm::vec4(0.4f, 0.4f, 0.4f, 20.0f);
+        floor.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        loadMaterial("floor", floor);
     }
 
 

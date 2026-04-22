@@ -164,6 +164,7 @@
   <ItemGroup>
     <None Include="basic.frag" />
     <None Include="basic.vert" />
+    <None Include="leaf.vert" />
     <None Include="pick.frag" />
     <None Include="pick.vert" />
     <None Include="skybox.frag" />

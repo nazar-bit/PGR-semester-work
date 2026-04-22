@@ -100,5 +100,6 @@
     <None Include="pick.frag" />
     <None Include="skybox.vert" />
     <None Include="skybox.frag" />
+    <None Include="leaf.vert" />
   </ItemGroup>
 </Project>

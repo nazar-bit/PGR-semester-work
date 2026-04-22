@@ -19,6 +19,7 @@ namespace vasylnaz {
     ShaderProgram shader_program;
     ShaderProgram skybox_program;
     ShaderProgram pick_prog;
+    ShaderProgram leaf_program;
 
 
     Camera camera = Camera(
@@ -48,14 +49,18 @@ namespace vasylnaz {
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
+        initializeSharedUBOs();
 
         shader_program.compile_shaders("basic.vert", "basic.frag");
-        shader_program.generateUBOs();
+        shader_program.bindUBOs();
 
         skybox_program.compile_shaders("skybox.vert", "skybox.frag");
 
+        leaf_program.compile_shaders("leaf.vert", "basic.frag");
+        leaf_program.bindUBOs();
+
         pick_prog.compile_shaders("pick.vert", "pick.frag");
-        AssetManager::getInstance().init(shader_program);
+        AssetManager::getInstance().init();
 
        
         const float vertices[] = {
@@ -134,11 +139,12 @@ namespace vasylnaz {
         Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
         scene_graph.render_context.light_block.updateViewSpacePositions(View);
-        shader_program.update_light(scene_graph.render_context.light_block.getLBD());
+        updateLights(scene_graph.render_context.light_block.getLBD());
 
         input_handler.update_camera(camera, pick_prog, scene_graph, View, Projection);
         scene_graph.update();
 
+        float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
@@ -146,8 +152,8 @@ namespace vasylnaz {
 
         glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glUseProgram(shader_program.shaderProgram);
 
+        glUseProgram(shader_program.shaderProgram);
         glUniformMatrix4fv(shader_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
@@ -156,6 +162,17 @@ namespace vasylnaz {
             obj->draw(shader_program, View);
         }
 
+        // Leafs
+        glUseProgram(leaf_program.shaderProgram);
+        glUniform1f(leaf_program.positionTime, time);
+        glUniformMatrix4fv(leaf_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
+        glUniform3fv(leaf_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+
+        glDisable(GL_CULL_FACE);
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::LEAF_MASK]) {
+            obj->draw(leaf_program, View);
+        }
+        glEnable(GL_CULL_FACE);
 
         // Skybox
         glUseProgram(skybox_program.shaderProgram);

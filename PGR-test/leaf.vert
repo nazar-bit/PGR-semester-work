@@ -1,0 +1,47 @@
+#version 330
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec3 tex_coords;
+layout(location = 3) in vec3 tangent;
+uniform mat4 VM;
+uniform mat4 VN;
+uniform mat4 P;
+
+uniform float time;
+
+out vec4 fg_position;
+out vec2 fg_tex_coords;
+out mat3 TBN;
+
+void main() {
+  
+    float speed = 1.0;     
+    float tightness = 1.0; 
+    float height_factor = 2.0;
+    float bend_width_factor = 0.25;
+
+    float phase = (time * speed) - (position.z * tightness);
+    float bend_factor = pow(position.y - 0.5, height_factor) * bend_width_factor;
+    float z_offset = bend_factor * sin(phase);
+
+    vec3 new_pos = position + vec3(0.0, 0.0, z_offset);
+
+    mat4 PVM = P * VM;
+    gl_Position = PVM * vec4(new_pos, 1.0);
+    
+    fg_position = VM * vec4(new_pos, 1.0);
+    //fg_tex_coords = vec2(tex_coords.x, tex_coords.y);
+
+    float scaleX = length(vec3(VM[0]));
+    float scaleZ = length(vec3(VM[2]));
+    fg_tex_coords = vec2(tex_coords.x * scaleX, tex_coords.y * scaleZ);
+
+    vec3 T = normalize(vec3(VN * vec4(tangent, 0.0)));
+    vec3 N = normalize(vec3(VN * vec4(normal, 0.0)));
+    
+    T = normalize(T - dot(T, N) * N);
+    vec3 B = cross(N, T);
+    TBN = mat3(T, B, N);
+}
+
