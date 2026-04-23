@@ -20,6 +20,7 @@ namespace vasylnaz {
     ShaderProgram skybox_program;
     ShaderProgram pick_prog;
     ShaderProgram leaf_program;
+    ShaderProgram tv_program;
 
 
     Camera camera = Camera(
@@ -58,6 +59,9 @@ namespace vasylnaz {
 
         leaf_program.compile_shaders("leaf.vert", "basic.frag");
         leaf_program.bindUBOs();
+
+        tv_program.compile_shaders("basic.vert", "tv.frag");
+        tv_program.bindUBOs();
 
         pick_prog.compile_shaders("pick.vert", "pick.frag");
         AssetManager::getInstance().init();
@@ -162,17 +166,34 @@ namespace vasylnaz {
             obj->draw(shader_program, View);
         }
 
+
+        glDisable(GL_CULL_FACE);
+        // No Culling
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::NO_CULLING_MASK]) {
+            obj->draw(shader_program, View);
+        }
+
         // Leafs
         glUseProgram(leaf_program.shaderProgram);
         glUniform1f(leaf_program.positionTime, time);
         glUniformMatrix4fv(leaf_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(leaf_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        glDisable(GL_CULL_FACE);
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::LEAF_MASK]) {
             obj->draw(leaf_program, View);
         }
         glEnable(GL_CULL_FACE);
+
+
+        // TV screen
+        glUseProgram(tv_program.shaderProgram);
+        glUniform1f(tv_program.positionTime, time);
+        glUniformMatrix4fv(tv_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
+        glUniform3fv(tv_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+
+        for (const auto& obj : scene_graph.render_context.objects[RenderQueue::TV_SCREEN_MASK]) {
+            obj->draw(tv_program, View);
+        }
 
         // Skybox
         glUseProgram(skybox_program.shaderProgram);

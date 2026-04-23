@@ -13,8 +13,6 @@ namespace vasylnaz {
 	}
 
 
-
-
 	void Node::addItem(std::unique_ptr<Item> item, RenderContext& render_context, bool render) {
 		item->updateItem(global_model_mat);
 		if (render)
@@ -624,6 +622,23 @@ namespace vasylnaz {
 
 		// Cubicals --|--
 		createCubicals(root.get());
+
+
+		// TV --|--
+		// Screen - 14
+		auto tv = loadOBJ("Models/retro_tv.obj", 0, 10000, false);
+		auto tv_mat = glm::mat4(1.0f);
+		tv_mat = glm::translate(tv_mat, glm::vec3(-4.3f, -0.17f, 0.7f));
+		tv_mat = glm::rotate(tv_mat, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		tv->model_mat = tv_mat;
+		for (auto& item : tv->items) {
+			auto tv_obj = static_cast<Object*>(item.get());
+			tv_obj->rq = RenderQueue::NO_CULLING_MASK;
+		}
+		auto tv_obj = static_cast<Object*>(tv->items[15].get());
+		tv_obj->rq = RenderQueue::TV_SCREEN_MASK;
+		tv->renderItems(render_context);
+		root->addChild(std::move(tv));
 
 
 

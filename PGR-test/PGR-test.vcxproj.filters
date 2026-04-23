@@ -101,5 +101,6 @@
     <None Include="skybox.vert" />
     <None Include="skybox.frag" />
     <None Include="leaf.vert" />
+    <None Include="tv.frag" />
   </ItemGroup>
 </Project>
