@@ -92,6 +92,9 @@
     <ClInclude Include="NodeScript.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Curve.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.vert" />
@@ -102,5 +105,7 @@
     <None Include="skybox.frag" />
     <None Include="leaf.vert" />
     <None Include="tv.frag" />
+    <None Include="line.vert" />
+    <None Include="line.frag" />
   </ItemGroup>
 </Project>

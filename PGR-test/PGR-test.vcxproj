@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Curve.hpp" />
     <ClInclude Include="InputHandler.hpp" />
     <ClInclude Include="Item.hpp" />
     <ClInclude Include="Light.hpp" />
@@ -165,6 +166,8 @@
     <None Include="basic.frag" />
     <None Include="basic.vert" />
     <None Include="leaf.vert" />
+    <None Include="line.frag" />
+    <None Include="line.vert" />
     <None Include="pick.frag" />
     <None Include="pick.vert" />
     <None Include="skybox.frag" />

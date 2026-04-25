@@ -10,6 +10,7 @@
 #include "AssetManager.hpp"
 #include "SceneGraph.hpp"
 #include "Params.hpp"
+#include "Curve.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -21,6 +22,7 @@ namespace vasylnaz {
     ShaderProgram pick_prog;
     ShaderProgram leaf_program;
     ShaderProgram tv_program;
+    ShaderProgram line_drawer;
 
 
     Camera camera = Camera(
@@ -40,6 +42,8 @@ namespace vasylnaz {
 
     InputHandler input_handler;
     SceneGraph scene_graph;
+
+    std::unique_ptr<Curve> curve;
 
 
 
@@ -63,74 +67,19 @@ namespace vasylnaz {
         tv_program.compile_shaders("basic.vert", "tv.frag");
         tv_program.bindUBOs();
 
+        line_drawer.compile_shaders("line.vert", "line.frag");
+
         pick_prog.compile_shaders("pick.vert", "pick.frag");
         AssetManager::getInstance().init();
 
-       
-        const float vertices[] = {
-            // Front face
-            -0.5f, -0.5f,  0.5f,  // 0: Bottom-left
-             0.5f, -0.5f,  0.5f,  // 1: Bottom-right
-             0.5f,  0.5f,  0.5f,  // 2: Top-right
-            -0.5f,  0.5f,  0.5f,  // 3: Top-left
-
-            // Back face
-             0.5f, -0.5f, -0.5f,  // 4: Bottom-left (facing back)
-            -0.5f, -0.5f, -0.5f,  // 5: Bottom-right
-            -0.5f,  0.5f, -0.5f,  // 6: Top-right
-             0.5f,  0.5f, -0.5f,  // 7: Top-left
-
-             // Left face
-             -0.5f, -0.5f, -0.5f,  // 8: Bottom-left
-             -0.5f, -0.5f,  0.5f,  // 9: Bottom-right
-             -0.5f,  0.5f,  0.5f,  // 10: Top-right
-             -0.5f,  0.5f, -0.5f,  // 11: Top-left
-
-             // Right face
-              0.5f, -0.5f,  0.5f,  // 12: Bottom-left
-              0.5f, -0.5f, -0.5f,  // 13: Bottom-right
-              0.5f,  0.5f, -0.5f,  // 14: Top-right
-              0.5f,  0.5f,  0.5f,  // 15: Top-left
-
-              // Top face
-              -0.5f,  0.5f,  0.5f,  // 16: Bottom-left
-               0.5f,  0.5f,  0.5f,  // 17: Bottom-right
-               0.5f,  0.5f, -0.5f,  // 18: Top-right
-              -0.5f,  0.5f, -0.5f,  // 19: Top-left
-
-              // Bottom face
-              -0.5f, -0.5f, -0.5f,  // 20: Bottom-left
-               0.5f, -0.5f, -0.5f,  // 21: Bottom-right
-               0.5f, -0.5f,  0.5f,  // 22: Top-right
-              -0.5f, -0.5f,  0.5f   // 23: Top-left
-        };
-
-        // 24 normals (nx, ny, nz) - 72 floats total
-        const float normals[] = {
-            // Front face (Normal pointing towards +z)
-            0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-            // Back face (Normal pointing towards -z)
-            0.0f, 0.0f, -1.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f, -1.0f,
-            // Left face (Normal pointing towards -x)
-            -1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,  -1.0f, 0.0f, 0.0f,
-            // Right face (Normal pointing towards +x)
-            1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-            // Top face (Normal pointing towards +y)
-            0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-            // Bottom face (Normal pointing towards -y)
-            0.0f, -1.0f, 0.0f,  0.0f, -1.0f, 0.0f,  0.0f, -1.0f, 0.0f,  0.0f, -1.0f, 0.0f
-        };
-
-        // 36 indices defining the 12 triangles
-        const unsigned int indices[] = {
-             0,  1,  2,   2,  3,  0,  // Front
-             4,  5,  6,   6,  7,  4,  // Back
-             8,  9, 10,  10, 11,  8,  // Left
-            12, 13, 14,  14, 15, 12,  // Right
-            16, 17, 18,  18, 19, 16,  // Top
-            20, 21, 22,  22, 23, 20   // Bottom
-        };
-
+        auto points = std::vector<glm::vec3>();
+        points.push_back(glm::vec3(0.0f, 0.0f, 5.0f));
+        points.push_back(glm::vec3(0.0f, 1.0f, 4.0f));
+        points.push_back(glm::vec3(1.0f, 1.0f, 5.0f));
+        points.push_back(glm::vec3(1.0f, 0.0f, 5.0f));
+        auto curv = std::unique_ptr<Curve>(new Curve(points));
+        curv->buildCurve(1000);
+        curve = std::move(curv);
 
         scene_graph.init(shader_program);
     }
@@ -182,6 +131,13 @@ namespace vasylnaz {
         for (const auto& obj : scene_graph.render_context.objects[RenderQueue::LEAF_MASK]) {
             obj->draw(leaf_program, View);
         }
+
+
+        // Curves
+        glUseProgram(line_drawer.shaderProgram);
+        glUniformMatrix4fv(line_drawer.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
+        curve->draw(line_drawer, View);
+
         glEnable(GL_CULL_FACE);
 
 
