@@ -43,7 +43,6 @@ namespace vasylnaz {
     InputHandler input_handler;
     SceneGraph scene_graph;
 
-    std::unique_ptr<Curve> curve;
 
 
 
@@ -54,6 +53,7 @@ namespace vasylnaz {
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
+        // Compile Shaders
         initializeSharedUBOs();
 
         shader_program.compile_shaders("basic.vert", "basic.frag");
@@ -77,9 +77,11 @@ namespace vasylnaz {
         points.push_back(glm::vec3(0.0f, 1.0f, 4.0f));
         points.push_back(glm::vec3(1.0f, 1.0f, 5.0f));
         points.push_back(glm::vec3(1.0f, 0.0f, 5.0f));
+        points.push_back(glm::vec3(5.0f, 0.0f, 5.0f));
         auto curv = std::unique_ptr<Curve>(new Curve(points));
-        curv->buildCurve(1000);
-        curve = std::move(curv);
+        camera.addCurve(std::move(curv), scene_graph.render_context);
+
+        camera.initViewPoints();
 
         scene_graph.init(shader_program);
     }
@@ -98,6 +100,9 @@ namespace vasylnaz {
         scene_graph.update();
 
         float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+
+        camera.update(time);
+        
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
@@ -135,8 +140,15 @@ namespace vasylnaz {
 
         // Curves
         glUseProgram(line_drawer.shaderProgram);
+        glUniform3fv(line_drawer.positionColor, 1, glm::value_ptr(debugColor));
         glUniformMatrix4fv(line_drawer.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
-        curve->draw(line_drawer, View);
+        for (const auto& curve : scene_graph.render_context.curves) {
+            curve->draw(line_drawer, View);
+        }
+
+        //Points
+        glUniform3fv(line_drawer.positionColor, 1, glm::value_ptr(pointDebugColor));
+        camera.drawViewPoints(line_drawer, View);
 
         glEnable(GL_CULL_FACE);
 

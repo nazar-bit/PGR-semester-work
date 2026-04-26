@@ -10,6 +10,7 @@
 #include "Object.hpp"
 #include "Light.hpp"
 #include "NodeScript.hpp"
+#include "Curve.hpp"
 
 
 
@@ -20,6 +21,7 @@ namespace vasylnaz {
 
 	struct RenderContext {
 		std::unordered_map<RenderQueue, std::vector<Object*>> objects;
+		std::vector<Curve*> curves;
 		LightBlock light_block;
 	};
 

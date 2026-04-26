@@ -119,6 +119,7 @@ namespace vasylnaz {
 		positionEmmisionMap = glGetUniformLocation(shaderProgram, "emSampler");
 
 		positionId = glGetUniformLocation(shaderProgram, "id");
+		positionColor = glGetUniformLocation(shaderProgram, "color_fg");
 	}
 
 

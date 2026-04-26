@@ -55,6 +55,7 @@ namespace vasylnaz {
 		GLuint positionEmmisionMap = -1;
 
 		GLuint positionId = -1;
+		GLuint positionColor = -1;
 
 
 		void compile_shaders(const std::string& vert_loc, const std::string& frag_loc);

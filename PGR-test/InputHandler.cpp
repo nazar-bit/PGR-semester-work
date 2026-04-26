@@ -97,21 +97,40 @@ namespace vasylnaz {
 		glm::vec3 forward = -camera.target;
 		glm::vec3 right = glm::normalize(glm::cross(forward, camera.up));
 
+		bool input = false;
 		if (keys_state['w'] || special_keys_state[GLUT_KEY_UP])
 		{
 			camera.position += forward * camera.movement_speed;
+			input = true;
 		}
 		if (keys_state['s'] || special_keys_state[GLUT_KEY_DOWN])
 		{
 			camera.position -= forward * camera.movement_speed;
+			input = true;
 		}
 		if (keys_state['a'] || special_keys_state[GLUT_KEY_LEFT])
 		{
 			camera.position -= right * camera.movement_speed;
+			input = true;
 		}
 		if (keys_state['d'] || special_keys_state[GLUT_KEY_RIGHT])
 		{
 			camera.position += right * camera.movement_speed;
+			input = true;
+		}
+
+		if (input && camera.current_curve != nullptr) {
+			camera.changeCurve(nullptr);
+		}
+
+		if (keys_state['1'])
+		{
+			camera.changeCurve(camera.curves[0].get());
+		}
+
+		if (keys_state['p'])
+		{
+			camera.moveToViewPoint(camera.view_points[0]);
 		}
 	}
 
