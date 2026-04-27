@@ -36,5 +36,28 @@ namespace vasylnaz {
 
 
 
+	CurveMovement::CurveMovement(Node* owner, std::unique_ptr<Curve> curve)
+		: NodeScript(owner), curve(std::move(curve))
+	{
+		//
+	}
+
+
+	void CurveMovement::update() {
+		float global_time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+
+		auto new_pos = curve->moveAlong((global_time - movement_start) * speed);
+		if (glm::any(glm::isnan(new_pos))) {
+			movement_start = global_time;
+			return;
+		}
+		else {
+			owner->model_mat[3] = glm::vec4(new_pos, 1.0f);
+		}
+	}
+
+
+
+
 
 }

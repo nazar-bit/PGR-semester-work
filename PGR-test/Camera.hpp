@@ -3,11 +3,15 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "SceneGraph.hpp"
+
 #include "Curve.hpp"
+#include "Params.hpp"
 
 
 namespace vasylnaz {
+
+    struct RenderContext;
+    class Node;
 
     extern glm::vec3 pointDebugColor;
 
@@ -39,6 +43,8 @@ namespace vasylnaz {
         float curve_movement_start = -1;
         float curve_speed = 2.0f;
         std::vector<ViewPoint> view_points;
+        std::vector<Node*> follow_nodes;
+        Node* current_node = nullptr;
 
         /// @brief 
         /// @param position 
@@ -61,6 +67,8 @@ namespace vasylnaz {
         void moveToViewPoint(ViewPoint& view_point);
 
         void changeCurve(Curve* curve);
+
+        void followNode(Node* node);
 
         void update(float global_time);
 

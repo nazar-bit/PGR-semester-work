@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "SceneGraph.hpp"
 
 
 namespace vasylnaz {
@@ -7,9 +8,14 @@ namespace vasylnaz {
 
 
     void Camera::addCurve(std::unique_ptr<Curve> curve, RenderContext& rq) {
-        curve->buildCurve(1000);
+        curve->buildCurve(CURVE_PRECISION);
         rq.curves.push_back(curve.get());
         curves.push_back(std::move(curve));
+    }
+
+
+    void Camera::followNode(Node* node) {
+        current_node = node;
     }
 
 
@@ -35,6 +41,13 @@ namespace vasylnaz {
 
 
     void Camera::update(float global_time) {
+        if (current_node != nullptr) {
+            position = current_node->model_mat[3];
+            position.y += 0.3f;
+            position.x -= 0.7f;
+            return;
+        }
+
         if (current_curve == nullptr) {
             return;
         }

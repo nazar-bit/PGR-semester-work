@@ -459,7 +459,7 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::init(ShaderProgram& shader_manager) {
+	void SceneGraph::init(ShaderProgram& shader_manager, Camera& camera) {
 		// 1
 		
 		// 2
@@ -665,7 +665,47 @@ namespace vasylnaz {
 
 
 		
+		// Car --|--
+		auto car = loadOBJ("Models/car_scaled.obj");
+		auto car_mat = glm::mat4(1.0f);
+		car->model_mat = car_mat;
 
+		auto points = std::vector<glm::vec3>();
+		float height = -0.69f;
+		points.push_back(glm::vec3(2.0f, height, 7.0f));
+		points.push_back(glm::vec3(-1.0f, height, 7.0f));
+		points.push_back(glm::vec3(-4.0f, height, 7.0f));
+
+		points.push_back(glm::vec3(-4.0f, height, 5.0f));
+		points.push_back(glm::vec3(-4.0f, height, 4.0f));
+		points.push_back(glm::vec3(-4.0f, height, 3.0f));
+		points.push_back(glm::vec3(-4.0f, height, 2.0f));
+		points.push_back(glm::vec3(-4.0f, height, 1.0f));
+
+		points.push_back(glm::vec3(-3.0f, height, 1.0f));
+		points.push_back(glm::vec3(-1.0f, height, 1.0f));
+		points.push_back(glm::vec3(1.0f, height, 1.0f));
+		points.push_back(glm::vec3(1.0f, height, 2.0f));
+		points.push_back(glm::vec3(1.0f, height, 5.0f));
+		points.push_back(glm::vec3(1.0f, height, 8.0f));
+
+		points.push_back(glm::vec3(1.0f, height, 9.5f));
+		points.push_back(glm::vec3(2.0f, height, 9.5f));
+		points.push_back(glm::vec3(3.0f, height, 9.5f));
+		points.push_back(glm::vec3(4.0f, height, 9.5f));
+
+		points.push_back(glm::vec3(4.0f, height, 8.0f));
+		points.push_back(glm::vec3(4.0f, height, 7.0f));
+
+		points.push_back(glm::vec3(2.0f, height, 7.0f));
+		auto curv = std::make_unique<Curve>(points);
+		curv->buildCurve(CURVE_PRECISION);
+		render_context.curves.push_back(curv.get());
+		
+		car->scripts.push_back(std::make_unique<CurveMovement>(car.get(), std::move(curv)));
+		//render_context.curves.push_back(static_cast<CurveMovement*>(car->scripts[0].get())->getCurve());
+		camera.follow_nodes.push_back(car.get());
+		root->addChild(std::move(car));
 		
 		
 

@@ -11,6 +11,8 @@
 #include "Light.hpp"
 #include "NodeScript.hpp"
 #include "Curve.hpp"
+#include "Params.hpp"
+#include "Camera.hpp"
 
 
 
@@ -105,7 +107,7 @@ namespace vasylnaz {
 
 		/// @brief 
 		/// @param asset_manager 
-		void init(ShaderProgram& shader_manager);
+		void init(ShaderProgram& shader_manager, Camera& camera);
 
 		/// @brief 
 		/// @param id 

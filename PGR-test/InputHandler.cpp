@@ -119,18 +119,29 @@ namespace vasylnaz {
 			input = true;
 		}
 
-		if (input && camera.current_curve != nullptr) {
+		if (input) {
 			camera.changeCurve(nullptr);
+			camera.followNode(nullptr);
 		}
-
+		// Pre defined Curves
 		if (keys_state['1'])
 		{
 			camera.changeCurve(camera.curves[0].get());
 		}
-
+		if (keys_state['2'])
+		{
+			camera.changeCurve(camera.curves[1].get());
+		}
+		// Static Points
 		if (keys_state['p'])
 		{
 			camera.moveToViewPoint(camera.view_points[0]);
+		}
+		// Follow Nodes
+		if (keys_state['0'])
+		{
+			camera.changeCurve(nullptr);
+			camera.followNode(camera.follow_nodes[0]);
 		}
 	}
 

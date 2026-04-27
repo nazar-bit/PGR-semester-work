@@ -83,7 +83,7 @@ namespace vasylnaz {
 
         camera.initViewPoints();
 
-        scene_graph.init(shader_program);
+        scene_graph.init(shader_program, camera);
     }
 
 

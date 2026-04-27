@@ -1,6 +1,6 @@
-input_filename = 'light_switch.obj'
-output_filename = 'light_switch_scaled.obj'
-scale_factor = 2.0  # Adjust this value to get the exact size you need
+input_filename = '3d_car.obj'
+output_filename = 'car_scaled.obj'
+scale_factor = 0.08  # Adjust this value to get the exact size you need
 
 with open(input_filename, 'r') as f_in, open(output_filename, 'w') as f_out:
     for line in f_in:
