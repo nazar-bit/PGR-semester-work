@@ -78,7 +78,9 @@ namespace vasylnaz {
 			std::cout << "clicked on object " << (int)pixel[0]
 				<< " in depth " << (float)pixel[2] * MAX_DEPTH / 255
 				<< std::endl;
-			scene_graph.findObject((long)pixel[0], Actions::CLICK);
+			long id = (long)pixel[3];
+			id = (id << 8) | (long)pixel[0];
+			scene_graph.findObject(id, Actions::CLICK);
 		}
 
 		glutPostRedisplay();

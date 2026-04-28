@@ -102,7 +102,8 @@ namespace vasylnaz {
         float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
 
         camera.update(time);
-        
+
+
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);

@@ -87,7 +87,7 @@ namespace vasylnaz {
 	void ShaderProgram::loadId(const long object_id) const {
 		if (positionId != -1)
 		{
-			glUniform1f(positionId, (float)object_id / 255.0f);
+			glUniform1i(positionId, (int)object_id);
 		}
 	}
 
