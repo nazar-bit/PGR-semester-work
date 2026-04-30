@@ -147,6 +147,7 @@
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Script.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
     <ClInclude Include="AssetManager.hpp" />
+    <ClInclude Include="Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="basic.frag" />

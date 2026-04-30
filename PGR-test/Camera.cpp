@@ -40,11 +40,13 @@ namespace vasylnaz {
 
 
 
-    void Camera::update(float global_time) {
+    void Camera::update() {
         if (current_node != nullptr) {
             position = current_node->model_mat[3];
-            position.y += 0.3f;
-            position.x -= 0.7f;
+            target = glm::normalize(glm::vec3(current_node->model_mat[2]));
+            target = glm::rotate(target, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            up = glm::normalize(glm::vec3(current_node->model_mat[1]));
+            position += up*0.3f + target*0.7f;
             return;
         }
 
@@ -53,16 +55,22 @@ namespace vasylnaz {
         }
 
         if (curve_movement_start == -1) {
-            curve_movement_start = global_time;
+            curve_movement_start = GlobalTime;
         }
 
-        auto new_pos = current_curve->moveAlong((global_time - curve_movement_start) * curve_speed);
+        auto new_pos = current_curve->moveAlong((GlobalTime - curve_movement_start) * curve_speed);
         if (glm::any(glm::isnan(new_pos))) {
             current_curve = nullptr;
             curve_movement_start = -1;
             return;
         }
         else {
+            glm::quat newRotation = calculateRotation(position, new_pos);
+            glm::vec3 defaultBackward = glm::vec3(0.0f, 0.0f, 1.0f);
+            glm::vec3 defaultUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+            target = newRotation * defaultBackward;
+            up = newRotation * defaultUp;
             position = new_pos;
         }
     }

@@ -74,11 +74,7 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param camera 
 		void update_camera(Camera& camera, const ShaderProgram& pick_prog,
-			SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
-			update_camera_pos(camera);
-			update_camera_target(camera);
-			pick(pick_prog, scene_graph, view_mat, proj_mat);
-		}
+			SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat);
 
 		/// @brief 
 		/// @param pick_prog 

@@ -1,11 +1,12 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <vector>
-
 
 #include "Curve.hpp"
 #include "Params.hpp"
+#include "Utils.hpp"
 
 
 namespace vasylnaz {
@@ -70,7 +71,7 @@ namespace vasylnaz {
 
         void followNode(Node* node);
 
-        void update(float global_time);
+        void update();
 
         void drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view);
 

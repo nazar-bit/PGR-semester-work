@@ -3,9 +3,13 @@
 #include "AssetManager.hpp"
 #include "Script.hpp"
 #include "Curve.hpp"
+#include "Utils.hpp"
 
 #include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
+
 
 
 namespace vasylnaz {

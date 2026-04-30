@@ -82,6 +82,8 @@ namespace vasylnaz {
 
 
 
+
+
 	glm::vec3 Curve::moveAlong(float time) {
 		unsigned int knot_ptr = 3;
 

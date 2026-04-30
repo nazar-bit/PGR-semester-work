@@ -11,6 +11,7 @@
 #include "SceneGraph.hpp"
 #include "Params.hpp"
 #include "Curve.hpp"
+#include "Utils.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -88,6 +89,8 @@ namespace vasylnaz {
 
 
     void draw() {
+        GlobalTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+
         View = glm::lookAt(camera.position,
             camera.position - length(camera.camera_target_distance) * camera.target,
             camera.up);
@@ -96,12 +99,9 @@ namespace vasylnaz {
         scene_graph.render_context.light_block.updateViewSpacePositions(View);
         updateLights(scene_graph.render_context.light_block.getLBD());
 
-        input_handler.update_camera(camera, pick_prog, scene_graph, View, Projection);
         scene_graph.update();
-
-        float time = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
-
-        camera.update(time);
+        input_handler.update_camera(camera, pick_prog, scene_graph, View, Projection);
+        camera.update();
 
 
 
@@ -130,7 +130,7 @@ namespace vasylnaz {
 
         // Leafs
         glUseProgram(leaf_program.shaderProgram);
-        glUniform1f(leaf_program.positionTime, time);
+        glUniform1f(leaf_program.positionTime, GlobalTime);
         glUniformMatrix4fv(leaf_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(leaf_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
@@ -156,7 +156,7 @@ namespace vasylnaz {
 
         // TV screen
         glUseProgram(tv_program.shaderProgram);
-        glUniform1f(tv_program.positionTime, time);
+        glUniform1f(tv_program.positionTime, GlobalTime);
         glUniformMatrix4fv(tv_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(tv_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
@@ -185,15 +185,11 @@ namespace vasylnaz {
         glDisable(GL_BLEND);
 
         
-
         glutSwapBuffers();
     }
 
 
     void timerCallback(int value) {
-
-        
-
         glutPostRedisplay();
         glutTimerFunc(16, timerCallback, 0);
     }
