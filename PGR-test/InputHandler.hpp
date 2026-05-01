@@ -14,6 +14,14 @@
 #define MAX_DEPTH 1
 
 namespace vasylnaz {
+
+	enum Scenes {
+		MAIN_SCENE,
+		MENU,
+	};
+
+
+
 	class InputHandler {
 	public:
 
@@ -73,15 +81,23 @@ namespace vasylnaz {
 
 		/// @brief 
 		/// @param camera 
-		void update_camera(Camera& camera, const ShaderProgram& pick_prog,
-			SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat);
+		void update(Camera& camera, const ShaderProgram& pick_prog,
+			SceneGraph* scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat);
 
 		/// @brief 
 		/// @param pick_prog 
 		/// @param scene_graph 
 		/// @param view_mat 
-		void pick(const ShaderProgram& pick_prog, SceneGraph& scene_graph,
+		void pick(const ShaderProgram& pick_prog, SceneGraph* scene_graph,
 			const glm::mat4& view_mat, const glm::mat4& proj_mat);
+
+		/// @brief 
+		/// @param scene 
+		void addScene(std::unique_ptr<SceneGraph> scene);
+
+		void loadMainScene();
+
+		void loadMenu();
 
 
 	private:
@@ -93,6 +109,12 @@ namespace vasylnaz {
 
 		std::array<bool, KEY_COUNT> keys_state;
 		std::array<bool, KEY_COUNT> special_keys_state;
+
+		std::vector<std::unique_ptr<SceneGraph>> scenes;
+
+		bool camera_locked = true;
+
+		void checkKeysPressed(Camera& camera);
 	};
 
 }

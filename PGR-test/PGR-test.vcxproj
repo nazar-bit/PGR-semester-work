@@ -139,6 +139,8 @@
     <ClCompile Include="Curve.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="MainScene.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="NodeScript.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -155,7 +157,9 @@
     <ClInclude Include="InputHandler.hpp" />
     <ClInclude Include="Item.hpp" />
     <ClInclude Include="Light.hpp" />
+    <ClInclude Include="MainScene.hpp" />
     <ClInclude Include="Material.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="NodeScript.hpp" />
     <ClInclude Include="Object.hpp" />

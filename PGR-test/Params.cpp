@@ -1,4 +1,5 @@
 #include "Params.hpp"
+#include "SceneGraph.hpp"
 
 
 
@@ -9,6 +10,9 @@ namespace vasylnaz {
 	const char* WIN_TITLE = "PGR SEMESTER PROJECT";
 	const int CURVE_PRECISION = 500;
 
-	float HIDE_DEBUG = false;
+	bool HIDE_DEBUG = true;
+	bool LAUNCHED = false;
+
+	SceneGraph* current_scene = nullptr;
 }
 

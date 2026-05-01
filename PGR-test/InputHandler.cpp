@@ -33,7 +33,7 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::pick(const ShaderProgram& pick_prog, SceneGraph& scene_graph,
+	void InputHandler::pick(const ShaderProgram& pick_prog, SceneGraph* scene_graph,
 		const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 
 		if (!mouse.buttons_state[GLUT_LEFT_BUTTON]) {
@@ -58,11 +58,11 @@ namespace vasylnaz {
 		glUseProgram(pick_prog.shaderProgram);
 		glUniformMatrix4fv(pick_prog.positionP, 1, GL_FALSE, glm::value_ptr(proj_mat));
 
-		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::OPAQUE_MASK)) {
+		for (const auto& obj : scene_graph->render_context.objects.at(RenderQueue::OPAQUE_MASK)) {
 			obj->draw(pick_prog, view_mat);
 		}
 
-		for (const auto& obj : scene_graph.render_context.objects.at(RenderQueue::TRANSPARENT_MASK)) {
+		for (const auto& obj : scene_graph->render_context.objects.at(RenderQueue::TRANSPARENT_MASK)) {
 			obj->draw(pick_prog, view_mat);
 		}
 		
@@ -80,7 +80,7 @@ namespace vasylnaz {
 				<< std::endl;
 			long id = (long)pixel[3];
 			id = (id << 8) | (long)pixel[0];
-			scene_graph.findObject(id, Actions::CLICK);
+			scene_graph->findObject(id, Actions::CLICK);
 		}
 
 		glutPostRedisplay();
@@ -88,10 +88,38 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::update_camera(Camera& camera, const ShaderProgram& pick_prog,
-		SceneGraph& scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
-		update_camera_pos(camera);
-		update_camera_target(camera);
+	//void InputHandler::checkKeysPressed(Camera& camera) {
+	//	bool input = false;
+	//	// Escape
+	//	if (keys_state[27])
+	//	{
+	//		set_key_false(27);
+	//		if (current_scene == scenes[MAIN_SCENE].get()) {
+	//			loadMenu();
+	//			camera_locked = true;
+	//		}
+	//		else {
+	//			loadMainScene();
+	//			camera_locked = false;
+	//		}
+	//		input = true;
+	//	}
+
+
+	//	if (input) {
+	//		camera.changeCurve(nullptr);
+	//		camera.followNode(nullptr);
+	//	}
+	//}
+
+
+	void InputHandler::update(Camera& camera, const ShaderProgram& pick_prog,
+		SceneGraph* scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
+		//checkKeysPressed(camera);
+		if (!camera_locked) {
+			update_camera_pos(camera);
+			update_camera_target(camera);
+		}
 		pick(pick_prog, scene_graph, view_mat, proj_mat);
 	}
 
@@ -108,6 +136,7 @@ namespace vasylnaz {
 		glm::vec3 right = glm::normalize(glm::cross(forward, camera.up));
 
 		bool input = false;
+		// WASD + ARROWS
 		if (keys_state['w'] || special_keys_state[GLUT_KEY_UP])
 		{
 			camera.position += forward * camera.movement_speed;
@@ -179,5 +208,19 @@ namespace vasylnaz {
 		camera.up = glm::normalize(camera.up);
 
 		mouse.last_coords = mouse.new_coords;
+	}
+
+
+	void InputHandler::addScene(std::unique_ptr<SceneGraph> scene) {
+		scenes.push_back(std::move(scene));
+	}
+
+
+	void InputHandler::loadMainScene() {
+		current_scene = scenes[MAIN_SCENE].get();
+	}
+
+	void InputHandler::loadMenu() {
+		current_scene = scenes[MENU].get();
 	}
 }
