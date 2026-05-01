@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <vector>
+#include <iostream>
 
 #include "Curve.hpp"
 #include "Params.hpp"
@@ -46,6 +47,10 @@ namespace vasylnaz {
         std::vector<ViewPoint> view_points;
         std::vector<Node*> follow_nodes;
         Node* current_node = nullptr;
+        glm::quat rotation = glm::quat(NAN_FL, NAN_FL, NAN_FL, NAN_FL);
+        glm::quat rotation_up = glm::quat(NAN_FL, NAN_FL, NAN_FL, NAN_FL);
+        glm::vec3 target_before_rotation;
+        glm::vec3 up_before_rotation;
 
         /// @brief 
         /// @param position 
@@ -75,12 +80,11 @@ namespace vasylnaz {
 
         void drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view);
 
-        void initViewPoints();
+        void init(RenderContext& render_context);
 
 
     private:
         GLuint vao;
         GLuint vbo;
-
     };
 }

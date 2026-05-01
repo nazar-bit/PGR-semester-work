@@ -92,9 +92,7 @@ namespace vasylnaz {
 				knot_ptr++;
 			}
 			else {
-				float nan_val = std::numeric_limits<float>::quiet_NaN();
-				glm::vec3 invalid_vec(nan_val, nan_val, nan_val);
-				return invalid_vec;
+				return glm::vec3(NAN_FL, NAN_FL, NAN_FL);
 			}
 		}
 

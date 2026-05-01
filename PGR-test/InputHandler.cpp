@@ -147,6 +147,10 @@ namespace vasylnaz {
 		{
 			camera.moveToViewPoint(camera.view_points[0]);
 		}
+		if (keys_state['o'])
+		{
+			camera.moveToViewPoint(camera.view_points[1]);
+		}
 		// Follow Nodes
 		if (keys_state['0'])
 		{

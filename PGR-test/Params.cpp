@@ -9,4 +9,6 @@ namespace vasylnaz {
 	const char* WIN_TITLE = "PGR SEMESTER PROJECT";
 	const int CURVE_PRECISION = 500;
 
+	float HIDE_DEBUG = false;
 }
+

@@ -5,7 +5,26 @@
 namespace vasylnaz {
 
 
-    glm::quat calculateRotation(glm::vec3 oldPos, glm::vec3 newPos) {
+    glm::quat calculateRotation(glm::vec3 u, glm::vec3 v) {
+
+        float angle = 0;
+        float denominator = glm::length(u) * glm::length(v);
+        if (denominator != 0) {
+            angle = glm::acos(glm::dot(u, v) / denominator) / 2.0f;
+        }
+        denominator = glm::length(glm::cross(u, v));
+
+        glm::vec3 w = glm::vec3(0.0f);
+        if (denominator != 0) {
+            w = glm::cross(u, v) / denominator;
+        }
+
+        return glm::quat(glm::cos(angle), w * glm::sin(angle));
+    }
+
+
+
+    glm::quat calculateRotationCurve(glm::vec3 oldPos, glm::vec3 newPos) {
 
         glm::vec3 forwardDir = glm::normalize(newPos - oldPos);
         glm::vec3 backwardDir = -forwardDir;
@@ -27,5 +46,11 @@ namespace vasylnaz {
 
 
     float GlobalTime = 0.0f;
+
+    float NAN_FL = std::numeric_limits<float>::quiet_NaN();
+
+    glm::vec3 defaultBackward = glm::vec3(0.0f, 0.0f, 1.0f);
+    glm::vec3 defaultUp = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 defaultRight = glm::vec3(1.0f, 0.0f, 0.0f);
 
 }

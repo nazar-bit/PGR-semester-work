@@ -57,7 +57,7 @@ namespace vasylnaz {
 				glm::length(glm::vec3(owner->model_mat[2]))
 			);
 
-			glm::quat new_rotation = calculateRotation(owner->model_mat[3], new_pos);
+			glm::quat new_rotation = calculateRotationCurve(owner->model_mat[3], new_pos);
 			glm::quat adjustment = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			new_rotation = glm::normalize(adjustment * new_rotation); 
 
