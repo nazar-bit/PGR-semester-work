@@ -14,6 +14,7 @@
 #include "Utils.hpp"
 #include "MainScene.hpp"
 #include "Menu.hpp"
+#include "Request.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -41,7 +42,8 @@ namespace vasylnaz {
     glm::mat4 View;
     glm::mat4 Projection;
 
-    
+
+    std::queue<Request> requests;
 
     InputHandler input_handler;
 

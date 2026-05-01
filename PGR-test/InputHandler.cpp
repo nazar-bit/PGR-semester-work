@@ -116,6 +116,7 @@ namespace vasylnaz {
 	void InputHandler::update(Camera& camera, const ShaderProgram& pick_prog,
 		SceneGraph* scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 		//checkKeysPressed(camera);
+		check_requests();
 		if (!camera_locked) {
 			update_camera_pos(camera);
 			update_camera_target(camera);
@@ -211,6 +212,19 @@ namespace vasylnaz {
 	}
 
 
+	void InputHandler::check_requests() {
+		while (!requests.empty()) {
+			Request request = requests.front();
+			requests.pop();
+			if (request == Request::LAUNCH) {
+				loadMainScene();
+			} else if (request == Request::MAIN_MENU) {
+				loadMenu();
+			}
+		}
+	}
+
+
 	void InputHandler::addScene(std::unique_ptr<SceneGraph> scene) {
 		scenes.push_back(std::move(scene));
 	}
@@ -218,9 +232,11 @@ namespace vasylnaz {
 
 	void InputHandler::loadMainScene() {
 		current_scene = scenes[MAIN_SCENE].get();
+		camera_locked = false;
 	}
 
 	void InputHandler::loadMenu() {
 		current_scene = scenes[MENU].get();
+		camera_locked = true;
 	}
 }

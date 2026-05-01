@@ -33,7 +33,6 @@ namespace vasylnaz {
 	};
 
 
-
 	class Node {
 	public:
 		/// @brief 

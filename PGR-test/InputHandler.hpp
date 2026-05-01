@@ -8,6 +8,7 @@
 #include "Item.hpp"
 #include "SceneGraph.hpp"
 #include "Object.hpp"
+#include "Request.hpp"
 
 #define KEY_COUNT 256
 #define MOUSE_BUTTONS_COUNT 3
@@ -114,7 +115,9 @@ namespace vasylnaz {
 
 		bool camera_locked = true;
 
-		void checkKeysPressed(Camera& camera);
+		/*void checkKeysPressed(Camera& camera);*/
+
+		void check_requests();
 	};
 
 }

@@ -2,6 +2,7 @@
 
 #include "AssetManager.hpp"
 #include "NodeScript.hpp"
+#include "Request.hpp"
 
 
 namespace vasylnaz {
@@ -70,5 +71,18 @@ namespace vasylnaz {
 
 	private:
 		bool activated = true;
+	};
+
+
+
+	class Launch : public Script {
+	public:
+
+		Launch(Object* owner);
+
+		void update();
+
+	private:
+		bool is_clicked;
 	};
 }

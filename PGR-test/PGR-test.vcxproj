@@ -164,6 +164,7 @@
     <ClInclude Include="NodeScript.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Params.hpp" />
+    <ClInclude Include="Request.hpp" />
     <ClInclude Include="SceneGraph.hpp" />
     <ClInclude Include="Script.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
