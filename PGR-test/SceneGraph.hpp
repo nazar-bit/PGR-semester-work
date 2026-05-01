@@ -15,6 +15,13 @@
 #include "Camera.hpp"
 
 
+#define CHAR_W  5
+#define CHAR_H  7
+#define CHAR_PADDING 1
+#define FONT_W 128
+#define FONT_H 64
+
+
 
 namespace vasylnaz {
 
@@ -103,6 +110,12 @@ namespace vasylnaz {
 		/// @return Node* items of which consist of objects created from .obj.
 		std::unique_ptr<Node> loadOBJ(const std::string& filepath,
 			const unsigned int from = 0, const unsigned int to = 10000, bool render = true);
+
+		/// @brief creates a Text Node from string
+		/// @param text 
+		/// @return Node with text quads
+		std::unique_ptr<Node> createText(const std::string& text, const unsigned int font_size,
+			const glm::vec3& font_color);
 
 		/// @brief 
 		/// @param id 

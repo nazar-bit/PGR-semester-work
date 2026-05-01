@@ -30,8 +30,8 @@ namespace vasylnaz {
 
 
     Camera camera = Camera(
-        glm::vec3(0.0f, 0.0f, 3.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f),   // normalized vector
+        glm::vec3(-1.0f, 1.0f, 4.0f),
+        glm::vec3(-1.0f, 0.0f, 0.0f),   // normalized vector
         glm::vec3(0.0f, 1.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 5.0f),
         0.05f,
@@ -125,6 +125,11 @@ namespace vasylnaz {
         glDisable(GL_CULL_FACE);
         // No Culling
         for (const auto& obj : current_scene->render_context.objects[RenderQueue::NO_CULLING_MASK]) {
+            obj->draw(shader_program, View);
+        }
+
+        // Text
+        for (const auto& obj : current_scene->render_context.objects[RenderQueue::TEXT]) {
             obj->draw(shader_program, View);
         }
 

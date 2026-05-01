@@ -29,7 +29,7 @@ namespace vasylnaz {
 		/// @param vertices_indices 
 		/// @param indices_count 
 		/// @param shader_manager 
-		Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
+		Mesh(const float* vertices_pos, const long vertices_count, const float* texture_coords,
 			const unsigned int* vertices_indices, const long indices_count);
 
 

@@ -54,6 +54,7 @@ namespace vasylnaz {
 		void loadMesh(const string& name, std::unique_ptr<Mesh> mesh);
 
 
+
 		const GLuint getTexture(const string& name) const {
 			return textures.at(name);
 		}

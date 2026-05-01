@@ -12,6 +12,7 @@ namespace vasylnaz {
 		TV_SCREEN_MASK,
 		TRANSPARENT_MASK,
 		SKYBOX,
+		TEXT,
 	};
 
 

@@ -76,14 +76,12 @@ namespace vasylnaz {
 
 
 
-
 	void SceneGraph::findObject(long id, Actions action) {
 		findObjectRecursive(id, action, root);
 	}
 
 
 	bool SceneGraph::findObjectRecursive(long id, Actions action, std::unique_ptr<Node>& node) {
-
 		for (std::unique_ptr<Item>& item : node->items) {
 			if (Object* obj = dynamic_cast<Object*>(item.get())) {
 				if (obj->object_id == id) {
@@ -200,5 +198,72 @@ namespace vasylnaz {
 		}
 
 		return node;
+	}
+
+
+
+	std::unique_ptr<Node> SceneGraph::createText(const std::string& text, const unsigned int font_size,
+		const glm::vec3& font_color) 
+	{
+		auto node = std::make_unique<Node>();
+		const int vec_size = 3;
+		const int tex_vec_size = 2;
+		const int vec_num = 4;
+		const int indices_num = 2;
+
+		const float positions[vec_size * vec_num] =
+		{
+			0.0f, 0.0f, 0.0f,
+			font_size * CHAR_W, 0.0f, 0.0f,
+			0.0f, font_size* CHAR_H, 0.0f,
+			font_size* CHAR_W, font_size* CHAR_H, 0.0f,
+		};
+
+		const unsigned int indices[indices_num * vec_size] =
+		{
+			0, 1, 2,
+			1, 3, 2,
+		};
+		
+
+		int x = CHAR_PADDING;
+		int y = CHAR_PADDING;
+		for (unsigned long char_idx = 0; char_idx < text.size(); ++char_idx) {
+			
+			char ch = text[char_idx];
+			std::cout << ch << std::endl;
+			if (ch == '\n') {
+				y += CHAR_PADDING + CHAR_H * font_size;
+				x = CHAR_PADDING;
+				continue;
+			}
+
+			char relative_ch = ch - 32;
+			int relative_x = relative_ch % 18;
+			int relative_y = relative_ch / 18;
+			float tex_x = (float)(relative_x * (2 * CHAR_PADDING + CHAR_W)) / FONT_W;
+			float tex_y = (float)(relative_y * (2 * CHAR_PADDING + CHAR_H)) / FONT_H;
+			float texture_coords[vec_num * tex_vec_size] =
+			{
+				tex_x, tex_y + CHAR_H,
+				tex_x + CHAR_W, tex_y + CHAR_H,
+				tex_x, tex_y,
+				tex_x + CHAR_W, tex_y,
+			};
+			
+			auto mesh = std::make_unique<Mesh>(positions, vec_num, texture_coords, indices, indices_num);
+			const std::string mesh_name = std::string("letter") + ch;
+			AssetManager::getInstance().loadMesh(mesh_name, std::move(mesh));
+
+			auto obj_mat = glm::mat4(1.0f);
+			obj_mat = glm::translate(obj_mat, glm::vec3(x, y, 0));
+
+			auto obj = std::make_unique<Object>(mesh_name, obj_mat, "basic", "font", "blank_norm", "blank_em", RenderQueue::TEXT);
+			node->addItem(std::move(obj), render_context);
+
+			x += CHAR_PADDING + CHAR_W * font_size;
+		}
+
+		return std::move(node);
 	}
 }

@@ -5,7 +5,7 @@ namespace vasylnaz {
 
 	long Mesh::global_mesh_id = 0;
 
-	Mesh::Mesh(const float* vertices_pos, const long vertices_count, const float* normals,
+	Mesh::Mesh(const float* vertices_pos, const long vertices_count, const float* texture_coords,
 		const unsigned int* vertices_indices, const long indices_count)
 
 		: mesh_id(global_mesh_id++), indices_count(indices_count) {
@@ -19,11 +19,17 @@ namespace vasylnaz {
 		glEnableVertexAttribArray(Attributes::POSITION);
 		glVertexAttribPointer(Attributes::POSITION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-		glGenBuffers(1, &normals_vbo);
+		glGenBuffers(1, &texels_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, texels_vbo);
+		glBufferData(GL_ARRAY_BUFFER, vertices_count * sizeof(float), texture_coords, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(Attributes::TEXCOORD);
+		glVertexAttribPointer(Attributes::TEXCOORD, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+		/*glGenBuffers(1, &normals_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices_count * sizeof(float), normals, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(Attributes::NORMAL);
-		glVertexAttribPointer(Attributes::NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(Attributes::NORMAL, 3, GL_FLOAT, GL_FALSE, 0, 0);*/
 
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

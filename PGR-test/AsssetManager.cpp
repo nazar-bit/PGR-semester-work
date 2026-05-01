@@ -29,6 +29,10 @@ namespace vasylnaz {
 
         //emission
         loadTetxure("blank_em", "Textures/blank_em.png");
+
+
+        //Font
+        loadTetxure("font", "Textures/charmap-oldschool_white.png");
         
 
         loadMesh("cube", "Models/cube.obj");
