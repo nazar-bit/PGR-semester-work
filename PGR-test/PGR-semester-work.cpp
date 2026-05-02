@@ -54,6 +54,7 @@ namespace vasylnaz {
 
     void init() {
         AssetManager::getInstance().init();
+        loadParams();
 
         std::unique_ptr<MainScene> main_scene = std::make_unique<MainScene>();
         camera.init(main_scene->render_context);
@@ -166,7 +167,6 @@ namespace vasylnaz {
             glEnable(GL_CULL_FACE);
         }
         
-
 
         // TV screen
         glUseProgram(tv_program.shaderProgram);

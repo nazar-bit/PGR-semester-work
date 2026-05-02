@@ -136,4 +136,7 @@
     <None Include="line.frag" />
     <None Include="text.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="params.txt" />
+  </ItemGroup>
 </Project>

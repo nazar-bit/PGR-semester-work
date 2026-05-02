@@ -29,6 +29,9 @@ namespace vasylnaz {
 
 		void draw(const ShaderProgram& shader_manager, const glm::mat4& view);
 
+		float getLastKnot() {
+			return knots.back();
+		}
 
 
 	private:
@@ -36,7 +39,6 @@ namespace vasylnaz {
 		GLuint vao;
 		GLuint vbo;
 		unsigned int num_vertices = 0;
-
 
 		glm::vec4 calcWeighted(float time, unsigned int knot_ptr);
 	};

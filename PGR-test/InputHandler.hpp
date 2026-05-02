@@ -115,7 +115,7 @@ namespace vasylnaz {
 
 		bool camera_locked = true;
 
-		/*void checkKeysPressed(Camera& camera);*/
+		void checkKeysPressed(Camera& camera);
 
 		void check_requests();
 	};

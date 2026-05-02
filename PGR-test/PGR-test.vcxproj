@@ -184,6 +184,9 @@
     <None Include="text.frag" />
     <None Include="tv.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="params.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

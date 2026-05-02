@@ -9,6 +9,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <cmath>
 
 
 
@@ -66,7 +67,6 @@ namespace vasylnaz {
 
 	private:
 		float speed = 2.0f;
-		float movement_start = -1.0f;
 		std::unique_ptr<Curve> curve;
 	};
 }

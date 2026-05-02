@@ -41,7 +41,7 @@ namespace vasylnaz {
         float movement_speed;
         float rotation_angle;
         Curve* current_curve = nullptr;
-        std::vector<std::unique_ptr<Curve>> curves;
+        std::vector<Curve*> curves;
         float curve_movement_start = -1;
         float curve_speed = 2.0f;
         std::vector<ViewPoint> view_points;
@@ -68,7 +68,9 @@ namespace vasylnaz {
             //
         }
 
-        void addCurve(std::unique_ptr<Curve> curve, RenderContext& rq);
+        void updateCurves(RenderContext& rq);
+
+        void addCurve(Curve* curve, RenderContext& rq);
 
         void moveToViewPoint(ViewPoint& view_point);
 

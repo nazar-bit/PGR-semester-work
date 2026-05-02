@@ -6,11 +6,18 @@ namespace vasylnaz {
 
 	glm::vec3 pointDebugColor = glm::vec3(0.6f, 0.0f, 0.6f);
 
+    void Camera::updateCurves(RenderContext& rq) {
+        curves.clear();
+        for (int i = 0; i < camera_curves.size(); ++i) {
+            addCurve(camera_curves[i].get(), rq);
+        }
+    }
 
-    void Camera::addCurve(std::unique_ptr<Curve> curve, RenderContext& rq) {
+
+    void Camera::addCurve(Curve* curve, RenderContext& rq) {
         curve->buildCurve(CURVE_PRECISION);
-        rq.curves.push_back(curve.get());
-        curves.push_back(std::move(curve));
+        rq.curves.push_back(curve);
+        curves.push_back(curve);
     }
 
 
@@ -146,38 +153,7 @@ namespace vasylnaz {
 
         glBindVertexArray(0);
 
-
         // Curves
-        auto c_points = std::vector<glm::vec3>();
-        c_points.push_back(glm::vec3(4.5f, 2.0f, 9.5f));
-        c_points.push_back(glm::vec3(4.0f, 1.9f, 8.5f));
-        c_points.push_back(glm::vec3(3.0f, 1.6f, 8.5f));
-        c_points.push_back(glm::vec3(2.5f, 1.4f, 8.0f));
-        c_points.push_back(glm::vec3(2.3f, 1.3f, 7.0f));
-
-        c_points.push_back(glm::vec3(2.5f, 1.1f, 6.5f));
-        c_points.push_back(glm::vec3(2.7f, 1.1f, 6.0f));
-        c_points.push_back(glm::vec3(3.0f, 1.0f, 5.8f));
-        c_points.push_back(glm::vec3(3.2f, 0.9f, 5.5f));
-
-        c_points.push_back(glm::vec3(3.0f, 0.9f, 5.2f));
-        c_points.push_back(glm::vec3(2.8f, 0.9f, 5.0f));
-
-        c_points.push_back(glm::vec3(2.5f, 0.8f, 5.0f));
-        c_points.push_back(glm::vec3(2.2f, 0.7f, 4.8f));
-        c_points.push_back(glm::vec3(1.8f, 0.7f, 4.5f));
-        c_points.push_back(glm::vec3(1.3f, 0.6f, 4.2f));
-        c_points.push_back(glm::vec3(0.5f, 0.6f, 4.0f));
-        c_points.push_back(glm::vec3(-0.5f, 0.5f, 3.8f));
-        c_points.push_back(glm::vec3(-1.0f, 0.4f, 3.5f));
-        c_points.push_back(glm::vec3(-1.5f, 0.3f, 3.0f));
-
-        c_points.push_back(glm::vec3(-1.7f, 0.3f, 2.8f));
-        c_points.push_back(glm::vec3(-1.9f, 0.3f, 2.6f));
-        c_points.push_back(glm::vec3(-2.5f, 0.3f, 2.1f));
-        c_points.push_back(glm::vec3(-3.0f, 0.3f, 2.0f));
-        auto curve = std::unique_ptr<Curve>(new Curve(c_points));
-        addCurve(std::move(curve), render_context);
-
+        updateCurves(render_context);
     }
 }

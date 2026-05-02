@@ -88,34 +88,43 @@ namespace vasylnaz {
 	}
 
 
-	//void InputHandler::checkKeysPressed(Camera& camera) {
-	//	bool input = false;
-	//	// Escape
-	//	if (keys_state[27])
-	//	{
-	//		set_key_false(27);
-	//		if (current_scene == scenes[MAIN_SCENE].get()) {
-	//			loadMenu();
-	//			camera_locked = true;
-	//		}
-	//		else {
-	//			loadMainScene();
-	//			camera_locked = false;
-	//		}
-	//		input = true;
-	//	}
+	void InputHandler::checkKeysPressed(Camera& camera) {
+		bool input = false;
+		int modifiers = glutGetModifiers();
+		// Escape
+		/*if (keys_state[27])
+		{
+			set_key_false(27);
+			if (current_scene == scenes[MAIN_SCENE].get()) {
+				loadMenu();
+				camera_locked = true;
+			}
+			else {
+				loadMainScene();
+				camera_locked = false;
+			}
+			input = true;
+		}*/
 
+		// CTRL + R; To reload config
+		if (modifiers & GLUT_ACTIVE_CTRL && keys_state['r'])
+		{
+			set_key_false('r');
+			loadParams();
+			camera.updateCurves(scenes[MAIN_SCENE]->render_context);
+			input = true;
+		}
 
-	//	if (input) {
-	//		camera.changeCurve(nullptr);
-	//		camera.followNode(nullptr);
-	//	}
-	//}
+		if (input) {
+			camera.changeCurve(nullptr);
+			camera.followNode(nullptr);
+		}
+	}
 
 
 	void InputHandler::update(Camera& camera, const ShaderProgram& pick_prog,
 		SceneGraph* scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
-		//checkKeysPressed(camera);
+		checkKeysPressed(camera);
 		check_requests();
 		if (!camera_locked) {
 			update_camera_pos(camera);
@@ -166,11 +175,11 @@ namespace vasylnaz {
 		// Pre defined Curves
 		if (keys_state['1'])
 		{
-			camera.changeCurve(camera.curves[0].get());
+			camera.changeCurve(camera.curves[0]);
 		}
 		if (keys_state['2'])
 		{
-			camera.changeCurve(camera.curves[1].get());
+			camera.changeCurve(camera.curves[1]);
 		}
 		// Static Points
 		if (keys_state['p'])

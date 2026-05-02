@@ -45,29 +45,23 @@ namespace vasylnaz {
 
 	void CurveMovement::update() {
 
-		auto new_pos = curve->moveAlong((GlobalTime - movement_start) * speed);
-		if (glm::any(glm::isnan(new_pos))) {
-			movement_start = GlobalTime;
-			return;
-		}
-		else {
-			glm::vec3 scale(
-				glm::length(glm::vec3(owner->model_mat[0])),
-				glm::length(glm::vec3(owner->model_mat[1])),
-				glm::length(glm::vec3(owner->model_mat[2]))
-			);
+		auto new_pos = curve->moveAlong(std::fmod((GlobalTime * speed), curve->getLastKnot()));
+	
+		glm::vec3 scale(
+			glm::length(glm::vec3(owner->model_mat[0])),
+			glm::length(glm::vec3(owner->model_mat[1])),
+			glm::length(glm::vec3(owner->model_mat[2]))
+		);
 
-			glm::quat new_rotation = calculateRotationCurve(owner->model_mat[3], new_pos);
-			glm::quat adjustment = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			new_rotation = glm::normalize(adjustment * new_rotation); 
+		glm::quat new_rotation = calculateRotationCurve(owner->model_mat[3], new_pos);
+		glm::quat adjustment = glm::angleAxis(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		new_rotation = glm::normalize(adjustment * new_rotation); 
 
-			glm::mat4 rebuilt_mat = glm::translate(glm::mat4(1.0f), new_pos);
-			rebuilt_mat = rebuilt_mat * glm::mat4_cast(new_rotation);
-			rebuilt_mat = glm::scale(rebuilt_mat, scale);
+		glm::mat4 rebuilt_mat = glm::translate(glm::mat4(1.0f), new_pos);
+		rebuilt_mat = rebuilt_mat * glm::mat4_cast(new_rotation);
+		rebuilt_mat = glm::scale(rebuilt_mat, scale);
 
-			owner->model_mat = rebuilt_mat;
-			//owner->model_mat[3] = glm::vec4(new_pos, 1.0f);
-		}
+		owner->model_mat = rebuilt_mat;
 	}
 
 
