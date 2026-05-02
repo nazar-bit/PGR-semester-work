@@ -218,8 +218,12 @@ namespace vasylnaz {
 			requests.pop();
 			if (request == Request::LAUNCH) {
 				loadMainScene();
-			} else if (request == Request::MAIN_MENU) {
+			}
+			else if (request == Request::MAIN_MENU) {
 				loadMenu();
+			}
+			else if (request == Request::EXIT) {
+				exit(0);
 			}
 		}
 	}

@@ -67,16 +67,16 @@ namespace vasylnaz {
 
 
 
-	Launch::Launch(Object* owner)
-		: Script(owner), is_clicked(owner->clicked)
+	RequestScript::RequestScript(Object* owner, Request rq)
+		: Script(owner), is_clicked(owner->clicked), rq(rq)
 	{
 		//
 	}
 
 
-	void Launch::update() {
+	void RequestScript::update() {
 		if (is_clicked != owner->clicked) {
-			requests.push(Request::LAUNCH);
+			requests.push(rq);
 			is_clicked = owner->clicked;
 		}
 	}

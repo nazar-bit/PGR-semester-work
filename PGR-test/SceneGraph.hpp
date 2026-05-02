@@ -22,6 +22,8 @@
 #define FONT_H 64
 #define FONT_SCALE_FACTOR 0.01
 #define TOTAL_ROWS 7
+#define FIRST_CHAR_ID 32
+#define N_CHAR_IN_ROW 18
 
 
 

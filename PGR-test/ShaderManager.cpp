@@ -92,6 +92,14 @@ namespace vasylnaz {
 	}
 
 
+	void ShaderProgram::loadTextColor(glm::vec3 text_color) const {
+		if (positionColor != -1)
+		{
+			glUniform3fv(positionColor, 1, glm::value_ptr(text_color));
+		}
+	}
+
+
 
 	void ShaderProgram::compile_shaders(const std::string& vert_loc, const std::string& frag_loc) {
 		std::string vertexShaderSrc = loadShaderSource(vert_loc);
@@ -120,6 +128,9 @@ namespace vasylnaz {
 
 		positionId = glGetUniformLocation(shaderProgram, "id");
 		positionColor = glGetUniformLocation(shaderProgram, "color_fg");
+		if (positionColor == -1) {
+			positionColor = glGetUniformLocation(shaderProgram, "textColor");
+		}
 	}
 
 

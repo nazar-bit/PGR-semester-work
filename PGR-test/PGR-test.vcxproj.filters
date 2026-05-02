@@ -134,5 +134,6 @@
     <None Include="tv.frag" />
     <None Include="line.vert" />
     <None Include="line.frag" />
+    <None Include="text.frag" />
   </ItemGroup>
 </Project>

@@ -113,7 +113,7 @@ namespace vasylnaz {
 
 		std::vector<std::unique_ptr<SceneGraph>> scenes;
 
-		bool camera_locked = false;
+		bool camera_locked = true;
 
 		/*void checkKeysPressed(Camera& camera);*/
 

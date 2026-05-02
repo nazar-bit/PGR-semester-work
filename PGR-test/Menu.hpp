@@ -17,5 +17,8 @@ namespace vasylnaz {
 		void init(ShaderProgram& shader_manager, Camera& camera);
 
 	private:
+
+		std::unique_ptr<Node> createButton(const glm::vec3& pos, const std::string& text,
+			const glm::vec3& pos_text, Request request);
 	};
 }

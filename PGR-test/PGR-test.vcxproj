@@ -181,6 +181,7 @@
     <None Include="pick.vert" />
     <None Include="skybox.frag" />
     <None Include="skybox.vert" />
+    <None Include="text.frag" />
     <None Include="tv.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -76,6 +76,9 @@ namespace vasylnaz {
 		void loadId(const long object_id) const;
 
 
+		void loadTextColor(glm::vec3 text_color) const;
+
+
 		void bindUBOs();
 
 

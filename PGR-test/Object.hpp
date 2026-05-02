@@ -9,7 +9,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp> 
 
 
 namespace vasylnaz {
@@ -47,20 +46,20 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param shader_manager 
 		/// @param view 
-		void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
-
+		virtual void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
 
 		/// @brief 
 		/// @param parent_model_matrix 
 		void updateItem(const glm::mat4& parent_model_matrix) override;
 
-
+		/// @brief 
+		/// @return 
 		const Mesh* get_mesh() const {
 			return mesh;
 		}
 
 
-	private:
+	protected:
 		static long global_object_id;
 		const Mesh* mesh;
 		GLuint dif_texture;
@@ -71,7 +70,21 @@ namespace vasylnaz {
 
 
 	
+	class TextObject : public Object {
+	public:
+		glm::vec3 text_color;
 
-	
+		TextObject(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",
+			const string& dif_texture = "blank", const string& normal_map = "blank_norm",
+			const string& em_map = "blank_em", const RenderQueue rq = RenderQueue::OPAQUE_MASK)
+			: Object(mesh, model_matrix, material, dif_texture, normal_map, em_map, rq)
+		{
+			// 
+		}
 
+		void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
+
+	private:
+
+	};
 }

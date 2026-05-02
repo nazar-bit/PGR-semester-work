@@ -238,13 +238,13 @@ namespace vasylnaz {
 				continue;
 			}
 
-			char relative_ch = ch - 32;
-			int relative_x = relative_ch % 18;
-			int relative_y = (TOTAL_ROWS - 1) - (relative_ch / 18);
+			char relative_ch = ch - FIRST_CHAR_ID;
+			int relative_x = relative_ch % N_CHAR_IN_ROW;
+			int relative_y = (TOTAL_ROWS - 1) - (relative_ch / N_CHAR_IN_ROW);
 
 			float tex_x = (float)(relative_x * (2 * CHAR_PADDING + CHAR_W)) / FONT_W;
 			float tex_y = (float)(relative_y * (2 * CHAR_PADDING + CHAR_H)) / FONT_H;
-			tex_y += 1.0f / FONT_H;
+			tex_y += 1.0f / FONT_H; //offset
 			float norm_w = (float)(CHAR_W + 2*CHAR_PADDING) / FONT_W;
 			float norm_h = (float)(CHAR_H + 2*CHAR_PADDING) / FONT_H;
 
@@ -263,7 +263,8 @@ namespace vasylnaz {
 			auto obj_mat = glm::mat4(1.0f);
 			obj_mat = glm::translate(obj_mat, glm::vec3(x, y, 0));
 
-			auto obj = std::make_unique<Object>(mesh_name, obj_mat, "text", "font", "blank_norm", "blank_em", RenderQueue::TEXT);
+			auto obj = std::make_unique<TextObject>(mesh_name, obj_mat, "basic", "font", "blank_norm", "blank_em", RenderQueue::TEXT);
+			obj->text_color = font_color;
 			node->addItem(std::move(obj), render_context);
 
 			x += (CHAR_PADDING + CHAR_W * font_size) * FONT_SCALE_FACTOR;

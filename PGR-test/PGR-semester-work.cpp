@@ -27,6 +27,7 @@ namespace vasylnaz {
     ShaderProgram leaf_program;
     ShaderProgram tv_program;
     ShaderProgram line_drawer;
+    ShaderProgram text_render;
 
 
     Camera camera = Camera(
@@ -77,6 +78,8 @@ namespace vasylnaz {
         shader_program.bindUBOs();
 
         skybox_program.compile_shaders("skybox.vert", "skybox.frag");
+
+        text_render.compile_shaders("skybox.vert", "text.frag");
 
         leaf_program.compile_shaders("leaf.vert", "basic.frag");
         leaf_program.bindUBOs();
@@ -129,8 +132,10 @@ namespace vasylnaz {
         }
 
         // Text
+        glUseProgram(text_render.shaderProgram);
+        glUniformMatrix4fv(text_render.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         for (const auto& obj : current_scene->render_context.objects[RenderQueue::TEXT]) {
-            obj->draw(shader_program, View);
+            obj->draw(text_render, View);
         }
 
         // Leafs

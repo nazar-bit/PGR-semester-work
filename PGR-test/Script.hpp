@@ -75,10 +75,11 @@ namespace vasylnaz {
 
 
 
-	class Launch : public Script {
+	class RequestScript : public Script {
 	public:
+		Request rq;
 
-		Launch(Object* owner);
+		RequestScript(Object* owner, Request rq);
 
 		void update();
 
