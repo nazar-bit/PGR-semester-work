@@ -36,6 +36,11 @@ namespace vasylnaz {
 		/// @param name 
 		/// @param file_path 
 		void loadTetxure(const string& name, const string& file_path);
+		
+		/// @brief 
+		/// @param name 
+		/// @param file_path 
+		void loadTetxureNearest(const string & name, const string & file_path);
 
 		/// @brief 
 		/// @param name 
@@ -79,6 +84,9 @@ namespace vasylnaz {
 		{
 			//
 		}
+
+
+		GLuint createTexture(const std::string& fileName, bool mipmap = true);
 	};
 
 

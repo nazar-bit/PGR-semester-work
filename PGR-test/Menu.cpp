@@ -15,12 +15,10 @@ namespace vasylnaz {
 		root->addItem(std::move(launch_button), render_context);
 
 
-		auto launch_button_text_mat = glm::mat4(
-			0.5f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 4.0f, 0.0f,
-			4.8f, 2.0f, 4.0f, 1.0f);
-		auto launch_button_text = createText("abcdefr\nsdssd\n", 50, glm::vec3(1.0f));
+		auto launch_button_text_mat = glm::mat4(1.0f);
+		launch_button_text_mat = glm::translate(launch_button_text_mat, glm::vec3(5.0f, 0.0f, 0.0f));
+		launch_button_text_mat = glm::rotate(launch_button_text_mat, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		auto launch_button_text = createText("abcdefr\nsdssd\n", 5, glm::vec3(1.0f));
 		launch_button_text->model_mat = launch_button_text_mat;
 		root->addChild(std::move(launch_button_text));
 

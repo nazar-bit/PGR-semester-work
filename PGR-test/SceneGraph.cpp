@@ -214,9 +214,9 @@ namespace vasylnaz {
 		const float positions[vec_size * vec_num] =
 		{
 			0.0f, 0.0f, 0.0f,
-			font_size * CHAR_W, 0.0f, 0.0f,
-			0.0f, font_size* CHAR_H, 0.0f,
-			font_size* CHAR_W, font_size* CHAR_H, 0.0f,
+			(font_size * CHAR_W) * FONT_SCALE_FACTOR, 0.0f, 0.0f,
+			0.0f, (font_size * CHAR_H) * FONT_SCALE_FACTOR, 0.0f,
+			(font_size * CHAR_W) * FONT_SCALE_FACTOR, (font_size * CHAR_H) * FONT_SCALE_FACTOR, 0.0f,
 		};
 
 		const unsigned int indices[indices_num * vec_size] =
@@ -226,29 +226,34 @@ namespace vasylnaz {
 		};
 		
 
-		int x = CHAR_PADDING;
-		int y = CHAR_PADDING;
+		float x = CHAR_PADDING * FONT_SCALE_FACTOR;
+		float y = CHAR_PADDING * FONT_SCALE_FACTOR;
 		for (unsigned long char_idx = 0; char_idx < text.size(); ++char_idx) {
 			
 			char ch = text[char_idx];
 			std::cout << ch << std::endl;
 			if (ch == '\n') {
-				y += CHAR_PADDING + CHAR_H * font_size;
-				x = CHAR_PADDING;
+				y -= (CHAR_PADDING + CHAR_H * font_size) * FONT_SCALE_FACTOR;
+				x = CHAR_PADDING * FONT_SCALE_FACTOR;
 				continue;
 			}
 
 			char relative_ch = ch - 32;
 			int relative_x = relative_ch % 18;
-			int relative_y = relative_ch / 18;
+			int relative_y = (TOTAL_ROWS - 1) - (relative_ch / 18);
+
 			float tex_x = (float)(relative_x * (2 * CHAR_PADDING + CHAR_W)) / FONT_W;
 			float tex_y = (float)(relative_y * (2 * CHAR_PADDING + CHAR_H)) / FONT_H;
+			tex_y += 1.0f / FONT_H;
+			float norm_w = (float)(CHAR_W + 2*CHAR_PADDING) / FONT_W;
+			float norm_h = (float)(CHAR_H + 2*CHAR_PADDING) / FONT_H;
+
 			float texture_coords[vec_num * tex_vec_size] =
 			{
-				tex_x, tex_y + CHAR_H,
-				tex_x + CHAR_W, tex_y + CHAR_H,
-				tex_x, tex_y,
-				tex_x + CHAR_W, tex_y,
+				tex_x, tex_y,                   
+				tex_x + norm_w, tex_y,          
+				tex_x, tex_y + norm_h,          
+				tex_x + norm_w, tex_y + norm_h, 
 			};
 			
 			auto mesh = std::make_unique<Mesh>(positions, vec_num, texture_coords, indices, indices_num);
@@ -258,10 +263,10 @@ namespace vasylnaz {
 			auto obj_mat = glm::mat4(1.0f);
 			obj_mat = glm::translate(obj_mat, glm::vec3(x, y, 0));
 
-			auto obj = std::make_unique<Object>(mesh_name, obj_mat, "basic", "font", "blank_norm", "blank_em", RenderQueue::TEXT);
+			auto obj = std::make_unique<Object>(mesh_name, obj_mat, "text", "font", "blank_norm", "blank_em", RenderQueue::TEXT);
 			node->addItem(std::move(obj), render_context);
 
-			x += CHAR_PADDING + CHAR_W * font_size;
+			x += (CHAR_PADDING + CHAR_W * font_size) * FONT_SCALE_FACTOR;
 		}
 
 		return std::move(node);

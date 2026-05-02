@@ -20,6 +20,8 @@
 #define CHAR_PADDING 1
 #define FONT_W 128
 #define FONT_H 64
+#define FONT_SCALE_FACTOR 0.01
+#define TOTAL_ROWS 7
 
 
 

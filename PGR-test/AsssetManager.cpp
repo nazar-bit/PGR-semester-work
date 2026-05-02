@@ -32,7 +32,7 @@ namespace vasylnaz {
 
 
         //Font
-        loadTetxure("font", "Textures/charmap-oldschool_white.png");
+        loadTetxureNearest("font", "Textures/charmap-oldschool_white.png");
         
 
         loadMesh("cube", "Models/cube.obj");
@@ -75,6 +75,13 @@ namespace vasylnaz {
         floor.specular = glm::vec4(0.4f, 0.4f, 0.4f, 20.0f);
         floor.emission = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         loadMaterial("floor", floor);
+        
+        Material text;
+        text.ambient = glm::vec4(0.1f, 0.1f, 0.1f, 0.0f);
+        text.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        text.specular = glm::vec4(1.0f, 1.0f, 1.0f, 64.0f);
+        text.emission = glm::vec4(0.1f);
+        loadMaterial("text", text);
     }
 
 
@@ -86,6 +93,20 @@ namespace vasylnaz {
         }
         else {
             GLuint texID = pgr::createTexture(file_path);
+            textures.emplace(name, texID);
+            std::cout << "Successfully loaded: " << file_path << std::endl;
+        }
+    }
+
+
+    void AssetManager::loadTetxureNearest(const string& name, const string& file_path) {
+        auto it = textures.find(name);
+
+        if (it != textures.end()) {
+            std::cout << "Texture was already loaded" << "\n";
+        }
+        else {
+            GLuint texID = createTexture(file_path);
             textures.emplace(name, texID);
             std::cout << "Successfully loaded: " << file_path << std::endl;
         }
@@ -127,4 +148,28 @@ namespace vasylnaz {
             meshes.emplace(name, std::move(mesh));
         }
     }
-}
+
+
+    GLuint AssetManager::createTexture(const std::string& fileName, bool mipmap) {
+        // generate and bind one texture
+        GLuint tex = 0;
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        // set linear filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // upload our image data to OpenGL
+        if (!pgr::loadTexImage2D(fileName, GL_TEXTURE_2D)) {
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDeleteTextures(1, &tex);
+            return 0;
+        }
+        // create mipmaps
+        if (mipmap)
+            glGenerateMipmap(GL_TEXTURE_2D);
+        // unbind the texture (just in case someone will mess up with texture calls later)
+        glBindTexture(GL_TEXTURE_2D, 0);
+        CHECK_GL_ERROR();
+        return tex;
+    }
+} 
