@@ -50,6 +50,12 @@ namespace vasylnaz {
         glm::vec3 target_before_rotation;
         glm::vec3 up_before_rotation;
 
+        glm::vec2 boundary_x = glm::vec2(-4.85f, 4.85f);
+        glm::vec2 boundary_y = glm::vec2(-0.6f, 2.4f);
+        glm::vec2 boundary_z = glm::vec2(0.15f, 9.85);
+        float x_split = 1.85f;
+        float z_split = 3.15f;
+
         /// @brief 
         /// @param position 
         /// @param target 
@@ -81,6 +87,8 @@ namespace vasylnaz {
         void drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view);
 
         void init(RenderContext& render_context);
+
+        void changePosition(const glm::vec3& new_pos);
 
 
     private:

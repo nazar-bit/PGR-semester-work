@@ -107,6 +107,26 @@ namespace vasylnaz {
 
 
 
+    void Camera::changePosition(const glm::vec3& new_pos) {
+        if (!CAMERA_BOUNDS) {
+            position = new_pos;
+            return;
+        }
+
+        if (boundary_y[0] < new_pos.y && new_pos.y < boundary_y[1]) {
+            if (boundary_x[0] < new_pos.x && new_pos.x < x_split &&
+                    boundary_z[0] < new_pos.z && new_pos.z < boundary_z[1]) {
+                position = new_pos;
+            }
+            else if (x_split <= new_pos.x && new_pos.x < boundary_x[1] &&
+                z_split <= new_pos.z && new_pos.z < boundary_z[1]) {
+                position = new_pos;
+            }
+        }
+    }
+
+
+
     void Camera::drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view) {
         glBindVertexArray(vao);
 

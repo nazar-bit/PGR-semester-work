@@ -146,22 +146,22 @@ namespace vasylnaz {
 		// WASD + ARROWS
 		if (keys_state['w'] || special_keys_state[GLUT_KEY_UP])
 		{
-			camera.position += forward * camera.movement_speed;
+			camera.changePosition(camera.position + forward * camera.movement_speed);
 			input = true;
 		}
 		if (keys_state['s'] || special_keys_state[GLUT_KEY_DOWN])
 		{
-			camera.position -= forward * camera.movement_speed;
+			camera.changePosition(camera.position - forward * camera.movement_speed);
 			input = true;
 		}
 		if (keys_state['a'] || special_keys_state[GLUT_KEY_LEFT])
 		{
-			camera.position -= right * camera.movement_speed;
+			camera.changePosition(camera.position - right * camera.movement_speed);
 			input = true;
 		}
 		if (keys_state['d'] || special_keys_state[GLUT_KEY_RIGHT])
 		{
-			camera.position += right * camera.movement_speed;
+			camera.changePosition(camera.position + right * camera.movement_speed);
 			input = true;
 		}
 

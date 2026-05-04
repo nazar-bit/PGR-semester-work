@@ -14,7 +14,6 @@ namespace vasylnaz {
 
 	class SceneGraph;
 
-
 	extern const int WIN_WIDTH;
 	extern const int WIN_HEIGHT;
 	extern const char* WIN_TITLE;
@@ -45,6 +44,8 @@ namespace vasylnaz {
 	extern float FOG_INCREMENT;
 	extern float FOG_DISOLUTION_POINT;
 	extern float FOG_MAX_DENSITY;
+
+	extern bool CAMERA_BOUNDS;
 
 
 	enum class ConfigState {
