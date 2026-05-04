@@ -229,8 +229,8 @@ namespace vasylnaz {
 			else if (request == Request::MAIN_MENU) {
 				loadMenu(camera);
 			}
-			else if (request == Request::ACTIVATE_DEBUG) {
-				HIDE_DEBUG = false;
+			else if (request == Request::TOGGLE_DEBUG) {
+				HIDE_DEBUG = !HIDE_DEBUG;
 			}
 			else if (request == Request::EXIT) {
 				exit(0);

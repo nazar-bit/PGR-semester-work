@@ -3,11 +3,14 @@
 #include "AssetManager.hpp"
 #include "NodeScript.hpp"
 #include "Request.hpp"
+#include "Params.hpp"
 
 
 namespace vasylnaz {
 
 	class Object;
+	class Node;
+	class TextObject;
 	class NodeScript;
 	class FanAnim;
 
@@ -80,6 +83,21 @@ namespace vasylnaz {
 		Request rq;
 
 		RequestScript(Object* owner, Request rq);
+
+		void update();
+
+	private:
+		bool is_clicked;
+	};
+
+
+
+	class RequestColorScript : public Script {
+	public:
+		Request rq;
+		Node* text_node;
+
+		RequestColorScript(Object* owner, Request rq, Node* text_node);
 
 		void update();
 

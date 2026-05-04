@@ -155,7 +155,7 @@ namespace vasylnaz {
         {
             // Curves
             glUseProgram(line_drawer.shaderProgram);
-            glUniform3fv(line_drawer.positionColor, 1, glm::value_ptr(debugColor));
+            glUniform3fv(line_drawer.positionColor, 1, glm::value_ptr(curveDebugColor));
             glUniformMatrix4fv(line_drawer.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
             for (const auto& curve : CURRENT_SCENE->render_context.curves) {
                 curve->draw(line_drawer, View);

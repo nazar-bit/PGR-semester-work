@@ -3,9 +3,6 @@
 
 namespace vasylnaz {
 
-	glm::vec3 debugColor = glm::vec3(1.0f, 0.0f, 0.0f);
-
-
 	Curve::Curve(const std::vector<glm::vec3>& input_points)
 		: points(input_points)
 	{

@@ -34,6 +34,23 @@ namespace vasylnaz {
 	const glm::vec3 CAMERA_DEFAULT_UP = glm::vec3(0.0f, 1.0f, 0.0f);   // normalized vector
 	extern glm::vec3 CAMERA_SAVED_UP;
 
+	extern glm::vec3 MENU_TEXT_COLOR;
+	extern glm::vec3 MENU_ACTIVATED_TEXT_COLOR;
+
+	extern glm::vec3 pointDebugColor;
+	extern glm::vec3 curveDebugColor;
+
+
+	enum class ConfigState {
+		NONE,
+		CAMERA_CURVE,
+		MENU_TEXT_COLOR,
+		MENU_ACTIVATED_TEXT_COLOR,
+		POINT_DEBUG_COLOR,
+		CURVE_DEBUG_COLOR
+	};
+
+
 	void loadParams();
 }
 

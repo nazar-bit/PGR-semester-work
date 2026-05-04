@@ -13,8 +13,6 @@
 
 namespace vasylnaz {
 
-	extern glm::vec3 debugColor;
-
 	class Curve {
 	public:
 		std::vector<glm::vec3> points;

@@ -15,8 +15,6 @@ namespace vasylnaz {
     struct RenderContext;
     class Node;
 
-    extern glm::vec3 pointDebugColor;
-
 
     struct ViewPoint {
         glm::vec3 position;

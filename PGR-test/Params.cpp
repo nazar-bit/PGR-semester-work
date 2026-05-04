@@ -10,7 +10,7 @@ namespace vasylnaz {
 	const char* WIN_TITLE = "PGR SEMESTER PROJECT";
 	const int CURVE_PRECISION = 500;
 
-	bool HIDE_DEBUG = false;
+	bool HIDE_DEBUG = true;
 	bool LAUNCHED = false;
 
     const char* PARAMS_FILE = "Params/params.txt";
@@ -21,8 +21,14 @@ namespace vasylnaz {
     glm::vec3 CAMERA_SAVED_TARGET = glm::vec3(-1.0f, 0.0f, 0.0f);
     glm::vec3 CAMERA_SAVED_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 
+    glm::vec3 MENU_TEXT_COLOR = glm::vec3(0.5f, 0.0f, 0.0f);
+    glm::vec3 MENU_ACTIVATED_TEXT_COLOR = glm::vec3(0.0f, 0.5f, 0.0f);
+
+    glm::vec3 pointDebugColor = glm::vec3(0.6f, 0.0f, 0.6f);
+    glm::vec3 curveDebugColor = glm::vec3(1.0f, 0.0f, 0.0f);
 
 
+   
 
     void loadParams() {
         std::cout << "CONFIG LOADING ...\n";
@@ -36,41 +42,87 @@ namespace vasylnaz {
 
         std::vector<glm::vec3> curveData;
         std::string line;
-        bool pastMarker = false;
+        ConfigState state = ConfigState::NONE;
+
+        auto saveCurveData = [&]() {
+            if (!curveData.empty()) {
+                CAMERA_CURVES.push_back(std::make_unique<Curve>(curveData));
+                curveData.clear();
+            }
+            };
 
         while (std::getline(file, line)) {
-            if (line.find("#camera_curve") != std::string::npos) {
-                if (!curveData.empty()) {
-                    CAMERA_CURVES.push_back(std::make_unique<Curve>(curveData));
-                    curveData.clear();
-                }
-                pastMarker = true;
-                continue;
-            }
-
-            if (!pastMarker) {
-                continue;
-            }
-
+            // Skip empty lines
             if (line.empty() || line.find_first_not_of(" \t\r\n") == std::string::npos) {
                 continue;
             }
 
+            // Check markers
+            if (line.find("#camera_curve") != std::string::npos) {
+                saveCurveData();
+                state = ConfigState::CAMERA_CURVE;
+                continue;
+            }
+            if (line.find("#menu_text_color") != std::string::npos) {
+                saveCurveData();
+                state = ConfigState::MENU_TEXT_COLOR;
+                continue;
+            }
+            if (line.find("#menu_activated_text_color") != std::string::npos) {
+                saveCurveData();
+                state = ConfigState::MENU_ACTIVATED_TEXT_COLOR;
+                continue;
+            }
+            if (line.find("#point_debug_color") != std::string::npos) {
+                saveCurveData();
+                state = ConfigState::POINT_DEBUG_COLOR;
+                continue;
+            }
+            if (line.find("#curve_debug_color") != std::string::npos) {
+                saveCurveData();
+                state = ConfigState::CURVE_DEBUG_COLOR;
+                continue;
+            }
+
+            // If not hit - skip the line
+            if (state == ConfigState::NONE) {
+                continue;
+            }
+
+            // Vector values
             std::istringstream iss(line);
             float x, y, z;
 
             if (iss >> x >> y >> z) {
-                curveData.push_back(glm::vec3(x, y, z));
+                glm::vec3 parsedVector(x, y, z);
+
+                // Apply the parsed vector based on current state
+                switch (state) {
+                case ConfigState::CAMERA_CURVE:
+                    curveData.push_back(parsedVector);
+                    break;
+                case ConfigState::MENU_TEXT_COLOR:
+                    MENU_TEXT_COLOR = parsedVector;
+                    break;
+                case ConfigState::MENU_ACTIVATED_TEXT_COLOR:
+                    MENU_ACTIVATED_TEXT_COLOR = parsedVector;
+                    break;
+                case ConfigState::POINT_DEBUG_COLOR:
+                    pointDebugColor = parsedVector;
+                    break;
+                case ConfigState::CURVE_DEBUG_COLOR:
+                    curveDebugColor = parsedVector;
+                    break;
+                default:
+                    break;
+                }
             }
             else {
-                // Future
+                // malformed lines
             }
         }
 
-        if (!curveData.empty()) {
-            CAMERA_CURVES.push_back(std::make_unique<Curve>(curveData));
-        }
-
+        saveCurveData();
         file.close();
         std::cout << "CONFIG LOADING COMPLETE\n";
     }

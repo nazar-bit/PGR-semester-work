@@ -1,5 +1,6 @@
 #include "Script.hpp"
 #include "Object.hpp"
+#include "SceneGraph.hpp"
 
 
 namespace vasylnaz {
@@ -78,6 +79,32 @@ namespace vasylnaz {
 		if (is_clicked != owner->clicked) {
 			requests.push(rq);
 			is_clicked = owner->clicked;
+		}
+	}
+
+
+
+
+	RequestColorScript::RequestColorScript(Object* owner, Request rq, Node* text_node)
+		: Script(owner), is_clicked(owner->clicked), rq(rq), text_node(text_node)
+	{
+		//
+	}
+
+
+	void RequestColorScript::update() {
+		if (is_clicked != owner->clicked) {
+			requests.push(rq);
+			is_clicked = owner->clicked;
+			for (auto& item : text_node->items) {
+				auto obj = static_cast<TextObject*>(item.get());
+				if (owner->clicked) {
+					obj->text_color = MENU_ACTIVATED_TEXT_COLOR;
+				}
+				else {
+					obj->text_color = MENU_TEXT_COLOR;
+				}
+			}
 		}
 	}
 }

@@ -4,8 +4,6 @@
 
 namespace vasylnaz {
 
-	glm::vec3 pointDebugColor = glm::vec3(0.6f, 0.0f, 0.6f);
-
     void Camera::updateCurves(RenderContext& rq) {
         curves.clear();
         for (int i = 0; i < CAMERA_CURVES.size(); ++i) {
