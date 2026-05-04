@@ -113,13 +113,20 @@ namespace vasylnaz {
             return;
         }
 
+        bool passed = false;
         if (boundary_y[0] < new_pos.y && new_pos.y < boundary_y[1]) {
             if (boundary_x[0] < new_pos.x && new_pos.x < x_split &&
                     boundary_z[0] < new_pos.z && new_pos.z < boundary_z[1]) {
-                position = new_pos;
+                passed = true;
             }
             else if (x_split <= new_pos.x && new_pos.x < boundary_x[1] &&
                 z_split <= new_pos.z && new_pos.z < boundary_z[1]) {
+                passed = true;
+            }
+        }
+
+        if (passed) {
+            if (glm::distance(new_pos, example.pos) > example.radius) {
                 position = new_pos;
             }
         }

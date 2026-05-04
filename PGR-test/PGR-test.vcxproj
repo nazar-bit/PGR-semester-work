@@ -152,6 +152,7 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBox.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Curve.hpp" />
     <ClInclude Include="InputHandler.hpp" />

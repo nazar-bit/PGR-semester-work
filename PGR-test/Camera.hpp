@@ -8,6 +8,7 @@
 #include "Curve.hpp"
 #include "Params.hpp"
 #include "Utils.hpp"
+#include "BoundingBox.hpp"
 
 
 namespace vasylnaz {
@@ -55,6 +56,11 @@ namespace vasylnaz {
         glm::vec2 boundary_z = glm::vec2(0.15f, 9.85);
         float x_split = 1.85f;
         float z_split = 3.15f;
+
+        BoundingBox example = {
+            glm::vec3(-4.3f, -0.17f, 0.7f),
+            0.8f
+        };
 
         /// @brief 
         /// @param position 
