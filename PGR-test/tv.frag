@@ -28,6 +28,14 @@ uniform sampler2D texSampler;
 uniform sampler2D normSampler;
 uniform sampler2D emSampler;
 
+// FOG 
+uniform bool fog;
+vec3 fog_color = vec3(0.8);
+uniform float fog_density = 0.2;
+float height_fog_density = 0.9;
+float floor_level = -0.7;
+in float world_height;
+
 in vec2 fg_tex_coords;
 in mat3 TBN;
 
@@ -58,9 +66,6 @@ void main() {
     if(tex_clr.a < 0.1){
         discard;
     }
-    //if (tex_clr.r < 0.1 && tex_clr.g < 0.1 && tex_clr.b < 0.1) {
-    //    discard;
-    //}
     vec3 tex_color = tex_clr.xyz;
 
     
@@ -117,6 +122,15 @@ void main() {
 
     // Result
     vec3 res = final_em + (global_ambient * tex_color) + sum_light;
+    // FOG
+    if(fog){
+        float height_from_floor = max(world_height - floor_level, 0.0);
+        float height_density_modifier = exp(-height_fog_density * height_from_floor);
+        float fog_density = fog_density * height_density_modifier;
+        float fog_factor = exp(-fog_density * length(view_pos));
+        res = res*fog_factor + (1-fog_factor)*fog_color;
+    }
+
     color = vec4(res, diffuse.w);
     //color = texture(texSampler, fg_tex_coords);
 }

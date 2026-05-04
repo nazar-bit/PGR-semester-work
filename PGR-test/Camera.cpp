@@ -110,7 +110,8 @@ namespace vasylnaz {
     void Camera::drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view) {
         glBindVertexArray(vao);
 
-        glUniformMatrix4fv(shader_manager.positionVM, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(shader_manager.positionM, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+        glUniformMatrix4fv(shader_manager.positionV, 1, GL_FALSE, glm::value_ptr(view));
 
         glDrawArrays(GL_POINTS, 0, view_points.size());
         glBindVertexArray(0);

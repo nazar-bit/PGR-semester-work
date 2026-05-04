@@ -2,14 +2,15 @@
 
 layout(location = 0) in vec3 position;
 layout(location = 2) in vec3 tex_coords;
-uniform mat4 VM;
-uniform mat4 VN;
+uniform mat4 M;
+uniform mat4 V;
 uniform mat4 P;
 
 out vec4 fg_position;
 out vec2 fg_tex_coords;
 
 void main() {
+    mat4 VM = V*M;
     mat4 PVM = P * VM;
     gl_Position = PVM * vec4(position, 1.0);
     

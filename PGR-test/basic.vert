@@ -4,15 +4,19 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec3 tex_coords;
 layout(location = 3) in vec3 tangent;
-uniform mat4 VM;
-uniform mat4 VN;
+uniform mat4 M;
+uniform mat4 V;
 uniform mat4 P;
 
 out vec4 fg_position;
 out vec2 fg_tex_coords;
 out mat3 TBN;
 
+out float world_height;
+
 void main() {
+    mat4 VM = V*M;
+    mat4 VN = transpose(inverse(V*M));
     mat4 PVM = P * VM;
     gl_Position = PVM * vec4(position, 1.0);
     
@@ -29,4 +33,6 @@ void main() {
     T = normalize(T - dot(T, N) * N);
     vec3 B = cross(N, T);
     TBN = mat3(T, B, N);
+
+    world_height = (M * vec4(position, 1.0)).y;
 }

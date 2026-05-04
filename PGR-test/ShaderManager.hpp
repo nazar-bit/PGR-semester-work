@@ -44,8 +44,8 @@ namespace vasylnaz {
 		GLuint positionTex = -1;
 		GLuint positionTangent = -1;
 
-		GLuint positionVM = -1;
-		GLuint positionVN = -1;
+		GLuint positionM = -1;
+		GLuint positionV = -1;
 		GLuint positionP = -1;
 		GLuint positionTime = -1;
 
@@ -56,6 +56,8 @@ namespace vasylnaz {
 
 		GLuint positionId = -1;
 		GLuint positionColor = -1;
+		GLuint positionFog = -1;
+		GLuint positionFogDensity = -1;
 
 
 		void compile_shaders(const std::string& vert_loc, const std::string& frag_loc);

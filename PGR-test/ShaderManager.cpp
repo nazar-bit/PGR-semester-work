@@ -116,8 +116,8 @@ namespace vasylnaz {
 		positionTex = glGetAttribLocation(shaderProgram, "tex_coords");
 		positionTangent = glGetAttribLocation(shaderProgram, "tangent");
 
-		positionVM = glGetUniformLocation(shaderProgram, "VM");
-		positionVN = glGetUniformLocation(shaderProgram, "VN");
+		positionM = glGetUniformLocation(shaderProgram, "M");
+		positionV = glGetUniformLocation(shaderProgram, "V");
 		positionP = glGetUniformLocation(shaderProgram, "P");
 		positionTime = glGetUniformLocation(shaderProgram, "time");
 
@@ -131,6 +131,8 @@ namespace vasylnaz {
 		if (positionColor == -1) {
 			positionColor = glGetUniformLocation(shaderProgram, "textColor");
 		}
+		positionFog = glGetUniformLocation(shaderProgram, "fog");
+		positionFogDensity = glGetUniformLocation(shaderProgram, "fog_density");
 	}
 
 

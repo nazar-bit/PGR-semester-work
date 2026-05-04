@@ -30,6 +30,23 @@ namespace vasylnaz {
 			speed /= acceleration;
 		}
 
+		//FOG
+		if (speed >= max_speed) {
+			FOG_DENSITY /= FOG_INCREMENT;
+			if (FOG_DENSITY < FOG_DISOLUTION_POINT) {
+				FOG_DENSITY = 0.0f;
+			}
+		}
+		else if (speed <= 0.0f) {
+			if (FOG_DENSITY == 0.0f) {
+				FOG_DENSITY = FOG_DISOLUTION_POINT;
+			}
+			FOG_DENSITY *= FOG_INCREMENT;
+			if (FOG_DENSITY > FOG_MAX_DENSITY) {
+				FOG_DENSITY = FOG_MAX_DENSITY;
+			}
+		}
+
 		owner->model_mat = glm::rotate(owner->model_mat, glm::radians(speed), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 

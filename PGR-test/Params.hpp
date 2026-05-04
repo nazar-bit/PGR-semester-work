@@ -40,6 +40,12 @@ namespace vasylnaz {
 	extern glm::vec3 pointDebugColor;
 	extern glm::vec3 curveDebugColor;
 
+	extern bool FOG;
+	extern float FOG_DENSITY;
+	extern float FOG_INCREMENT;
+	extern float FOG_DISOLUTION_POINT;
+	extern float FOG_MAX_DENSITY;
+
 
 	enum class ConfigState {
 		NONE,

@@ -108,7 +108,7 @@ namespace vasylnaz {
         CURRENT_SCENE->update();
         input_handler.update(camera, pick_prog, CURRENT_SCENE, View, Projection);
         camera.update();
-        //PauseAdjustment = 0.0f;
+       
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
@@ -120,6 +120,8 @@ namespace vasylnaz {
         glUseProgram(shader_program.shaderProgram);
         glUniformMatrix4fv(shader_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+        glUniform1i(shader_program.positionFog, FOG);
+        glUniform1f(shader_program.positionFogDensity, FOG_DENSITY);
 
         // Normal stuff
         for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::OPAQUE_MASK]) {
@@ -145,6 +147,8 @@ namespace vasylnaz {
         glUniform1f(leaf_program.positionTime, GlobalTime);
         glUniformMatrix4fv(leaf_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(leaf_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+        glUniform1i(leaf_program.positionFog, FOG);
+        glUniform1f(leaf_program.positionFogDensity, FOG_DENSITY);
 
         for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::LEAF_MASK]) {
             obj->draw(leaf_program, View);
@@ -174,6 +178,8 @@ namespace vasylnaz {
         glUniform1f(tv_program.positionTime, GlobalTime);
         glUniformMatrix4fv(tv_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(tv_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
+        glUniform1i(tv_program.positionFog, FOG);
+        glUniform1f(tv_program.positionFogDensity, FOG_DENSITY);
 
         for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TV_SCREEN_MASK]) {
             obj->draw(tv_program, View);

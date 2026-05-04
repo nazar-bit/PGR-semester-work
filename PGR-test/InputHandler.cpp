@@ -264,5 +264,6 @@ namespace vasylnaz {
 		camera.target = CAMERA_SAVED_TARGET;
 		camera.up = CAMERA_SAVED_UP;
 		PauseAdjustment += (GlobalTime - PauseStart);
+		FOG = true;
 	}
 }

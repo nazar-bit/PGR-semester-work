@@ -27,8 +27,14 @@ namespace vasylnaz {
     glm::vec3 pointDebugColor = glm::vec3(0.6f, 0.0f, 0.6f);
     glm::vec3 curveDebugColor = glm::vec3(1.0f, 0.0f, 0.0f);
 
+    bool FOG = false;
+    float FOG_DENSITY = 0.2f;
+    float FOG_INCREMENT = 1.01f;
+    float FOG_DISOLUTION_POINT = 0.01f;
+    float FOG_MAX_DENSITY = 0.2f;
 
-   
+
+
 
     void loadParams() {
         std::cout << "CONFIG LOADING ...\n";
