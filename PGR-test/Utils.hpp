@@ -12,6 +12,8 @@ namespace vasylnaz {
 	glm::quat calculateRotationCurve(glm::vec3 oldPos, glm::vec3 newPos);
 
 	extern float GlobalTime;
+	extern float PauseStart;
+	extern float PauseAdjustment;
 
 	extern float NAN_FL;
 

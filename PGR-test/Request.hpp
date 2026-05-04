@@ -10,6 +10,7 @@ namespace vasylnaz {
 		LAUNCH,
 		MAIN_MENU,
 		EXIT,
+		ACTIVATE_DEBUG,
 	};
 
 	extern std::queue<Request> requests;

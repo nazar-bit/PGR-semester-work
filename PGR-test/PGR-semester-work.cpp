@@ -31,9 +31,9 @@ namespace vasylnaz {
 
 
     Camera camera = Camera(
-        glm::vec3(-1.0f, 1.0f, 4.0f),
-        glm::vec3(-1.0f, 0.0f, 0.0f),   // normalized vector
-        glm::vec3(0.0f, 1.0f, 0.0f),
+        CAMERA_DEFAULT_POS,
+        CAMERA_DEFAULT_TARGET,
+        CAMERA_DEFAULT_UP,
         glm::vec3(0.0f, 0.0f, 5.0f),
         0.05f,
         0.2f
@@ -63,7 +63,7 @@ namespace vasylnaz {
 
         std::unique_ptr<Menu> menu = std::make_unique<Menu>();
         menu->init(shader_program, camera);
-        current_scene = menu.get();
+        CURRENT_SCENE = menu.get();
         input_handler.addScene(std::move(menu));
         
 
@@ -102,12 +102,13 @@ namespace vasylnaz {
             camera.up);
         Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 
-        current_scene->render_context.light_block.updateViewSpacePositions(View);
-        updateLights(current_scene->render_context.light_block.getLBD());
+        CURRENT_SCENE->render_context.light_block.updateViewSpacePositions(View);
+        updateLights(CURRENT_SCENE->render_context.light_block.getLBD());
 
-        current_scene->update();
-        input_handler.update(camera, pick_prog, current_scene, View, Projection);
+        CURRENT_SCENE->update();
+        input_handler.update(camera, pick_prog, CURRENT_SCENE, View, Projection);
         camera.update();
+        //PauseAdjustment = 0.0f;
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
@@ -121,21 +122,21 @@ namespace vasylnaz {
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
         // Normal stuff
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::OPAQUE_MASK]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::OPAQUE_MASK]) {
             obj->draw(shader_program, View);
         }
 
 
         glDisable(GL_CULL_FACE);
         // No Culling
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::NO_CULLING_MASK]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::NO_CULLING_MASK]) {
             obj->draw(shader_program, View);
         }
 
         // Text
         glUseProgram(text_render.shaderProgram);
         glUniformMatrix4fv(text_render.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::TEXT]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TEXT]) {
             obj->draw(text_render, View);
         }
 
@@ -145,7 +146,7 @@ namespace vasylnaz {
         glUniformMatrix4fv(leaf_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(leaf_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::LEAF_MASK]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::LEAF_MASK]) {
             obj->draw(leaf_program, View);
         }
 
@@ -156,7 +157,7 @@ namespace vasylnaz {
             glUseProgram(line_drawer.shaderProgram);
             glUniform3fv(line_drawer.positionColor, 1, glm::value_ptr(debugColor));
             glUniformMatrix4fv(line_drawer.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
-            for (const auto& curve : current_scene->render_context.curves) {
+            for (const auto& curve : CURRENT_SCENE->render_context.curves) {
                 curve->draw(line_drawer, View);
             }
 
@@ -174,7 +175,7 @@ namespace vasylnaz {
         glUniformMatrix4fv(tv_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(tv_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
 
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::TV_SCREEN_MASK]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TV_SCREEN_MASK]) {
             obj->draw(tv_program, View);
         }
 
@@ -182,7 +183,7 @@ namespace vasylnaz {
         glUseProgram(skybox_program.shaderProgram);
         glUniformMatrix4fv(skybox_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
 
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::SKYBOX]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::SKYBOX]) {
             obj->draw(skybox_program, View);
         }
         
@@ -193,7 +194,7 @@ namespace vasylnaz {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        for (const auto& obj : current_scene->render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
+        for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
             obj->draw(shader_program, View);
         }
         glDisable(GL_BLEND);
@@ -210,32 +211,32 @@ namespace vasylnaz {
 
 
     void handleKeyboardDown(unsigned char key, int x, int y) {
-        input_handler.set_key_true(key);
+        input_handler.setKeyTrue(key);
     }
 
 
     void handleKeyboardUp(unsigned char key, int x, int y) {
-        input_handler.set_key_false(key);
+        input_handler.setKeyFalse(key);
     }
 
 
     void handleMouseClick(int button, int state, int x, int y) {
-        input_handler.handle_mouse_click(button, state, x, y);
+        input_handler.handleMouseClick(button, state, x, y);
     }
 
 
     void handleMouseDrag(int x, int y) {
-        input_handler.handle_mouse_drag(x, y);
+        input_handler.handleMouseDrag(x, y);
     }
 
 
     void handleSpecialKeysDown(int key, int x, int y) {
-        input_handler.set_special_key_true(key);
+        input_handler.setSpecialKeyTrue(key);
     }
 
 
     void handleSpecialKeysUp(int key, int x, int y) {
-        input_handler.set_special_key_false(key);
+        input_handler.setSpecialKeyFalse(key);
     }
 }
 

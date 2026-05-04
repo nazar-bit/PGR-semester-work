@@ -45,7 +45,7 @@ namespace vasylnaz {
 
 	void CurveMovement::update() {
 
-		auto new_pos = curve->moveAlong(std::fmod((GlobalTime * speed), curve->getLastKnot()));
+		auto new_pos = curve->moveAlong(std::fmod(((GlobalTime - PauseAdjustment) * speed), curve->getLastKnot()));
 	
 		glm::vec3 scale(
 			glm::length(glm::vec3(owner->model_mat[0])),

@@ -12,7 +12,7 @@ namespace vasylnaz {
 
 		auto button_mat = glm::mat4(1.0f);
 		button_mat = glm::scale(button_mat, glm::vec3(0.5f, 1.1f, 5.0f));
-		auto button = std::make_unique<Object>("cube", button_mat, "basic", "blank", "blank_norm", "blank_em");
+		auto button = std::make_unique<Object>("cube", button_mat, "text", "menu_button", "menu_button_norm", "blank_em");
 		button->scripts.push_back(std::make_unique<RequestScript>(button.get(), request));
 		button_node->addItem(std::move(button), render_context);
 
@@ -34,8 +34,8 @@ namespace vasylnaz {
 			glm::vec3(-0.3f, -0.4f, -1.5f), Request::LAUNCH);
 		root->addChild(std::move(launch_button));
 
-		auto settings_button = createButton(glm::vec3(7.0f, 1.4f, 4.0f), "SETTINGS",
-			glm::vec3(-0.3f, -0.4f, -2.0f), Request::NO_REQUEST);
+		auto settings_button = createButton(glm::vec3(7.0f, 1.4f, 4.0f), "DEBUG",
+			glm::vec3(-0.3f, -0.4f, -1.4f), Request::ACTIVATE_DEBUG);
 		root->addChild(std::move(settings_button));
 
 		auto quit_button = createButton(glm::vec3(7.0f, 0.0f, 4.0f), "QUIT",

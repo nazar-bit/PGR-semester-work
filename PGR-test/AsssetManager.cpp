@@ -13,6 +13,7 @@ namespace vasylnaz {
         loadTetxure("floor", "Textures/granite_tile_diff_1k.jpg");
         loadTetxure("wall_support", "Textures/wooden_gate_diff_1k.jpg");
         loadTetxure("ceiling", "Textures/OfficeCeiling001_1K-JPG_Color.jpg");
+        loadTetxure("menu_button", "Textures/Rock058_1K-PNG_Color.png");
         
         
         
@@ -26,6 +27,7 @@ namespace vasylnaz {
         loadTetxure("floor_norm", "Textures/granite_tile_nor_gl_1k.jpg");
         loadTetxure("wall_support_norm", "Textures/wooden_gate_nor_gl_1k.jpg");
         loadTetxure("ceiling_norm", "Textures/OfficeCeiling001_1K-JPG_NormalGL.jpg");
+        loadTetxure("menu_button_norm", "Textures/Rock058_1K-PNG_NormalGL.png");
 
         //emission
         loadTetxure("blank_em", "Textures/blank_em.png");

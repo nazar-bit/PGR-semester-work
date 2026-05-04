@@ -13,16 +13,20 @@ namespace vasylnaz {
 	bool HIDE_DEBUG = false;
 	bool LAUNCHED = false;
 
-    const char* PARAMS_FILE = "params.txt";
+    const char* PARAMS_FILE = "Params/params.txt";
 
-	SceneGraph* current_scene = nullptr;
-    std::vector<std::unique_ptr<Curve>> camera_curves;
+	SceneGraph* CURRENT_SCENE = nullptr;
+    std::vector<std::unique_ptr<Curve>> CAMERA_CURVES;
+    glm::vec3 CAMERA_SAVED_POS = glm::vec3(-1.0f, 1.0f, 4.0f);
+    glm::vec3 CAMERA_SAVED_TARGET = glm::vec3(-1.0f, 0.0f, 0.0f);
+    glm::vec3 CAMERA_SAVED_UP = glm::vec3(0.0f, 1.0f, 0.0f);
+
 
 
 
     void loadParams() {
         std::cout << "CONFIG LOADING ...\n";
-        camera_curves.clear();
+        CAMERA_CURVES.clear();
         std::ifstream file(PARAMS_FILE);
 
         if (!file.is_open()) {
@@ -37,7 +41,7 @@ namespace vasylnaz {
         while (std::getline(file, line)) {
             if (line.find("#camera_curve") != std::string::npos) {
                 if (!curveData.empty()) {
-                    camera_curves.push_back(std::make_unique<Curve>(curveData));
+                    CAMERA_CURVES.push_back(std::make_unique<Curve>(curveData));
                     curveData.clear();
                 }
                 pastMarker = true;
@@ -64,10 +68,11 @@ namespace vasylnaz {
         }
 
         if (!curveData.empty()) {
-            camera_curves.push_back(std::make_unique<Curve>(curveData));
+            CAMERA_CURVES.push_back(std::make_unique<Curve>(curveData));
         }
 
         file.close();
+        std::cout << "CONFIG LOADING COMPLETE\n";
     }
 }
 

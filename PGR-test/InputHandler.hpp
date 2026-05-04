@@ -32,31 +32,31 @@ namespace vasylnaz {
 		/// @brief 
 		/// @param  
 		/// @return 
-		const std::array<bool, KEY_COUNT> get_keys_state(void) const {
+		const std::array<bool, KEY_COUNT> getKeysState(void) const {
 			return keys_state;
 		}
 
 		/// @brief 
 		/// @param key_id 
-		void set_key_true(const unsigned char& key_id) {
+		void setKeyTrue(const unsigned char& key_id) {
 			keys_state[key_id] = true;
 		}
 
 		/// @brief 
 		/// @param key_id 
-		void set_key_false(const unsigned char& key_id) {
+		void setKeyFalse(const unsigned char& key_id) {
 			keys_state[key_id] = false;
 		}
 
 		/// @brief 
 		/// @param key_id 
-		void set_special_key_true(const unsigned char& key_id) {
+		void setSpecialKeyTrue(const unsigned char& key_id) {
 			special_keys_state[key_id] = true;
 		}
 
 		/// @brief 
 		/// @param key_id 
-		void set_special_key_false(const unsigned char& key_id) {
+		void setSpecialKeyFalse(const unsigned char& key_id) {
 			special_keys_state[key_id] = false;
 		}
 
@@ -65,20 +65,20 @@ namespace vasylnaz {
 		/// @param state 
 		/// @param x 
 		/// @param y 
-		void handle_mouse_click(const int& button, const int& state, const int& x, const int& y);
+		void handleMouseClick(const int& button, const int& state, const int& x, const int& y);
 
 		/// @brief 
 		/// @param x 
 		/// @param y 
-		void handle_mouse_drag(const int& x, const int& y);
+		void handleMouseDrag(const int& x, const int& y);
 
 		/// @brief 
 		/// @param camera 
-		void update_camera_pos(Camera& camera);
+		void updateCameraPos(Camera& camera);
 
 		/// @brief 
 		/// @param camera 
-		void update_camera_target(Camera& camera);
+		void updateCameraTarget(Camera& camera);
 
 		/// @brief 
 		/// @param camera 
@@ -96,9 +96,9 @@ namespace vasylnaz {
 		/// @param scene 
 		void addScene(std::unique_ptr<SceneGraph> scene);
 
-		void loadMainScene();
+		void loadMainScene(Camera& camera);
 
-		void loadMenu();
+		void loadMenu(Camera& camera);
 
 
 	private:
@@ -117,7 +117,7 @@ namespace vasylnaz {
 
 		void checkKeysPressed(Camera& camera);
 
-		void check_requests();
+		void checkRequests(Camera& camera);
 	};
 
 }

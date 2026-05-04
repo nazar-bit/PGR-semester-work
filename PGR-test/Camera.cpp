@@ -8,8 +8,8 @@ namespace vasylnaz {
 
     void Camera::updateCurves(RenderContext& rq) {
         curves.clear();
-        for (int i = 0; i < camera_curves.size(); ++i) {
-            addCurve(camera_curves[i].get(), rq);
+        for (int i = 0; i < CAMERA_CURVES.size(); ++i) {
+            addCurve(CAMERA_CURVES[i].get(), rq);
         }
     }
 
@@ -55,6 +55,7 @@ namespace vasylnaz {
 
 
     void Camera::update() {
+        //std::cout << position.x << " " << position.y << " " << position.z << std::endl;
         // Check if follows node
         if (current_node != nullptr) {
             position = current_node->model_mat[3];

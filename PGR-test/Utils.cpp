@@ -26,6 +26,11 @@ namespace vasylnaz {
 
     glm::quat calculateRotationCurve(glm::vec3 oldPos, glm::vec3 newPos) {
 
+        glm::vec3 diff = newPos - oldPos;
+        if (glm::length(diff) < 0.0001f) {
+            return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+
         glm::vec3 forwardDir = glm::normalize(newPos - oldPos);
         glm::vec3 backwardDir = -forwardDir;
         glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -46,6 +51,8 @@ namespace vasylnaz {
 
 
     float GlobalTime = 0.0f;
+    float PauseStart = 0.0f;
+    float PauseAdjustment = 0.0f;
 
     float NAN_FL = std::numeric_limits<float>::quiet_NaN();
 

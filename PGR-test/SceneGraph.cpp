@@ -231,7 +231,6 @@ namespace vasylnaz {
 		for (unsigned long char_idx = 0; char_idx < text.size(); ++char_idx) {
 			
 			char ch = text[char_idx];
-			std::cout << ch << std::endl;
 			if (ch == '\n') {
 				y -= (CHAR_PADDING + CHAR_H * font_size) * FONT_SCALE_FACTOR;
 				x = CHAR_PADDING * FONT_SCALE_FACTOR;

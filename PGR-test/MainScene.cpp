@@ -255,31 +255,7 @@ namespace vasylnaz {
 
 
 	void MainScene::init(ShaderProgram& shader_manager, Camera& camera) {
-		// 2
-		auto model_mat2 = glm::mat4(
-			5.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 5.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 5.0f, 0.0f,
-			15.0f, 0.0f, 4.0f, 1.0f);
-		auto test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em");
-		root->addItem(std::move(test_object2), render_context);
-
-		model_mat2 = glm::mat4(
-			5.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 5.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 5.0f, 0.0f,
-			5.0f, 0.0f, 25.0f, 1.0f);
-		test_object2 = std::make_unique<Object>("cube", model_mat2, "basic", "blank", "blank_norm", "blank_em");
-		root->addItem(std::move(test_object2), render_context);
-		// 3
-		auto model_mat3 = glm::mat4(
-			100.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 0.1f, 0.0f, 0.0f,
-			0.0f, 0.0f, 100.0f, 0.0f,
-			0.0f, -3.0f, 0.0f, 1.0f);
-		auto test_object3 = std::make_unique<Object>("cube", model_mat3, "red_plastic");
-
-
+	
 		glm::mat4 wall_support_mat = glm::mat4(1.0f);
 		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
 		wall_support_mat = glm::scale(wall_support_mat, glm::vec3(10.0f, 1.0f, 1.0f));

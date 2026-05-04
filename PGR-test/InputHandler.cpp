@@ -12,7 +12,7 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::handle_mouse_click(const int& button, const int& state, const int& x, const int& y) {
+	void InputHandler::handleMouseClick(const int& button, const int& state, const int& x, const int& y) {
 		if (button == GLUT_RIGHT_BUTTON) {
 			mouse.last_coords = glm::vec2(x, y);
 			mouse.new_coords = glm::vec2(x, y);
@@ -90,26 +90,23 @@ namespace vasylnaz {
 
 	void InputHandler::checkKeysPressed(Camera& camera) {
 		bool input = false;
-		int modifiers = glutGetModifiers();
 		// Escape
-		/*if (keys_state[27])
+		if (keys_state[27] && LAUNCHED)
 		{
-			set_key_false(27);
-			if (current_scene == scenes[MAIN_SCENE].get()) {
-				loadMenu();
-				camera_locked = true;
+			setKeyFalse(27);
+			if (CURRENT_SCENE == scenes[MAIN_SCENE].get()) {
+				loadMenu(camera);
 			}
 			else {
-				loadMainScene();
-				camera_locked = false;
+				loadMainScene(camera);
 			}
 			input = true;
-		}*/
+		}
 
 		// CTRL + R; To reload config
-		if (modifiers & GLUT_ACTIVE_CTRL && keys_state['r'])
+		if (keys_state[18])
 		{
-			set_key_false('r');
+			setKeyFalse(18);
 			loadParams();
 			camera.updateCurves(scenes[MAIN_SCENE]->render_context);
 			input = true;
@@ -125,23 +122,23 @@ namespace vasylnaz {
 	void InputHandler::update(Camera& camera, const ShaderProgram& pick_prog,
 		SceneGraph* scene_graph, const glm::mat4& view_mat, const glm::mat4& proj_mat) {
 		checkKeysPressed(camera);
-		check_requests();
+		checkRequests(camera);
 		if (!camera_locked) {
-			update_camera_pos(camera);
-			update_camera_target(camera);
+			updateCameraPos(camera);
+			updateCameraTarget(camera);
 		}
 		pick(pick_prog, scene_graph, view_mat, proj_mat);
 	}
 
 
-	void InputHandler::handle_mouse_drag(const int& x, const int& y) {
+	void InputHandler::handleMouseDrag(const int& x, const int& y) {
 		if (mouse.buttons_state[GLUT_RIGHT_BUTTON]) {
 			mouse.new_coords = glm::vec2(x, y);
 		}
 	}
 
 
-	void InputHandler::update_camera_pos(Camera& camera) {
+	void InputHandler::updateCameraPos(Camera& camera) {
 		glm::vec3 forward = -camera.target;
 		glm::vec3 right = glm::normalize(glm::cross(forward, camera.up));
 
@@ -199,7 +196,7 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::update_camera_target(Camera& camera) {
+	void InputHandler::updateCameraTarget(Camera& camera) {
 		if (mouse.last_coords == mouse.new_coords) {
 			return;
 		}
@@ -221,15 +218,19 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::check_requests() {
+	void InputHandler::checkRequests(Camera& camera) {
 		while (!requests.empty()) {
 			Request request = requests.front();
 			requests.pop();
 			if (request == Request::LAUNCH) {
-				loadMainScene();
+				LAUNCHED = true;
+				loadMainScene(camera);
 			}
 			else if (request == Request::MAIN_MENU) {
-				loadMenu();
+				loadMenu(camera);
+			}
+			else if (request == Request::ACTIVATE_DEBUG) {
+				HIDE_DEBUG = false;
 			}
 			else if (request == Request::EXIT) {
 				exit(0);
@@ -243,13 +244,25 @@ namespace vasylnaz {
 	}
 
 
-	void InputHandler::loadMainScene() {
-		current_scene = scenes[MAIN_SCENE].get();
-		camera_locked = false;
+	void InputHandler::loadMenu(Camera& camera) {
+		CURRENT_SCENE = scenes[MENU].get();
+		camera_locked = true;
+		CAMERA_SAVED_POS = camera.position;
+		camera.position = CAMERA_DEFAULT_POS;
+		CAMERA_SAVED_TARGET = camera.target;
+		camera.target = CAMERA_DEFAULT_TARGET;
+		CAMERA_SAVED_UP = camera.up;
+		camera.up = CAMERA_DEFAULT_UP;
+		PauseStart = GlobalTime;
 	}
 
-	void InputHandler::loadMenu() {
-		current_scene = scenes[MENU].get();
-		camera_locked = true;
+
+	void InputHandler::loadMainScene(Camera& camera) {
+		CURRENT_SCENE = scenes[MAIN_SCENE].get();
+		camera_locked = false;
+		camera.position = CAMERA_SAVED_POS;
+		camera.target = CAMERA_SAVED_TARGET;
+		camera.up = CAMERA_SAVED_UP;
+		PauseAdjustment += (GlobalTime - PauseStart);
 	}
 }
