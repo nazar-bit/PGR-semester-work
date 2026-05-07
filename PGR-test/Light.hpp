@@ -101,11 +101,11 @@ namespace vasylnaz {
         const Light& getGlobalLight() const {
             return global_light;
         }
-
+        /// @brief 
         void activateLight() {
             global_light.ambient.w = 1.0f;
         }
-
+        /// @brief 
         void deactivateLight() {
             global_light.ambient.w = 0.0f;
         }

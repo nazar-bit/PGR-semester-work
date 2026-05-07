@@ -19,10 +19,12 @@ namespace vasylnaz {
 	public:
 		Object* owner;
 
+		/// @brief 
+		/// @param owner 
 		Script(Object* owner) 
 			: owner(owner)
 		{
-
+			//
 		}
 
 		virtual ~Script() = default;
@@ -35,6 +37,10 @@ namespace vasylnaz {
 	class PCScript : public Script {
 	public:
 
+		std::vector<LightSource*> lights;
+
+		/// @brief 
+		/// @param owner 
 		PCScript(Object* owner);
 
 		void update();
@@ -52,6 +58,8 @@ namespace vasylnaz {
 
 		FanAnim* fan_anim;
 
+		/// @brief 
+		/// @param owner 
 		FanSwitch(Object* owner);
 
 		void update();
@@ -69,6 +77,8 @@ namespace vasylnaz {
 		GLuint lamp_on_map = -1;
 		GLuint lamp_off_map = AssetManager::getInstance().getTexture("blank_em");
 
+		/// @brief 
+		/// @param owner 
 		LightSwitch(Object* owner);
 
 		void update();
@@ -81,8 +91,12 @@ namespace vasylnaz {
 
 	class RequestScript : public Script {
 	public:
+
 		Request rq;
 
+		/// @brief 
+		/// @param owner 
+		/// @param rq 
 		RequestScript(Object* owner, Request rq);
 
 		void update();
@@ -95,9 +109,14 @@ namespace vasylnaz {
 
 	class RequestColorScript : public Script {
 	public:
+
 		Request rq;
 		Node* text_node;
 
+		/// @brief 
+		/// @param owner 
+		/// @param rq 
+		/// @param text_node 
 		RequestColorScript(Object* owner, Request rq, Node* text_node);
 
 		void update();

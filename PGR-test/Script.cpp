@@ -23,6 +23,14 @@ namespace vasylnaz {
 			else {
 				owner->em_map = pc_off_map;
 			}
+			for (auto& light : lights) {
+				if (owner->em_map == pc_off_map) {
+					light->deactivateLight();
+				}
+				else {
+					light->activateLight();
+				}
+			}
 
 			is_clicked = owner->clicked;
 		}
