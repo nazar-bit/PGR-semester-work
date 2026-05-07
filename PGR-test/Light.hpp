@@ -1,13 +1,16 @@
 #pragma once
+
 #include <glm/glm.hpp>
 #include <vector>
+#include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Item.hpp"
 
 
 namespace vasylnaz {
 
-    #define MAX_LIGHTS 10
+    #define MAX_LIGHTS 32
 
     extern glm::vec3 GLOBAL_AMBIENT;
    
@@ -57,6 +60,8 @@ namespace vasylnaz {
         glm::vec4 position;  
         glm::vec4 attenuation;  // w: spotlight exponent
         glm::vec4 spotlight; // direction + w: 0.0f
+
+        glm::mat4 lightSpaceMatrix;
     };
 
 
@@ -85,6 +90,7 @@ namespace vasylnaz {
                 glm::vec4(position, LT == DIRECTIONAL ? 0.0f : 1.0f),
                 glm::vec4(attenuation.constant, attenuation.linear, attenuation.quadratic, spotlight.exponent),
                 glm::vec4(LT == SPOTLIGHT ? glm::vec4(spotlight.direction, 0.0f) : glm::vec4(0.0f)),
+                glm::mat4(1.0f)
             }, light_id(global_light_id++)
         {
             global_light = light;
@@ -94,6 +100,13 @@ namespace vasylnaz {
         /// @return 
         const Light& getGlobalLight() const {
             return global_light;
+        }
+
+        /// @brief 
+        /// @param matrix 
+        void setLightSpaceMatrix(const glm::mat4& matrix) {
+            light.lightSpaceMatrix = matrix;
+            global_light.lightSpaceMatrix = matrix;
         }
 
         /// @brief 

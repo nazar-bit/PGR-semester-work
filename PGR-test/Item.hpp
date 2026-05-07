@@ -13,6 +13,7 @@ namespace vasylnaz {
 		TRANSPARENT_MASK,
 		SKYBOX,
 		TEXT,
+		COUNT // MUST BE LAST
 	};
 
 

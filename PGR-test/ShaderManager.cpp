@@ -7,8 +7,11 @@ namespace vasylnaz {
 	const GLuint MATERIAL_BINDING_POINT = 0;
 	const GLuint LIGHT_BINDING_POINT = 1;
 
-	GLuint globalUboMaterial = 0;
-	GLuint globalUboLight = 0;
+	GLuint globalUboMaterial = -1;
+	GLuint globalUboLight = -1;
+
+	GLuint depthTextureArray = -1;
+	GLuint shadowMapFBO = -1;
 
 
 	void initializeSharedUBOs() {
@@ -23,6 +26,41 @@ namespace vasylnaz {
 		glBindBufferBase(GL_UNIFORM_BUFFER, LIGHT_BINDING_POINT, globalUboLight);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+
+
+	void initializeShadowFBO() {
+		// Texture Array
+		glGenTextures(1, &depthTextureArray);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, depthTextureArray);
+
+		// 1024 x 1024; MAX_LIGHTS layers
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F,
+			SHADOW_WIDTH, SHADOW_HEIGHT, MAX_LIGHTS,
+			0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		// FBO
+		glGenFramebuffers(1, &shadowMapFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+
+		// For Complitness
+		glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTextureArray, 0, 0);
+
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "Shadow FBO incomplete\n";
+		else std::cout << "Shadow FBO Alright\n";
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 
@@ -84,6 +122,22 @@ namespace vasylnaz {
 	}
 
 
+	void ShaderProgram::loadShadowMap(const GLuint map) const {
+		if (positionShadowMap != -1) {
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D_ARRAY, depthTextureArray);
+
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glUniform1i(positionShadowMap, 3);
+		}
+	}
+
+
+
 	void ShaderProgram::loadId(const long object_id) const {
 		if (positionId != -1)
 		{
@@ -125,6 +179,7 @@ namespace vasylnaz {
 		positionDiffuseMap = glGetUniformLocation(shaderProgram, "texSampler");
 		positionNormalMap = glGetUniformLocation(shaderProgram, "normSampler");
 		positionEmmisionMap = glGetUniformLocation(shaderProgram, "emSampler");
+		positionShadowMap = glGetUniformLocation(shaderProgram, "shadowMapArray");
 
 		positionId = glGetUniformLocation(shaderProgram, "id");
 		positionColor = glGetUniformLocation(shaderProgram, "color_fg");
@@ -133,6 +188,8 @@ namespace vasylnaz {
 		}
 		positionFog = glGetUniformLocation(shaderProgram, "fog");
 		positionFogDensity = glGetUniformLocation(shaderProgram, "fog_density");
+
+		positionLightSpaceM = glGetUniformLocation(shaderProgram, "lightSpaceMatrix");
 	}
 
 

@@ -16,17 +16,35 @@ namespace vasylnaz {
         global_light.diffuse = light.diffuse;
         global_light.specular = light.specular;
         global_light.attenuation = light.attenuation;
+        global_light.lightSpaceMatrix = light.lightSpaceMatrix;
 
         global_light.position = parent_model_matrix * light.position;
-
+        // Directional
         if (light.position.w == 0.0f) {
             global_light.position = glm::vec4(glm::normalize(glm::vec3(global_light.position)), 0.0f);
         }
-
-        if (glm::length(glm::vec3(light.spotlight)) > 0.0f) {
+        // Spotlight
+        else if (glm::length(glm::vec3(light.spotlight)) > 0.0f) {
             glm::vec4 world_direction = parent_model_matrix * light.spotlight;
             global_light.spotlight = glm::vec4(glm::normalize(glm::vec3(world_direction)), 0.0f);
+
+            glm::vec3 pos = glm::vec3(global_light.position);
+            glm::vec3 dir = glm::vec3(global_light.spotlight);
+            // LightView
+            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+            if (std::abs(glm::dot(dir, up)) > 0.999f) {
+                up = glm::vec3(0.0f, 0.0f, 1.0f);
+            }
+            glm::mat4 lightView = glm::lookAt(pos, pos + dir, up);
+            // LightProj
+            float fov = 2.0f * glm::acos(global_light.specular.w);
+            float near_plane = 0.1f;
+            float far_plane = 100.0f;
+            glm::mat4 lightProjection = glm::perspective(fov, 1.0f, near_plane, far_plane);
+            // lightSpaceMatrix
+            global_light.lightSpaceMatrix = lightProjection * lightView;
         }
+        // Point
         else {
             global_light.spotlight = light.spotlight;
         }
@@ -34,7 +52,10 @@ namespace vasylnaz {
 
 
     void LightBlock::addLight(LightSource* LS) {
-        if (LBD.numLights >= MAX_LIGHTS) return;
+        if (LBD.numLights >= MAX_LIGHTS) {
+            std::cout << "LIGHTS LIMIT EXCEEDED\n";
+            return;
+        }
 
         scene_light.emplace_back(LS);
         LBD.lights[LBD.numLights++] = LS->getGlobalLight();

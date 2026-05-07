@@ -33,7 +33,7 @@ namespace vasylnaz {
     float FOG_DISOLUTION_POINT = 0.01f;
     float FOG_MAX_DENSITY = 0.2f;
 
-    bool CAMERA_BOUNDS = true;
+    bool CAMERA_BOUNDS = false;
 
 
 

@@ -147,7 +147,9 @@ namespace vasylnaz {
 		glBindVertexArray(vao);
 
 		glUniformMatrix4fv(shader_manager.positionM, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(shader_manager.positionV, 1, GL_FALSE, glm::value_ptr(view));
+		if (shader_manager.positionV != -1) {
+			glUniformMatrix4fv(shader_manager.positionV, 1, GL_FALSE, glm::value_ptr(view));
+		}
 		
 		glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

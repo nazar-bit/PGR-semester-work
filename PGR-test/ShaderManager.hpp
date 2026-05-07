@@ -21,6 +21,9 @@ namespace vasylnaz {
 	};
 
 
+	const int SHADOW_WIDTH = 1024;
+	const int SHADOW_HEIGHT = 1024;
+
 
 	const extern GLuint MATERIAL_BINDING_POINT;
 	const extern GLuint LIGHT_BINDING_POINT;
@@ -28,8 +31,12 @@ namespace vasylnaz {
 	extern GLuint globalUboMaterial;
 	extern GLuint globalUboLight;
 
+	extern GLuint depthTextureArray;
+	extern GLuint shadowMapFBO;
 
 	void initializeSharedUBOs();
+
+	void initializeShadowFBO();
 
 	void updateLights(const LightBlockData& newLightData);
 
@@ -53,11 +60,14 @@ namespace vasylnaz {
 		GLuint positionDiffuseMap = -1;
 		GLuint positionNormalMap = -1;
 		GLuint positionEmmisionMap = -1;
+		GLuint positionShadowMap = -1;
 
 		GLuint positionId = -1;
 		GLuint positionColor = -1;
 		GLuint positionFog = -1;
 		GLuint positionFogDensity = -1;
+
+		GLuint positionLightSpaceM = -1;
 
 
 		void compile_shaders(const std::string& vert_loc, const std::string& frag_loc);
@@ -73,6 +83,9 @@ namespace vasylnaz {
 
 
 		void loadEmission(const GLuint em_texture) const;
+
+
+		void loadShadowMap(const GLuint map) const;
 
 
 		void loadId(const long object_id) const;

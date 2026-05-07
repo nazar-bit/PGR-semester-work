@@ -1,5 +1,5 @@
 #version 330
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 32
 
 layout (std140) uniform Material {
     vec4 ambient;

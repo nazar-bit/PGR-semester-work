@@ -138,6 +138,8 @@
     <None Include="line.vert" />
     <None Include="line.frag" />
     <None Include="text.frag" />
+    <None Include="shadow.vert" />
+    <None Include="shadow.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="params.txt" />

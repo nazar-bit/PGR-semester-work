@@ -28,6 +28,7 @@ namespace vasylnaz {
     ShaderProgram tv_program;
     ShaderProgram line_drawer;
     ShaderProgram text_render;
+    ShaderProgram shadow_prog;
 
 
     Camera camera = Camera(
@@ -74,6 +75,7 @@ namespace vasylnaz {
 
         // Compile Shaders
         initializeSharedUBOs();
+        initializeShadowFBO();
 
         shader_program.compile_shaders("basic.vert", "basic.frag");
         shader_program.bindUBOs();
@@ -91,6 +93,8 @@ namespace vasylnaz {
         line_drawer.compile_shaders("line.vert", "line.frag");
 
         pick_prog.compile_shaders("pick.vert", "pick.frag");
+
+        shadow_prog.compile_shaders("shadow.vert", "shadow.frag");
     }
 
 
@@ -108,10 +112,47 @@ namespace vasylnaz {
         CURRENT_SCENE->update();
         input_handler.update(camera, pick_prog, CURRENT_SCENE, View, Projection);
         camera.update();
-       
+
 
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
+
+        // Create Shadow maps
+        glCullFace(GL_FRONT);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+
+        glUseProgram(shadow_prog.shaderProgram);
+        for (int i = 0; i < CURRENT_SCENE->render_context.light_block.getLBD().numLights; ++i)
+        {
+            // Change Depth Buffer
+            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTextureArray, 0, i);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            // Change LightSpaceMatrix
+            auto LightSpaceMatrix = CURRENT_SCENE->render_context.light_block.getLBD().lights[i].lightSpaceMatrix;
+            glUniformMatrix4fv(shadow_prog.positionLightSpaceM, 1, GL_FALSE, glm::value_ptr(LightSpaceMatrix));
+            // Render
+            for (int j = 0; j < static_cast<int>(RenderQueue::COUNT); ++j) {
+                RenderQueue rq = static_cast<RenderQueue>(j);
+                if (rq == RenderQueue::TEXT || rq == RenderQueue::COUNT || rq == RenderQueue::SKYBOX ||
+                    rq == RenderQueue::TRANSPARENT_MASK) {
+                    continue;
+                }
+                else {
+                    for (const auto& obj : CURRENT_SCENE->render_context.objects[rq]) {
+                        obj->draw(shadow_prog, View);
+                    }
+                }
+            }
+            //// Transparent go last
+            //for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
+            //    obj->draw(shadow_prog, View);
+            //}
+        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // Reset Viewport
+        glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
         glCullFace(GL_BACK);
 
         glClearColor(0.2f, 0.1f, 0.3f, 1.0f);
@@ -122,6 +163,7 @@ namespace vasylnaz {
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
         glUniform1i(shader_program.positionFog, FOG);
         glUniform1f(shader_program.positionFogDensity, FOG_DENSITY);
+        shader_program.loadShadowMap(depthTextureArray);
 
         // Normal stuff
         for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::OPAQUE_MASK]) {

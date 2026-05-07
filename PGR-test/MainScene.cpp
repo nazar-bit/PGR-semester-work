@@ -279,7 +279,7 @@ namespace vasylnaz {
 		wall_mat = glm::rotate(wall_mat, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		wall_mat = glm::rotate(wall_mat, glm::radians(270.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		wall->model_mat = wall_mat;
-		addWallObjects(wall.get(), render_context, glm::vec3(10.0f, 1.0f, 10.0f));
+		addWallObjects(wall.get(), render_context, glm::vec3(10.0f, 1.0f, 5.0f));
 		root->addChild(std::move(wall));
 
 
@@ -395,7 +395,7 @@ namespace vasylnaz {
 
 		// TV --|--
 		// Screen - 15
-		auto tv = loadOBJ("Models/retro_tv.obj", 0, 10000, false);
+		/*auto tv = loadOBJ("Models/retro_tv.obj", 0, 10000, false);
 		auto tv_mat = glm::mat4(1.0f);
 		tv_mat = glm::translate(tv_mat, glm::vec3(-4.3f, -0.17f, 0.7f));
 		tv_mat = glm::rotate(tv_mat, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -407,7 +407,7 @@ namespace vasylnaz {
 		auto tv_obj = static_cast<Object*>(tv->items[15].get());
 		tv_obj->rq = RenderQueue::TV_SCREEN_MASK;
 		tv->renderItems(render_context);
-		root->addChild(std::move(tv));
+		root->addChild(std::move(tv));*/
 
 
 
@@ -499,76 +499,79 @@ namespace vasylnaz {
 
 
 
-
-
-		auto testLight = std::make_unique<LightSource>(
+		auto sun = std::make_unique<LightSource>(
 			DIRECTIONAL,
 			glm::vec3(0.1f),     //amb
 			glm::vec3(0.9f),     //diff
 			glm::vec3(0.2f),    //spec
 			glm::vec3(0.2f, 1.0f, 1.0f)   //pos
 		);
-		root->addItem(std::move(testLight), render_context);
+		glm::vec3 lightPos(0.0f, 5.0f, 15.0f);
+
+		glm::vec3 sceneCenter(0.0f, 1.5f, 5.0f);
+		glm::vec3 upVector(0.0f, 1.0f, 0.0f);
+
+		glm::mat4 lightView = glm::lookAt(lightPos, sceneCenter, upVector);
+
+		float near_plane = 1.0f, far_plane = 30.0f; 
+		glm::mat4 lightProjection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, near_plane, far_plane);
+
+		auto lightSpaceMatrix = lightProjection * lightView;
+		sun->setLightSpaceMatrix(lightSpaceMatrix);
+		root->addItem(std::move(sun), render_context);
 
 
-		//auto testLight2 = std::make_unique<LightSource>(
-		//	DIRECTIONAL,
-		//	glm::vec3(0.1f),     //amb
-		//	glm::vec3(0.1f),     //diff
-		//	glm::vec3(0.2f),    //spec
-		//	glm::vec3(0.0f, -1.0f, 1.0f)   //pos
-		//);
-		//root->addItem(std::move(testLight2), render_context);
+		
 
 
 		// Room point
-		auto point_lights_node = std::make_unique<Node>();
-		auto point_light = std::make_unique<LightSource>(
-			POINT,
-			glm::vec3(0.1f),     //amb
-			glm::vec3(0.1f),     //diff
-			glm::vec3(0.0f),    //spec
-			glm::vec3(1.0f, 0.0f, 3.0f),    //pos
-			Attenuation(1.0f, 0.01f, 0.0017f),
-			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
-		);
-		point_lights_node->addItem(std::move(point_light), render_context);
+		//auto point_lights_node = std::make_unique<Node>();
+		//auto point_light = std::make_unique<LightSource>(
+		//	POINT,
+		//	glm::vec3(0.1f),     //amb
+		//	glm::vec3(0.1f),     //diff
+		//	glm::vec3(0.0f),    //spec
+		//	glm::vec3(1.0f, 0.0f, 3.0f),    //pos
+		//	Attenuation(1.0f, 0.01f, 0.0017f),
+		//	Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		//);
+		//point_lights_node->addItem(std::move(point_light), render_context);
 
 
-		point_light = std::make_unique<LightSource>(
-			POINT,
-			glm::vec3(0.1f),     //amb
-			glm::vec3(0.1f),     //diff
-			glm::vec3(0.0f),    //spec
-			glm::vec3(-2.0f, 0.0f, 3.0f),    //pos
-			Attenuation(1.0f, 0.01f, 0.0017f),
-			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
-		);
-		point_lights_node->addItem(std::move(point_light), render_context);
+		//point_light = std::make_unique<LightSource>(
+		//	POINT,
+		//	glm::vec3(0.1f),     //amb
+		//	glm::vec3(0.1f),     //diff
+		//	glm::vec3(0.0f),    //spec
+		//	glm::vec3(-2.0f, 0.0f, 3.0f),    //pos
+		//	Attenuation(1.0f, 0.01f, 0.0017f),
+		//	Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		//);
+		//point_lights_node->addItem(std::move(point_light), render_context);
 
 
-		point_light = std::make_unique<LightSource>(
-			POINT,
-			glm::vec3(0.1f),     //amb
-			glm::vec3(0.1f),     //diff
-			glm::vec3(0.0f),    //spec
-			glm::vec3(-2.0f, 0.0f, 7.0f),    //pos
-			Attenuation(1.0f, 0.01f, 0.0017f),
-			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
-		);
-		point_lights_node->addItem(std::move(point_light), render_context);
+		//point_light = std::make_unique<LightSource>(
+		//	POINT,
+		//	glm::vec3(0.1f),     //amb
+		//	glm::vec3(0.1f),     //diff
+		//	glm::vec3(0.0f),    //spec
+		//	glm::vec3(-2.0f, 0.0f, 7.0f),    //pos
+		//	Attenuation(1.0f, 0.01f, 0.0017f),
+		//	Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		//);
+		//point_lights_node->addItem(std::move(point_light), render_context);
 
 
-		point_light = std::make_unique<LightSource>(
-			POINT,
-			glm::vec3(0.1f),     //amb
-			glm::vec3(0.1f),     //diff
-			glm::vec3(0.0f),    //spec
-			glm::vec3(4.0f, 0.0f, 7.0f),    //pos
-			Attenuation(1.0f, 0.01f, 0.0017f),
-			Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
-		);
-		point_lights_node->addItem(std::move(point_light), render_context);
-		root->addChild(std::move(point_lights_node));
+		//point_light = std::make_unique<LightSource>(
+		//	POINT,
+		//	glm::vec3(0.1f),     //amb
+		//	glm::vec3(0.1f),     //diff
+		//	glm::vec3(0.0f),    //spec
+		//	glm::vec3(4.0f, 0.0f, 7.0f),    //pos
+		//	Attenuation(1.0f, 0.01f, 0.0017f),
+		//	Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f)
+		//);
+		//point_lights_node->addItem(std::move(point_light), render_context);
+		//root->addChild(std::move(point_lights_node));
 	}
 }

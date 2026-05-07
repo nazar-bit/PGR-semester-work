@@ -1,5 +1,5 @@
 #version 330
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 32
 
 layout (std140) uniform Material {
     vec4 ambient;
@@ -15,6 +15,7 @@ struct Light {
     vec4 position; 
     vec4 attenuation;  // constant, linear, quadratic, w: spotlight exponent
     vec4 spotlight;  // spotlight normalized directio, w: 0.0f
+    mat4 lightSpaceMatrix;
 };
 
 layout (std140) uniform LightBlock {
@@ -39,8 +40,31 @@ in float world_height;
 in vec2 fg_tex_coords;
 in mat3 TBN;
 
+uniform sampler2DArrayShadow shadowMapArray;
+
 in vec4 fg_position;
+in vec4 fg_position_model;
 out vec4 color;
+
+
+
+float ShadowCalculation(mat4 lightSpaceMatrix, int layerIndex, vec3 normal, vec3 lightDir) {
+    vec4 fg_position_light = lightSpaceMatrix * fg_position_model;
+    vec3 projCoords = fg_position_light.xyz / fg_position_light.w;
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // Check if coordinate is outside the far plane
+    //if(projCoords.z > 1.0)
+     //   return 1.0; 
+
+    float factor = 0.0001;
+    float bias = max(factor*10 * (1.0 - dot(normal, lightDir)), factor);
+    vec4 shadowCoord = vec4(projCoords.xy, float(layerIndex), projCoords.z - bias);
+
+    float visibility = texture(shadowMapArray, shadowCoord);
+    return 1.0 - visibility; 
+}
+
 
 
 void main() {
@@ -61,12 +85,15 @@ void main() {
     
     for(int i = 0; i < numLights; ++i) {
         Light cur_light = lights[i];
+
         vec3 light_dir;
         if (cur_light.position.w == 0.0) {
         light_dir = normalize(cur_light.position.xyz);
         } else {
             light_dir = normalize(cur_light.position.xyz - view_pos);
         }
+        // Shadow
+        float shadow = ShadowCalculation(cur_light.lightSpaceMatrix, i, norm, light_dir);
         // SpotlightEffect
         float spotlightEffect = 1.0;
         if(cur_light.spotlight != vec4(0.0))
@@ -97,7 +124,7 @@ void main() {
         float specular_impact = max(dot(2.0 * dot(light_dir, norm) * norm - light_dir, normalize(-view_pos)), 0.0);
         vec3 specular_ref = pow(specular_impact, specular.w) * specular.xyz * cur_light.specular.xyz; 
         
-        sum_light += (spotlightEffect * attenuationFactor) * (ambient_ref + diffuse_ref + specular_ref);
+        sum_light += (spotlightEffect * attenuationFactor) * (ambient_ref + (1.0 - shadow)*(diffuse_ref + specular_ref));
     }
 
 
