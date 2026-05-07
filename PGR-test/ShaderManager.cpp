@@ -155,7 +155,7 @@ namespace vasylnaz {
 
 
 
-	void ShaderProgram::compile_shaders(const std::string& vert_loc, const std::string& frag_loc) {
+	void ShaderProgram::compileShaders(const std::string& vert_loc, const std::string& frag_loc) {
 		std::string vertexShaderSrc = loadShaderSource(vert_loc);
 		std::string fragmentShaderSrc = loadShaderSource(frag_loc);
 

@@ -73,7 +73,7 @@ namespace vasylnaz {
 		void update();
 
 	private:
-		bool activated = true;
+		bool activated;
 	};
 
 

@@ -77,24 +77,24 @@ namespace vasylnaz {
         initializeSharedUBOs();
         initializeShadowFBO();
 
-        shader_program.compile_shaders("basic.vert", "basic.frag");
+        shader_program.compileShaders("basic.vert", "basic.frag");
         shader_program.bindUBOs();
 
-        skybox_program.compile_shaders("skybox.vert", "skybox.frag");
+        skybox_program.compileShaders("skybox.vert", "skybox.frag");
 
-        text_render.compile_shaders("skybox.vert", "text.frag");
+        text_render.compileShaders("skybox.vert", "text.frag");
 
-        leaf_program.compile_shaders("leaf.vert", "basic.frag");
+        leaf_program.compileShaders("leaf.vert", "basic.frag");
         leaf_program.bindUBOs();
 
-        tv_program.compile_shaders("basic.vert", "tv.frag");
+        tv_program.compileShaders("basic.vert", "tv.frag");
         tv_program.bindUBOs();
 
-        line_drawer.compile_shaders("line.vert", "line.frag");
+        line_drawer.compileShaders("line.vert", "line.frag");
 
-        pick_prog.compile_shaders("pick.vert", "pick.frag");
+        pick_prog.compileShaders("pick.vert", "pick.frag");
 
-        shadow_prog.compile_shaders("shadow.vert", "shadow.frag");
+        shadow_prog.compileShaders("shadow.vert", "shadow.frag");
     }
 
 
@@ -161,7 +161,13 @@ namespace vasylnaz {
         glUseProgram(shader_program.shaderProgram);
         glUniformMatrix4fv(shader_program.positionP, 1, GL_FALSE, glm::value_ptr(Projection));
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
-        glUniform1i(shader_program.positionFog, FOG);
+        if (FOG && CURRENT_SCENE != input_handler.getMenu()) {
+            glUniform1i(shader_program.positionFog, true);
+        }
+        else {
+            glUniform1i(shader_program.positionFog, false);
+        }
+        
         glUniform1f(shader_program.positionFogDensity, FOG_DENSITY);
         shader_program.loadShadowMap(depthTextureArray);
 

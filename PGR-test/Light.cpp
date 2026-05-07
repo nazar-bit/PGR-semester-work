@@ -3,11 +3,11 @@
 
 namespace vasylnaz {
 
-	glm::vec3 GLOBAL_AMBIENT = glm::vec3(0.11f);
+	glm::vec3 GLOBAL_AMBIENT = glm::vec3(0.12f);
 	long LightSource::global_light_id = 0;
 
 
-    Spotlight DEFAULT_SPOT = Spotlight(glm::vec3(0.0f, 0.0f, -1.0f), 45.0f, 1.0f);
+    Spotlight DEFAULT_SPOT = Spotlight(glm::vec3(0.0f, -1.0f, 0.0f), 45.0f, 1.0f);
     Attenuation DEFAULT_ATTEN = Attenuation(1.0f, 0.09f, 0.032f);
 
 

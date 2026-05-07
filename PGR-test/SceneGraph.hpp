@@ -105,7 +105,7 @@ namespace vasylnaz {
 		
 
 		void update() {
-			update_recursive(root);
+			updateRecursive(root);
 		}
 
 		/// @brief loads an OBJ file by reading all meshes, textures, creating objects.
@@ -138,7 +138,7 @@ namespace vasylnaz {
 		/// @param node 
 		/// @param parent_glob_mat 
 		/// @param dirty 
-		void update_recursive(std::unique_ptr<Node>& node, const glm::mat4& parent_glob_mat = glm::mat4(1.0f),
+		void updateRecursive(std::unique_ptr<Node>& node, const glm::mat4& parent_glob_mat = glm::mat4(1.0f),
 			bool dirty = false);
 
 		/// @brief 

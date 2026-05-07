@@ -11,6 +11,7 @@ namespace vasylnaz {
 		MAIN_MENU,
 		EXIT,
 		TOGGLE_DEBUG,
+		TOGGLE_FOG,
 	};
 
 	extern std::queue<Request> requests;

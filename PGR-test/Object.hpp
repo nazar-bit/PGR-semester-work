@@ -54,7 +54,7 @@ namespace vasylnaz {
 
 		/// @brief 
 		/// @return 
-		const Mesh* get_mesh() const {
+		const Mesh* getMesh() const {
 			return mesh;
 		}
 

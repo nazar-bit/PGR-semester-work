@@ -42,8 +42,8 @@ namespace vasylnaz {
         /// @param direction 
         /// @param cutoff 
         /// @param exponent 
-        Spotlight(const glm::vec3& d, const float& c, const float& e)
-            : direction(d), cutoff(glm::cos(glm::radians(c))), exponent(e) {
+        Spotlight(const glm::vec3& direction, const float& cutoff, const float& exponent)
+            : direction(direction), cutoff(glm::cos(glm::radians(cutoff))), exponent(exponent) {
         }
     };
 

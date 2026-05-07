@@ -70,7 +70,7 @@ namespace vasylnaz {
 		GLuint positionLightSpaceM = -1;
 
 
-		void compile_shaders(const std::string& vert_loc, const std::string& frag_loc);
+		void compileShaders(const std::string& vert_loc, const std::string& frag_loc);
 
 
 		void loadMaterial(const Material& material) const;

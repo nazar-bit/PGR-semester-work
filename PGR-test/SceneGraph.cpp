@@ -41,7 +41,7 @@ namespace vasylnaz {
 
 
 
-	void SceneGraph::update_recursive(std::unique_ptr<Node>& node,
+	void SceneGraph::updateRecursive(std::unique_ptr<Node>& node,
 		const glm::mat4& parent_glob_mat, bool dirty) {
 
 		for (std::unique_ptr<Item>& item : node->items) {
@@ -70,7 +70,7 @@ namespace vasylnaz {
 		}
 
 		for (std::unique_ptr<Node>& child : node->children) {
-			update_recursive(child, node->global_model_mat, dirty);
+			updateRecursive(child, node->global_model_mat, dirty);
 		}
 	}
 

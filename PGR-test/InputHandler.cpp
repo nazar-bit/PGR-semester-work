@@ -232,6 +232,9 @@ namespace vasylnaz {
 			else if (request == Request::TOGGLE_DEBUG) {
 				HIDE_DEBUG = !HIDE_DEBUG;
 			}
+			else if (request == Request::TOGGLE_FOG) {
+				FOG = !FOG;
+			}
 			else if (request == Request::EXIT) {
 				exit(0);
 			}

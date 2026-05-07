@@ -125,6 +125,27 @@ namespace vasylnaz {
 		if (script->lamp_on_map == -1) {
 			script->lamp_on_map = hanging_light_obj->em_map;
 		}
+
+		auto lamp_light = std::make_unique<LightSource>(
+			SPOTLIGHT,
+			glm::vec3(0.1f),    //amb
+			glm::vec3(0.9f),    //diff
+			glm::vec3(0.2f),    //spec
+			glm::vec3(0.0f, -1.0f, 0.0f),  //pos
+			DEFAULT_ATTEN,
+			Spotlight(glm::vec3(0.0f, -1.0f, 0.0f), 100.0f, 1.5f)
+		);
+		hanging_light->addItem(std::move(lamp_light), render_context);
+
+		auto point_light = std::make_unique<LightSource>(
+			POINT,
+			glm::vec3(0.1f),     //amb
+			glm::vec3(0.1f),     //diff
+			glm::vec3(0.0f),    //spec
+			glm::vec3(0.0f, 1.0f, 1.0f),    //pos
+			Attenuation(1.0f, 0.01f, 0.07f)
+		);
+		hanging_light->addItem(std::move(point_light), render_context);
 		cub->addChild(std::move(hanging_light));
 	}
 
@@ -522,7 +543,7 @@ namespace vasylnaz {
 
 
 		
-
+		
 
 		// Room point
 		//auto point_lights_node = std::make_unique<Node>();

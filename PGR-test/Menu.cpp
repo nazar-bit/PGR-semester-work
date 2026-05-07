@@ -3,7 +3,7 @@
 
 namespace vasylnaz {
 
-	std::unique_ptr<Node> Menu::createButton(const glm::vec3& pos, const std::string& text,
+	std::unique_ptr<Node> Menu::createButton(const glm::vec3& pos, const glm::vec3& scale, const std::string& text,
 		const glm::vec3& pos_text, Request request, bool change_but_c) {
 		auto button_node = std::make_unique<Node>();
 		auto button_node_mat = glm::mat4(1.0f);
@@ -18,7 +18,7 @@ namespace vasylnaz {
 		
 
 		auto button_mat = glm::mat4(1.0f);
-		button_mat = glm::scale(button_mat, glm::vec3(0.5f, 1.1f, 5.0f));
+		button_mat = glm::scale(button_mat, scale);
 		auto button = std::make_unique<Object>("cube", button_mat, "text", "menu_button", "menu_button_norm", "blank_em");
 		if (!change_but_c) {
 			button->scripts.push_back(std::make_unique<RequestScript>(button.get(), request));
@@ -36,16 +36,20 @@ namespace vasylnaz {
 
 	void Menu::init(ShaderProgram& shader_manager, Camera& camera) {
 
-		auto launch_button = createButton(glm::vec3(7.0f, 2.9f, 4.0f), "LAUNCH",
-			glm::vec3(-0.3f, -0.4f, -1.5f), Request::LAUNCH, false);
+		auto launch_button = createButton(glm::vec3(7.0f, 2.9f, 4.0f), glm::vec3(0.5f, 1.1f, 5.0f),
+			"LAUNCH", glm::vec3(-0.3f, -0.4f, -1.5f), Request::LAUNCH, false);
 		root->addChild(std::move(launch_button));
 
-		auto settings_button = createButton(glm::vec3(7.0f, 1.4f, 4.0f), "DEBUG",
-			glm::vec3(-0.3f, -0.4f, -1.4f), Request::TOGGLE_DEBUG, true);
-		root->addChild(std::move(settings_button));
+		auto debug_button = createButton(glm::vec3(7.0f, 1.4f, 4.0f-1.1f), glm::vec3(0.5f, 1.1f, 2.8f),
+			"DEBUG", glm::vec3(-0.3f, -0.4f, -1.3f), Request::TOGGLE_DEBUG, true);
+		root->addChild(std::move(debug_button));
 
-		auto quit_button = createButton(glm::vec3(7.0f, 0.0f, 4.0f), "QUIT",
-			glm::vec3(-0.3f, -0.4f, -1.0f), Request::EXIT, false);
+		auto fog_button = createButton(glm::vec3(7.0f, 1.4f, 4.0f+1.5f), glm::vec3(0.5f, 1.1f, 2.0f),
+			"FOG", glm::vec3(-0.3f, -0.4f, -0.8f), Request::TOGGLE_FOG, true);
+		root->addChild(std::move(fog_button));
+
+		auto quit_button = createButton(glm::vec3(7.0f, 0.0f, 4.0f), glm::vec3(0.5f, 1.1f, 5.0f),
+			"QUIT", glm::vec3(-0.3f, -0.4f, -1.0f), Request::EXIT, false);
 		root->addChild(std::move(quit_button));
 
 

@@ -100,6 +100,10 @@ namespace vasylnaz {
 
 		void loadMenu(Camera& camera);
 
+		const SceneGraph* getMenu() {
+			return scenes[MENU].get();
+		}
+
 
 	private:
 		struct Mouse {

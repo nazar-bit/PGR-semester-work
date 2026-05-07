@@ -49,13 +49,10 @@ out vec4 color;
 
 
 float ShadowCalculation(mat4 lightSpaceMatrix, int layerIndex, vec3 normal, vec3 lightDir) {
+
     vec4 fg_position_light = lightSpaceMatrix * fg_position_model;
     vec3 projCoords = fg_position_light.xyz / fg_position_light.w;
     projCoords = projCoords * 0.5 + 0.5;
-
-    // Check if coordinate is outside the far plane
-    //if(projCoords.z > 1.0)
-     //   return 1.0; 
 
     float factor = 0.0001;
     float bias = max(factor*10 * (1.0 - dot(normal, lightDir)), factor);
@@ -112,6 +109,10 @@ void main() {
             attenuationFactor = 1.0/(cur_light.attenuation.x + 
                 cur_light.attenuation.y * distance(view_pos, cur_light.position.xyz) +
                 cur_light.attenuation.z * pow(distance(view_pos, cur_light.position.xyz), 2));
+
+            if(cur_light.spotlight == vec4(0.0)){
+                shadow = 0.0;
+            }
         }
         // Ambient
         vec3 ambient_ref = ambient.xyz * cur_light.ambient.xyz;

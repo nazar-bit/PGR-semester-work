@@ -45,7 +45,7 @@ namespace vasylnaz {
 
 
 	LightSwitch::LightSwitch(Object* owner)
-		: Script(owner)
+		: Script(owner), activated(owner->clicked)
 	{
 		//
 	}
@@ -56,10 +56,10 @@ namespace vasylnaz {
 			activated = owner->clicked;
 			for (auto& lamp : lamps) {
 				if (activated) {
-					lamp->em_map = lamp_on_map;
+					lamp->em_map = lamp_off_map;
 				}
 				else {
-					lamp->em_map = lamp_off_map;
+					lamp->em_map = lamp_on_map;
 				}
 			}
 		}
