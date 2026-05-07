@@ -22,9 +22,8 @@ namespace vasylnaz {
 
 		virtual ~Item() = default;
 
+		/// @brief Updates item in SceneGraph
+		/// @param parent_model_matrix Parent's model matrix
 		virtual void updateItem(const glm::mat4& parent_model_matrix) = 0;
-
 	};
-
-
 }

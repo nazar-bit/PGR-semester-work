@@ -59,11 +59,11 @@ namespace vasylnaz {
 
         std::unique_ptr<MainScene> main_scene = std::make_unique<MainScene>();
         camera.init(main_scene->render_context);
-        main_scene->init(shader_program, camera);
+        main_scene->init(camera);
         input_handler.addScene(std::move(main_scene));
 
         std::unique_ptr<Menu> menu = std::make_unique<Menu>();
-        menu->init(shader_program, camera);
+        menu->init(camera);
         CURRENT_SCENE = menu.get();
         input_handler.addScene(std::move(menu));
         
@@ -144,10 +144,6 @@ namespace vasylnaz {
                     }
                 }
             }
-            //// Transparent go last
-            //for (const auto& obj : CURRENT_SCENE->render_context.objects[RenderQueue::TRANSPARENT_MASK]) {
-            //    obj->draw(shadow_prog, View);
-            //}
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         // Reset Viewport

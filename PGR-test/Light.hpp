@@ -27,8 +27,12 @@ namespace vasylnaz {
         float linear;
         float quadratic;
 
-        Attenuation(const float& c, const float& l, const float& q)
-            : constant(c), linear(l), quadratic(q) {
+        /// @brief 
+        /// @param constant Constant attenuation factor
+        /// @param linear Linear attenuation factor
+        /// @param quadratic Quadratic attenuation factor
+        Attenuation(const float& constant, const float& linear, const float& quadratic)
+            : constant(constant), linear(linear), quadratic(quadratic) {
         }
     };
 
@@ -39,9 +43,9 @@ namespace vasylnaz {
         float exponent;
 
         /// @brief 
-        /// @param direction 
-        /// @param cutoff 
-        /// @param exponent 
+        /// @param direction Normalized direction
+        /// @param cutoff Cutoff factor in angles (What happens: glm::cos(glm::radians(cutoff)))
+        /// @param exponent Exponent 
         Spotlight(const glm::vec3& direction, const float& cutoff, const float& exponent)
             : direction(direction), cutoff(glm::cos(glm::radians(cutoff))), exponent(exponent) {
         }
@@ -66,7 +70,7 @@ namespace vasylnaz {
 
 
 
-    /// @brief 
+
     class LightSource : public Item
     {
     public:
@@ -74,13 +78,13 @@ namespace vasylnaz {
         const long light_id;
 
         /// @brief 
-        /// @param LT 
-        /// @param ambient 
-        /// @param diffuse 
-        /// @param specular 
-        /// @param position 
-        /// @param spotlight 
-        /// @param attenuation 
+        /// @param LT Light Type (F.E. Spotlight)
+        /// @param ambient Ambient param
+        /// @param diffuse Diffuse param
+        /// @param specular Specular param
+        /// @param position World position (Direction for DIRECTIONAL light)
+        /// @param attenuation Attenuation& (Ignored for Dirrectional)
+        /// @param spotlight Spotlight& (Ignored for everyone that is not a SPOTLIGHT type)
         LightSource(const LightType& LT, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const glm::vec3& position,
             const Attenuation& attenuation = DEFAULT_ATTEN, const Spotlight& spotlight = DEFAULT_SPOT)
             : light{
@@ -97,28 +101,30 @@ namespace vasylnaz {
         }
 
         /// @brief 
-        /// @return 
+        /// @return Global light
         const Light& getGlobalLight() const {
             return global_light;
         }
-        /// @brief 
+
+        /// @brief Show light on the scene
         void activateLight() {
             global_light.ambient.w = 1.0f;
         }
-        /// @brief 
+
+        /// @brief Hide light on the scene
         void deactivateLight() {
             global_light.ambient.w = 0.0f;
         }
 
         /// @brief 
-        /// @param matrix 
+        /// @param matrix LightSpaceMatrix
         void setLightSpaceMatrix(const glm::mat4& matrix) {
             light.lightSpaceMatrix = matrix;
             global_light.lightSpaceMatrix = matrix;
         }
 
-        /// @brief 
-        /// @param parent_model_matrix 
+        /// @brief Update the light based on the Parent's model matrix in SceneGraph 
+        /// @param parent_model_matrix Parent's model matrix 
         void updateItem(const glm::mat4& parent_model_matrix) override;
 
 
@@ -140,6 +146,7 @@ namespace vasylnaz {
     class LightBlock {
     public:
 
+        /// @brief 
         LightBlock()
             : LBD{0}
         {
@@ -147,15 +154,15 @@ namespace vasylnaz {
         }
 
         /// @brief 
-        /// @param LS 
+        /// @param LS LightSource*
         void addLight(LightSource* LS);
 
-
-        /// @brief 
-        /// @param viewMatrix 
+        /// @brief Update light's position in view space
+        /// @param viewMatrix View matrix
         void updateViewSpacePositions(const glm::mat4& viewMatrix);
 
-
+        /// @brief 
+        /// @return LightBlockData
         const LightBlockData& getLBD() const {
             return LBD;
         }
@@ -165,7 +172,5 @@ namespace vasylnaz {
         LightBlockData LBD;
         std::vector<LightSource*> scene_light;
     };
-
-
 }
 

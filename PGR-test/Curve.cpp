@@ -105,10 +105,10 @@ namespace vasylnaz {
 
 
 
-	void Curve::draw(const ShaderProgram& shader_manager, const glm::mat4& view) {
+	void Curve::draw(const ShaderProgram& shader_program, const glm::mat4& view) {
 		glBindVertexArray(vao);
-		glUniformMatrix4fv(shader_manager.positionM, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(shader_manager.positionV, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(shader_program.positionM, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(shader_program.positionV, 1, GL_FALSE, glm::value_ptr(view));
 
 		glDrawArrays(GL_LINE_STRIP, 0, num_vertices);
 		glBindVertexArray(0);

@@ -174,10 +174,10 @@ namespace vasylnaz {
 		{
 			camera.changeCurve(camera.curves[0]);
 		}
-		if (keys_state['2'])
+		/*if (keys_state['2'])
 		{
 			camera.changeCurve(camera.curves[1]);
-		}
+		}*/
 		// Static Points
 		if (keys_state['p'])
 		{

@@ -22,6 +22,10 @@ namespace vasylnaz {
         glm::vec3 target;   // normalized vector
         glm::vec3 up;
 
+        /// @brief 
+        /// @param position Position in the World
+        /// @param target Normalized vector specifying direction
+        /// @param up Up vector
         ViewPoint(const glm::vec3& position, const glm::vec3& target, const glm::vec3& up)
             : position(position), target(target), up(up)
         {
@@ -63,10 +67,10 @@ namespace vasylnaz {
         };
 
         /// @brief 
-        /// @param position 
-        /// @param target 
-        /// @param up 
-        /// @param camera_target_distance 
+        /// @param position Position in the World
+        /// @param target Normalized vector specifying direction
+        /// @param up Up vector
+        /// @param camera_target_distance How far away are we from the thing we are looking at
         /// @param movement_speed 
         /// @param rotation_angle 
         Camera(const glm::vec3& position, const glm::vec3& target, const glm::vec3& up,
@@ -78,22 +82,41 @@ namespace vasylnaz {
             //
         }
 
+        /// @brief Clears the curves vector and reads new from CAMERA_CURVES (params)
+        /// @param rq RenderContext& of some scene (F.E. MainScene)
         void updateCurves(RenderContext& rq);
 
+        /// @brief Adds the curve to camera's curves vector
+        /// @param curve Curve ptr
+        /// @param rq RenderContext& of some scene (F.E. MainScene)
         void addCurve(Curve* curve, RenderContext& rq);
 
+        /// @brief 
+        /// @param view_point ViewPoint&
         void moveToViewPoint(ViewPoint& view_point);
 
+        /// @brief 
+        /// @param curve Curve*
         void changeCurve(Curve* curve);
 
+        /// @brief 
+        /// @param node Node*
         void followNode(Node* node);
 
+        /// @brief Update position, rotation, etc ...
         void update();
 
-        void drawViewPoints(const ShaderProgram& shader_manager, const glm::mat4& view);
+        /// @brief Draws View Points if DEBUG is ON
+        /// @param shader_program ShaderProgram&
+        /// @param view View matrix
+        void drawViewPoints(const ShaderProgram& shader_program, const glm::mat4& view);
 
+        /// @brief 
+        /// @param render_context RenderContext& of some scene (F.E. MainScene)
         void init(RenderContext& render_context);
 
+        /// @brief 
+        /// @param new_pos Vector of the new world position
         void changePosition(const glm::vec3& new_pos);
 
 

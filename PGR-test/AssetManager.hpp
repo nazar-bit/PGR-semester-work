@@ -33,43 +33,48 @@ namespace vasylnaz {
 		void init();
 
 		/// @brief 
-		/// @param name 
-		/// @param file_path 
+		/// @param name Programer given name to the texture
+		/// @param file_path Path to said texture
 		void loadTetxure(const string& name, const string& file_path);
 		
 		/// @brief 
-		/// @param name 
-		/// @param file_path 
+		/// @param name Programer given name to the texture
+		/// @param file_path Path to said texture
 		void loadTetxureNearest(const string & name, const string & file_path);
 
 		/// @brief 
-		/// @param name 
-		/// @param material 
+		/// @param name Programer given name to the material
+		/// @param material Material&
 		void loadMaterial(const string& name, const Material& material);
 
 		/// @brief 
-		/// @param name 
-		/// @param file_path 
-		/// @param shader_manager 
+		/// @param name Programer given name to the mesh
+		/// @param file_path Path to said mesh
 		void loadMesh(const string& name, const string& file_path);
 
 		/// @brief 
-		/// @param name 
-		/// @param mesh 
+		/// @param name Programer given name to the mesh
+		/// @param mesh unique ptr to Mesh
 		void loadMesh(const string& name, std::unique_ptr<Mesh> mesh);
 
 
-
+		/// @brief 
+		/// @param name Programer given name to the texture
+		/// @return 
 		const GLuint getTexture(const string& name) const {
 			return textures.at(name);
 		}
 
-
+		/// @brief 
+		/// @param name Programer given name to the material
+		/// @return 
 		const Material* getMaterial(const string& name) const {
 			return materials.at(name).get();
 		}
 
-
+		/// @brief 
+		/// @param name Programer given name to the mesh
+		/// @return 
 		const Mesh* getMesh(const string& name) const {
 			return meshes.at(name).get();
 		}
@@ -85,7 +90,10 @@ namespace vasylnaz {
 			//
 		}
 
-
+		/// @brief 
+		/// @param fileName Path to the texture
+		/// @param mipmap create mipmap or not
+		/// @return 
 		GLuint createTexture(const std::string& fileName, bool mipmap = true);
 	};
 

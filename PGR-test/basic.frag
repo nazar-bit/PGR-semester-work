@@ -88,7 +88,7 @@ void main() {
 
         vec3 light_dir;
         if (cur_light.position.w == 0.0) {
-        light_dir = normalize(cur_light.position.xyz);
+            light_dir = normalize(cur_light.position.xyz);
         } else {
             light_dir = normalize(cur_light.position.xyz - view_pos);
         }

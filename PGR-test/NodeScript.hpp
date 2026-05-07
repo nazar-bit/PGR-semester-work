@@ -17,6 +17,7 @@ namespace vasylnaz {
 
 	class Node;
 	class Script;
+	class Object;
 
 
 	class NodeScript {
@@ -57,6 +58,8 @@ namespace vasylnaz {
 	class CurveMovement : public NodeScript {
 	public:
 
+		Object* wheels;
+
 		CurveMovement(Node* owner, std::unique_ptr<Curve> curve);
 
 		void update();
@@ -67,6 +70,7 @@ namespace vasylnaz {
 
 	private:
 		float speed = 2.0f;
+		float rotation_speed = speed * 15.0f;
 		std::unique_ptr<Curve> curve;
 	};
 }

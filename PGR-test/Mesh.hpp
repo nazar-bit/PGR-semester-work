@@ -23,40 +23,34 @@ namespace vasylnaz {
 		const long mesh_id;
 
 		/// @brief 
-		/// @param vertices_pos 
-		/// @param vertices_count 
-		/// @param normals 
-		/// @param vertices_indices 
-		/// @param indices_count 
-		/// @param shader_manager 
+		/// @param vertices_pos Array of vertices positions
+		/// @param vertices_count Number of vertices
+		/// @param texture_coords Array of texture coordinates
+		/// @param vertices_indices Array of vertices indices
+		/// @param indices_count Number of indices
 		Mesh(const float* vertices_pos, const long vertices_count, const float* texture_coords,
 			const unsigned int* vertices_indices, const long indices_count);
 
 
 		/// @brief 
-		/// @param filePath 
-		/// @param shader_manager 
+		/// @param filePath FilePath to the Mesh .obj file
 		Mesh(const string& filePath);
 
 		/// @brief 
-		/// @param mesh 
-		/// @param shader_manager 
+		/// @param mesh aiMesh* from Assimp lib
 		Mesh(const aiMesh* mesh);
 
-
-		void setBuffers(const aiMesh* mesh);
-
-
+		/// @brief 
 		~Mesh();
 
+		/// @brief 
+		/// @param shader_program ShaderProgram&
+		/// @param model Model matrix
+		/// @param view View matrix
+		void draw(const ShaderProgram& shader_program, const glm::mat4& model, const glm::mat4& view) const;
 
 		/// @brief 
-		/// @param shader_manager 
-		/// @param model 
-		/// @param view 
-		void draw(const ShaderProgram& shader_manager, const glm::mat4& model, const glm::mat4& view) const;
-
-
+		/// @return VAO
 		GLuint getVao() const {
 			return vao;
 		}
@@ -74,5 +68,8 @@ namespace vasylnaz {
 
 		long indices_count;
 
+		/// @brief Sets meshe's VAO, VBO, etc ...
+		/// @param mesh 
+		void setBuffers(const aiMesh* mesh);
 	};
 }

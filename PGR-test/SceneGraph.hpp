@@ -127,9 +127,7 @@ namespace vasylnaz {
 		void findObject(const long id, const Actions action);
 
 
-		/// @brief 
-		/// @param asset_manager 
-		virtual void init(ShaderProgram& shader_manager, Camera& camera) = 0;
+		virtual void init(Camera& camera) = 0;
 		
 
 

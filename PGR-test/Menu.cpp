@@ -34,7 +34,7 @@ namespace vasylnaz {
 
 
 
-	void Menu::init(ShaderProgram& shader_manager, Camera& camera) {
+	void Menu::init(Camera& camera) {
 
 		auto launch_button = createButton(glm::vec3(7.0f, 2.9f, 4.0f), glm::vec3(0.5f, 1.1f, 5.0f),
 			"LAUNCH", glm::vec3(-0.3f, -0.4f, -1.5f), Request::LAUNCH, false);

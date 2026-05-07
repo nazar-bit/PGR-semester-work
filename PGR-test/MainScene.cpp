@@ -291,7 +291,7 @@ namespace vasylnaz {
 	}
 
 
-	void MainScene::init(ShaderProgram& shader_manager, Camera& camera) {
+	void MainScene::init(Camera& camera) {
 	
 		glm::mat4 wall_support_mat = glm::mat4(1.0f);
 		wall_support_mat = glm::translate(wall_support_mat, glm::vec3(0.0f, 0.001f, 0.5f));
@@ -473,6 +473,7 @@ namespace vasylnaz {
 
 		// Car --|--
 		auto car = loadOBJ("Models/car_scaled.obj");
+		auto car_wheels = static_cast<Object*>(car->items[4].get());
 		auto car_mat = glm::mat4(1.0f);
 		car->model_mat = car_mat;
 
@@ -508,7 +509,9 @@ namespace vasylnaz {
 		curv->buildCurve(CURVE_PRECISION);
 		render_context.curves.push_back(curv.get());
 
-		car->scripts.push_back(std::make_unique<CurveMovement>(car.get(), std::move(curv)));
+		auto car_script = std::make_unique<CurveMovement>(car.get(), std::move(curv));
+		car_script->wheels = car_wheels;
+		car->scripts.push_back(std::move(car_script));
 		//render_context.curves.push_back(static_cast<CurveMovement*>(car->scripts[0].get())->getCurve());
 		camera.follow_nodes.push_back(car.get());
 		root->addChild(std::move(car));

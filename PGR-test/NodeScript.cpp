@@ -80,9 +80,4 @@ namespace vasylnaz {
 
 		owner->model_mat = rebuilt_mat;
 	}
-
-
-
-
-
 }
