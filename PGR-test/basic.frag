@@ -9,7 +9,7 @@ layout (std140) uniform Material {
 };
 
 struct Light {
-    vec4 ambient;  // ambient 
+    vec4 ambient;  // ambient , w: bool active
     vec4 diffuse;  // diffuse
     vec4 specular; // specular, w: spotlight cutoff
     vec4 position; 
@@ -82,6 +82,9 @@ void main() {
     
     for(int i = 0; i < numLights; ++i) {
         Light cur_light = lights[i];
+        if(cur_light.ambient.w != 1.0){
+            continue;
+        }
 
         vec3 light_dir;
         if (cur_light.position.w == 0.0) {

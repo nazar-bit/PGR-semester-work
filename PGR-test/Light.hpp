@@ -53,7 +53,7 @@ namespace vasylnaz {
 
     
     struct Light {
-        glm::vec4 ambient;   // w empty
+        glm::vec4 ambient;   // w bool active
         glm::vec4 diffuse;   // w empty 
         glm::vec4 specular;  // w: spotlight cutoff
 
@@ -84,7 +84,7 @@ namespace vasylnaz {
         LightSource(const LightType& LT, const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, const glm::vec3& position,
             const Attenuation& attenuation = DEFAULT_ATTEN, const Spotlight& spotlight = DEFAULT_SPOT)
             : light{
-                glm::vec4(ambient, 0.0f),  
+                glm::vec4(ambient, 1.0f),  
                 glm::vec4(diffuse, 0.0f),  
                 glm::vec4(specular, spotlight.cutoff),
                 glm::vec4(position, LT == DIRECTIONAL ? 0.0f : 1.0f),
@@ -100,6 +100,14 @@ namespace vasylnaz {
         /// @return 
         const Light& getGlobalLight() const {
             return global_light;
+        }
+
+        void activateLight() {
+            global_light.ambient.w = 1.0f;
+        }
+
+        void deactivateLight() {
+            global_light.ambient.w = 0.0f;
         }
 
         /// @brief 

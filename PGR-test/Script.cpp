@@ -62,6 +62,14 @@ namespace vasylnaz {
 					lamp->em_map = lamp_on_map;
 				}
 			}
+			for (auto& light : lights) {
+				if (activated) {
+					light->deactivateLight();
+				}
+				else {
+					light->activateLight();
+				}
+			}
 		}
 	}
 

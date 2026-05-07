@@ -135,6 +135,7 @@ namespace vasylnaz {
 			DEFAULT_ATTEN,
 			Spotlight(glm::vec3(0.0f, -1.0f, 0.0f), 100.0f, 1.5f)
 		);
+		script->lights.push_back(lamp_light.get());
 		hanging_light->addItem(std::move(lamp_light), render_context);
 
 		auto point_light = std::make_unique<LightSource>(
@@ -145,6 +146,7 @@ namespace vasylnaz {
 			glm::vec3(0.0f, 1.0f, 1.0f),    //pos
 			Attenuation(1.0f, 0.01f, 0.07f)
 		);
+		script->lights.push_back(point_light.get());
 		hanging_light->addItem(std::move(point_light), render_context);
 		cub->addChild(std::move(hanging_light));
 	}

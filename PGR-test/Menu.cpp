@@ -60,6 +60,21 @@ namespace vasylnaz {
 			glm::vec3(0.2f),    //spec
 			glm::vec3(-1.0f, 2.0f, 0.0f)   //pos
 		);
+		
+		glm::vec3 sceneCenter(7.0f, 1.45f, 4.0f);
+		glm::vec3 lightPos = sceneCenter + glm::vec3(-5.0f, 10.0f, 0.0f);
+		glm::vec3 upVector(0.0f, 1.0f, 0.0f);
+
+		glm::mat4 lightView = glm::lookAt(lightPos, sceneCenter, upVector);
+
+		float ortho_radius = 3.5f;
+		float near_plane = 1.0f;
+		float far_plane = 20.0f;
+
+		glm::mat4 lightProjection = glm::ortho(-ortho_radius, ortho_radius, -ortho_radius, ortho_radius, near_plane, far_plane);
+		auto lightSpaceMatrix = lightProjection * lightView;
+		light->setLightSpaceMatrix(lightSpaceMatrix);
+
 		root->addItem(std::move(light), render_context);
 	}
 }

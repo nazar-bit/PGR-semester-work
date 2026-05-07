@@ -65,6 +65,7 @@ namespace vasylnaz {
 	public:
 
 		std::vector<Object*> lamps;
+		std::vector<LightSource*> lights;
 		GLuint lamp_on_map = -1;
 		GLuint lamp_off_map = AssetManager::getInstance().getTexture("blank_em");
 
