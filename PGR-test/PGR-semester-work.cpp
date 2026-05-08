@@ -73,6 +73,8 @@ namespace vasylnaz {
         glViewport(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         glPointSize(20.0f);
 
+        glEnable(GL_MULTISAMPLE);
+
         // Compile Shaders
         initializeSharedUBOs();
         initializeShadowFBO();
@@ -299,7 +301,7 @@ int main(int argc, char** argv) {
     glutInitContextVersion(pgr::OGL_VER_MAJOR, pgr::OGL_VER_MINOR);
     glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_STENCIL | GLUT_MULTISAMPLE);
     glutInitWindowSize(WIN_WIDTH, WIN_HEIGHT);
     glutCreateWindow(WIN_TITLE);
 
