@@ -46,7 +46,7 @@ namespace vasylnaz {
         Curve* current_curve = nullptr;
         std::vector<Curve*> curves;
         float curve_movement_start = -1;
-        float curve_speed = 2.0f;
+        float curve_speed = 1.0f;
         std::vector<ViewPoint> view_points;
         std::vector<Node*> follow_nodes;
         Node* current_node = nullptr;
