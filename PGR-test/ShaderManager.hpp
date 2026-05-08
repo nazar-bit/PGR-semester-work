@@ -34,10 +34,14 @@ namespace vasylnaz {
 	extern GLuint depthTextureArray;
 	extern GLuint shadowMapFBO;
 
+	/// @brief Initialize UBOs used for lighting and material
 	void initializeSharedUBOs();
 
+	/// @brief Initialize FBO used for shadow mapping
 	void initializeShadowFBO();
 
+	/// @brief Transfer updated LightData to the shaders
+	/// @param newLightData Updated LightBlockData
 	void updateLights(const LightBlockData& newLightData);
 
 
@@ -70,43 +74,49 @@ namespace vasylnaz {
 		GLuint positionLightSpaceM = -1;
 
 
+		/// @brief 
+		/// @param vert_loc Location of the vertex shader
+		/// @param frag_loc Location of the fragment shader
 		void compileShaders(const std::string& vert_loc, const std::string& frag_loc);
 
-
+		/// @brief 
+		/// @param material Material&
 		void loadMaterial(const Material& material) const;
 
-
+		/// @brief 
+		/// @param dif_texture Diffuse texture
 		void loadDiffuse(const GLuint dif_texture) const;
 
-
+		/// @brief 
+		/// @param normal_texture Normal map
 		void loadNormal(const GLuint normal_texture) const;
 
-
+		/// @brief 
+		/// @param em_texture Emission map
 		void loadEmission(const GLuint em_texture) const;
 
-
+		/// @brief 
+		/// @param map Shadow map
 		void loadShadowMap(const GLuint map) const;
 
-
+		/// @brief 
+		/// @param object_id Object's id
 		void loadId(const long object_id) const;
 
-
+		/// @brief 
+		/// @param text_color Text color
 		void loadTextColor(glm::vec3 text_color) const;
 
-
+		/// @brief Bind shared UBOs to this shader
 		void bindUBOs();
-
-
 
 
 	private:
 	};
 
 
-
+	/// @brief Loads shader's source code
+	/// @param filepath FilePath to the shader code
+	/// @return Source code
 	std::string loadShaderSource(const std::string& filepath);
-
-
-
-
 }

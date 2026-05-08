@@ -20,15 +20,17 @@ namespace vasylnaz {
 		Object* owner;
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		Script(Object* owner) 
 			: owner(owner)
 		{
 			//
 		}
 
+		/// @brief 
 		virtual ~Script() = default;
 
+		/// @brief Script's main func
 		virtual void update() = 0;
 	};
 
@@ -40,9 +42,10 @@ namespace vasylnaz {
 		std::vector<LightSource*> lights;
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		PCScript(Object* owner);
 
+		/// @brief Script's main func
 		void update();
 
 	private:
@@ -59,9 +62,10 @@ namespace vasylnaz {
 		FanAnim* fan_anim;
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		FanSwitch(Object* owner);
 
+		/// @brief Script's main func
 		void update();
 
 	private:
@@ -78,9 +82,10 @@ namespace vasylnaz {
 		GLuint lamp_off_map = AssetManager::getInstance().getTexture("blank_em");
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		LightSwitch(Object* owner);
 
+		/// @brief Script's main func
 		void update();
 
 	private:
@@ -95,10 +100,11 @@ namespace vasylnaz {
 		Request rq;
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		/// @param rq 
 		RequestScript(Object* owner, Request rq);
 
+		/// @brief Script's main func
 		void update();
 
 	private:
@@ -114,11 +120,12 @@ namespace vasylnaz {
 		Node* text_node;
 
 		/// @brief 
-		/// @param owner 
+		/// @param owner What Object owns the script
 		/// @param rq 
 		/// @param text_node 
 		RequestColorScript(Object* owner, Request rq, Node* text_node);
 
+		/// @brief Script's main func
 		void update();
 
 	private:

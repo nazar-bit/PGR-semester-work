@@ -57,7 +57,7 @@ namespace vasylnaz {
 		CURVE_DEBUG_COLOR
 	};
 
-
+	/// @brief Loads parameters from the params.txt
 	void loadParams();
 }
 

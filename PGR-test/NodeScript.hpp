@@ -19,19 +19,23 @@ namespace vasylnaz {
 	class Script;
 	class Object;
 
-
+	/// @brief 
 	class NodeScript {
 	public:
 		Node* owner;
 
+		/// @brief 
+		/// @param owner What node owns the script
 		NodeScript(Node* owner)
 			: owner(owner)
 		{
 
 		}
 
+		/// @brief 
 		virtual ~NodeScript() = default;
 
+		/// @brief Script's main code, called every frame
 		virtual void update() = 0;
 	};
 
@@ -42,8 +46,11 @@ namespace vasylnaz {
 
 		bool activated = false;
 
+		/// @brief 
+		/// @param owner What node owns the script
 		FanAnim(Node* owner);
 
+		/// @brief Script's main code, called every frame
 		void update();
 
 	private:
@@ -60,10 +67,16 @@ namespace vasylnaz {
 
 		Object* wheels;
 
+		/// @brief 
+		/// @param owner What node owns the script
+		/// @param curve Unique ptr to curve, the script is following
 		CurveMovement(Node* owner, std::unique_ptr<Curve> curve);
 
+		/// @brief Script's main code, called every frame
 		void update();
 
+		/// @brief 
+		/// @return 
 		Curve* getCurve() {
 			return curve.get();
 		}

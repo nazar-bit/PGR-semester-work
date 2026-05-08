@@ -28,7 +28,14 @@ namespace vasylnaz {
 		GLuint em_map;
 		bool clicked = false;
 
-
+		/// @brief 
+		/// @param mesh Programer given name to the mesh
+		/// @param model_matrix Model matrix
+		/// @param material Programer given name to the material
+		/// @param dif_texture Programer given name to diffuse texture
+		/// @param normal_map Programer given name to normal map
+		/// @param em_map Programer given name to emission map
+		/// @param rq RenderQueue (F.E. OPAQUE_MASK or TRANSPARENT_MASK)
 		Object(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",
 			const string& dif_texture = "blank", const string& normal_map = "blank_norm",
 			const string& em_map = "blank_em", const RenderQueue rq = RenderQueue::OPAQUE_MASK)
@@ -44,16 +51,16 @@ namespace vasylnaz {
 
 
 		/// @brief 
-		/// @param shader_manager 
-		/// @param view 
-		virtual void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
+		/// @param shader_program ShaderProgram&
+		/// @param view View matrix
+		virtual void draw(const ShaderProgram& shader_program, const glm::mat4& view) const;
 
-		/// @brief 
-		/// @param parent_model_matrix 
+		/// @brief Update the object based on the Parent's model matrix in SceneGraph 
+		/// @param parent_model_matrix Parent's model matrix 
 		void updateItem(const glm::mat4& parent_model_matrix) override;
 
 		/// @brief 
-		/// @return 
+		/// @return Pointer to Mesh not the Programer givem name
 		const Mesh* getMesh() const {
 			return mesh;
 		}
@@ -74,6 +81,14 @@ namespace vasylnaz {
 	public:
 		glm::vec3 text_color;
 
+		/// @brief 
+		/// @param mesh Programer given name to the mesh
+		/// @param model_matrix Model matrix
+		/// @param material Programer given name to the material
+		/// @param dif_texture Programer given name to diffuse texture
+		/// @param normal_map Programer given name to normal map
+		/// @param em_map Programer given name to emission map
+		/// @param rq RenderQueue (F.E. OPAQUE_MASK or TRANSPARENT_MASK)
 		TextObject(const string& mesh, const glm::mat4& model_matrix, const string& material = "basic",
 			const string& dif_texture = "blank", const string& normal_map = "blank_norm",
 			const string& em_map = "blank_em", const RenderQueue rq = RenderQueue::OPAQUE_MASK)
@@ -82,7 +97,10 @@ namespace vasylnaz {
 			// 
 		}
 
-		void draw(const ShaderProgram& shader_manager, const glm::mat4& view) const;
+		/// @brief 
+		/// @param shader_program ShaderProgram&
+		/// @param view View matrix
+		void draw(const ShaderProgram& shader_program, const glm::mat4& view) const;
 
 	private:
 
