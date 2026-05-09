@@ -161,9 +161,11 @@ namespace vasylnaz {
         glUniform3fv(shader_program.positionGlobalAmb, 1, glm::value_ptr(GLOBAL_AMBIENT));
         if (FOG && CURRENT_SCENE != input_handler.getMenu()) {
             glUniform1i(shader_program.positionFog, true);
+            glUniform1i(tv_program.positionFog, true);
         }
         else {
             glUniform1i(shader_program.positionFog, false);
+            glUniform1i(tv_program.positionFog, false);
         }
         
         glUniform1f(shader_program.positionFogDensity, FOG_DENSITY);
