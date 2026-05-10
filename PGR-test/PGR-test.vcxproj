@@ -84,6 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(PGR_FRAMEWORK_ROOT)lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>pgrd.lib</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,6 +96,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(PGR_FRAMEWORK_ROOT)include</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -103,6 +105,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(PGR_FRAMEWORK_ROOT)lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>pgr.lib</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -144,7 +147,9 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="NodeScript.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Params.cpp" />
+    <ClCompile Include="Params.cpp">
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</WholeProgramOptimization>
+    </ClCompile>
     <ClCompile Include="PGR-semester-work.cpp" />
     <ClCompile Include="SceneGraph.cpp" />
     <ClCompile Include="Script.cpp" />
