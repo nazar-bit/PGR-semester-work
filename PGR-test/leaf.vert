@@ -11,6 +11,7 @@ uniform mat4 P;
 uniform float time;
 
 out vec4 fg_position;
+out vec4 fg_position_model;
 out vec2 fg_tex_coords;
 out mat3 TBN;
 
@@ -35,6 +36,7 @@ void main() {
     gl_Position = PVM * vec4(new_pos, 1.0);
     
     fg_position = VM * vec4(new_pos, 1.0);
+    fg_position_model = M * vec4(position, 1.0);
     //fg_tex_coords = vec2(tex_coords.x, tex_coords.y);
 
     float scaleX = length(vec3(VM[0]));

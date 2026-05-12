@@ -14,7 +14,12 @@ namespace vasylnaz {
         loadTetxure("wall_support", "Textures/wooden_gate_diff_1k.jpg");
         loadTetxure("ceiling", "Textures/OfficeCeiling001_1K-JPG_Color.jpg");
         loadTetxure("menu_button", "Textures/Rock058_1K-PNG_Color.png");
-        
+
+        loadTetxure("red", "Textures/red.png");
+        loadTetxure("blue", "Textures/blue.png");
+        loadTetxure("pink", "Textures/pink.png");
+        loadTetxure("green", "Textures/green.png");
+        loadTetxure("yellow", "Textures/yellow.png");
         
         
         

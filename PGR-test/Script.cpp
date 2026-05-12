@@ -10,19 +10,37 @@ namespace vasylnaz {
 		: Script(owner), pc_on_map(owner->em_map), 
 		pc_off_map(AssetManager::getInstance().getTexture("blank_em"))
 	{
-		//
+		AssetManager& a_m = AssetManager::getInstance();
+		animation_frames.push_back(a_m.getTexture("red"));
+		animation_frames.push_back(a_m.getTexture("yellow"));
+		animation_frames.push_back(a_m.getTexture("pink"));
+		animation_frames.push_back(a_m.getTexture("green"));
+		animation_frames.push_back(a_m.getTexture("blue"));
+		animation_frames.push_back(pc_on_map);
 	}
 
 
 
 	void PCScript::update() {
+		if (launching) {
+			if (local_time >= animation_frames.size()) {
+				launching = false;
+				local_time = animation_frames.size() - 1;
+			}
+			owner->em_map = animation_frames[(int)local_time];
+			local_time += time_increment;
+		}
+		
 		if (is_clicked != owner->clicked) {
 			if (owner->em_map == pc_off_map) {
-				owner->em_map = pc_on_map;
+				launching = true;
 			}
 			else {
+				local_time = 0.0f;
 				owner->em_map = pc_off_map;
 			}
+
+			// LightSources
 			for (auto& light : lights) {
 				if (owner->em_map == pc_off_map) {
 					light->deactivateLight();

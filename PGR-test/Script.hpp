@@ -52,6 +52,10 @@ namespace vasylnaz {
 		bool is_clicked;
 		GLuint pc_on_map;
 		GLuint pc_off_map;
+		std::vector<GLuint> animation_frames;
+		float local_time = 4.0f;
+		float time_increment = 0.1f;
+		bool launching = false;
 	};
 
 
