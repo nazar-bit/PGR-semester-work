@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Un-ignore .obj files specifically inside the Models folder
+!PGR-test/Models/**/*.obj
