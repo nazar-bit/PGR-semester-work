@@ -79,24 +79,24 @@ namespace vasylnaz {
         initializeSharedUBOs();
         initializeShadowFBO();
 
-        shader_program.compileShaders("basic.vert", "basic.frag");
+        shader_program.compileShaders("Shaders/basic.vert", "Shaders/basic.frag");
         shader_program.bindUBOs();
 
-        skybox_program.compileShaders("skybox.vert", "skybox.frag");
+        skybox_program.compileShaders("Shaders/skybox.vert", "Shaders/skybox.frag");
 
-        text_render.compileShaders("skybox.vert", "text.frag");
+        text_render.compileShaders("Shaders/skybox.vert", "Shaders/text.frag");
 
-        leaf_program.compileShaders("leaf.vert", "basic.frag");
+        leaf_program.compileShaders("Shaders/leaf.vert", "Shaders/basic.frag");
         leaf_program.bindUBOs();
 
-        tv_program.compileShaders("basic.vert", "tv.frag");
+        tv_program.compileShaders("Shaders/basic.vert", "Shaders/tv.frag");
         tv_program.bindUBOs();
 
-        line_drawer.compileShaders("line.vert", "line.frag");
+        line_drawer.compileShaders("Shaders/line.vert", "Shaders/line.frag");
 
-        pick_prog.compileShaders("pick.vert", "pick.frag");
+        pick_prog.compileShaders("Shaders/pick.vert", "Shaders/pick.frag");
 
-        shadow_prog.compileShaders("shadow.vert", "shadow.frag");
+        shadow_prog.compileShaders("Shaders/shadow.vert", "Shaders/shadow.frag");
     }
 
 
