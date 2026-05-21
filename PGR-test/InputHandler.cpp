@@ -42,6 +42,8 @@ namespace vasylnaz {
 
 		glDisable(GL_BLEND);
 		glDisable(GL_STENCIL_TEST);
+		glDisable(GL_DITHER);       
+		glDisable(GL_MULTISAMPLE);  
 		glEnable(GL_DEPTH_TEST);
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 		glDepthMask(GL_TRUE);
@@ -68,8 +70,17 @@ namespace vasylnaz {
 		
 		glFinish();
 		unsigned char pixel[4];
+		
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+
+		int window_width = glutGet(GLUT_WINDOW_WIDTH);
+		int window_height = glutGet(GLUT_WINDOW_HEIGHT);
+		int pixel_x = (int)(mouse.last_coords.x * ((float)viewport[2] / window_width));
+		int pixel_y = (int)((window_height - 1 - mouse.last_coords.y) * ((float)viewport[3] / window_height));
+
 		glReadBuffer(GL_BACK);
-		glReadPixels(mouse.last_coords.x, WIN_HEIGHT - 1 - mouse.last_coords.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+		glReadPixels(pixel_x, pixel_y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
 
 		if (pixel[1] == 0) {
 			std::cout << "clicked on background" << std::endl;
@@ -83,6 +94,8 @@ namespace vasylnaz {
 			scene_graph->findObject(id, Actions::CLICK);
 		}
 
+		glEnable(GL_DITHER);
+		glEnable(GL_MULTISAMPLE);
 		glutPostRedisplay();
 		/*glutSwapBuffers();*/
 	}
