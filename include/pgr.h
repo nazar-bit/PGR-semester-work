@@ -27,21 +27,25 @@
 #if USE_GLLOADGEN
 #include "gl_core_4_4.h"
 #else
-#include <GL/glew.h>
+#include "include/GL/glew.h"
 #endif
-#include <GL/freeglut.h>
-#include <IL/il.h>
+#include "include/GL/freeglut.h"
+#include "include/IL/il.h"
 
-#include <string>
-#include <math.h>
+#include "string"
+#include "math.h"
 
-#include <glm/glm.hpp>                  // vec3 normalize cross
-#include <glm/gtc/type_ptr.hpp>         // value_ptr
-#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale
+#define GLM_FORCE_MESSAGES
+#define GLM_FORCE_SWIZZLE
+#define GLM_FORCE_LEFT_HANDED
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include "include/glm/glm.hpp"                  // vec3 normalize cross
+#include "include/glm/gtc/type_ptr.hpp"         // value_ptr
+#include "include/glm/gtc/matrix_transform.hpp" // translate, rotate, scale
 
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
+#include "include/assimp/scene.h"
+#include "include/assimp/postprocess.h"
+#include "include/assimp/Importer.hpp"
 
 #include "Shader.h"  // createShaderFromSource, createProgram, deleteProgramAndShaders
 #include "Image.h" // createTexture

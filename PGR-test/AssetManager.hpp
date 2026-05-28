@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <iostream>
 #include <string>
-#include <glm/glm.hpp>
 
 #include "pgr.h"
 #include "Material.hpp"

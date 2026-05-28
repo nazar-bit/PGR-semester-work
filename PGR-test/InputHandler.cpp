@@ -87,9 +87,10 @@ namespace vasylnaz {
 		}
 		else {
 			std::cout << "clicked on object " << (int)pixel[0]
-				<< " in depth " << (float)pixel[2] * MAX_DEPTH / 255
+				<< " in depth " << (float)pixel[3] * MAX_DEPTH / 255
 				<< std::endl;
-			long id = (long)pixel[3];
+
+			long id = (long)pixel[2];
 			id = (id << 8) | (long)pixel[0];
 			scene_graph->findObject(id, Actions::CLICK);
 		}

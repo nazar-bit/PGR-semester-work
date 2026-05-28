@@ -21,8 +21,6 @@ namespace vasylnaz {
         loadTetxure("green", "Textures/green.png");
         loadTetxure("yellow", "Textures/yellow.png");
         
-        
-        
         //normal
         loadTetxure("blank_norm", "Textures/blank_norm.png");
         loadTetxure("rocks_norm", "Textures/normalMapRocks.png");

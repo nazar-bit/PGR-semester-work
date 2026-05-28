@@ -1,0 +1,36 @@
+newmtl mat_px
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/px.png
+
+newmtl mat_nx
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/nx.png
+
+newmtl mat_py
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/py.png
+
+newmtl mat_ny
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/ny.png
+
+newmtl mat_pz
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/pz.png
+
+newmtl mat_nz
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+illum 1
+map_Kd Textures/nz.png
+
